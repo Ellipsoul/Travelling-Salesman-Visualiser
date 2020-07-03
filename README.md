@@ -14,6 +14,16 @@ http://localhost:4200/
 ```
 + You will be able to edit the code and the results will be reflected live in the browser, with error messages produced if the project fails to compile
 
+##### Workflow
+
++ Discuss clearly which member will edit which part of the app
++ Create a branch with an intuitive name and work only within that branch. NEVER work in the `master` branch or push code directly to master
++ Develop the app locally using `ng serve` to view live changes
++ Use this to ensure that the app compiles before committing and pushing any code to the origin
++ When ready, push the code to `master` and make a pull request on [GitHub.com](https://github.com/) (do NOT attempt to merge any branches with `master` within a GUI like SourceTree itself)
++ The other person will review the code and approve it, and the branch will be merged and can be deleted
++ Aron wil deploy the app to GitHub Pages after final testing
+ 
 ##### Deploy Project to GitHub Pages (Aron only)
 
 + Leave the branch tracker tracking `gh-pages`
