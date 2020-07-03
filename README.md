@@ -14,7 +14,7 @@ http://localhost:4200/
 ```
 + You will be able to edit the code and the results will be reflected live in the browser, with error messages produced if the project fails to compile
 
-##### Workflow
+##### Project Workflow
 
 + Discuss clearly which member will edit which part of the app
 + Create a branch with an intuitive name and work only within that branch. NEVER work in the `master` branch or push code directly to master
@@ -23,6 +23,11 @@ http://localhost:4200/
 + When ready, push the code to `master` and make a pull request on [GitHub.com](https://github.com/) (do NOT attempt to merge any branches with `master` within a GUI like SourceTree itself)
 + The other person will review the code and approve it, and the branch will be merged and can be deleted
 + Aron wil deploy the app to GitHub Pages after final testing
+ 
+
++ We are deploying the app using a package called `angular-cli-ghpages`, references:
+    + [Angular Deployment](https://angular.io/guide/deployment)
+    + [angular-cli-ghpages](https://github.com/angular-schule/angular-cli-ghpages)
  
 ##### Deploy Project to GitHub Pages (Aron only)
 
