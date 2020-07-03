@@ -1,5 +1,32 @@
 # Travelling Salesman Visualiser
 
+#### Instructions for Development and Deployment
+
+##### Running the project locally (for Justin):
++ No committing/special building is required
++ To start the app locally run: 
+``` bash 
+ng serve
+```
++ If the app is successfully built a success message will show, and you will be able to view the app in the browser:
+``` html
+http://localhost:4200/
+```
++ You will be able to edit the code and the results will be reflected live in the browser, with error messages produced if the project fails to compile
+
+##### Deploy Project to GitHub Pages (Aron only)
+
++ Leave the branch tracker tracking `gh-pages`
++ For safety only ever attempt to deploy in the master branch. Ensure the code is pushed to the origin as well
++ To deploy the app in production to GitHub Pages:
+``` bash
+ng deploy --base-href=/Travelling-Salesman-Visualiser/
+```
++ It seems like no commit is necessary to deploy the Angular app, possible to deploy any tracked or untracked state of the app
++ To be safe NEVER deploy a detached uncommitted version of the app, ONLY deploy a master branch production build that is already pushed to the origin
+
+---
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.0.1.
 
 ## Development server
