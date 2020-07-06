@@ -9,5 +9,5 @@ export class AppComponent {
   title = 'travelling-salesman-visualiser';
 }
 
-export class ButtonToggleAppearanceExample {}
-export class GridListOverviewExample {}
+// export class ButtonToggleAppearanceExample {}
+// export class GridListOverviewExample {}
