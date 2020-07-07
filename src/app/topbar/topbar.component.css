@@ -39,7 +39,7 @@
 
 .algorithm-selector {
   border: 1px solid yellow;
-  width: 15vw;
+  width: 17vw;
   height: 100%;
   position: relative;
   display: inline-block;
@@ -69,13 +69,14 @@
 #algorithm-dropdown {
   position: relative;
   display: inline-block;
-  margin-left: 7px;
-  width: 14vw;
+  margin-left: 12px;
+  text-align: left;
+  width: 15vw;
 }
 
 .node-control {
   border: 1px solid orange;
-  width: 15vw;
+  width: 16.5vw;
   height: 100%;
   position: relative;
   display: inline-block;
@@ -86,13 +87,13 @@
 
 #node-control-description {
   display: inline-block;
-  margin-left: 2vw;
+  margin-left: 2.2vw;
   margin-top: 10px;
   margin-bottom: 10px;
 
   font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
   text-align: center;
-  font-size: 17px;
+  font-size: 1.2vw;
   letter-spacing: 1.5px;
   word-spacing: 0px;
   color: #000000;
@@ -116,11 +117,18 @@
   display: inline-block;
   margin-left: 0.8vw;
   margin-right: 0.6vw;
+  font-size: 1vw;
 }
 
 #node-slider {
   display: inline-block;
-  width: 12vw;
+  width: 13vw;
+  height: 3.5vw;
+}
+
+.node-buttons {
+  font-size: 0.9vw;
+  text-align: left;
 }
 
 .node-control-buttons {
@@ -133,14 +141,16 @@
 
 #randomise-button {
   position: relative;
-  margin-left: 10px;
-  margin-right: 5px;
+  margin-left: 0.8vw;
+  margin-right: 0.8vw;
+  width: 7vw;
 }
 
 #clear-button {
   position: relative;
-  margin-left: 5px;
-  margin-right: 5px;
+  margin-left: 0.8vw;
+  margin-right: 0.8vw;
+  width: 4vw;
 }
 
 .path-info {
@@ -149,6 +159,10 @@
   height: 100%;
   position: relative;
   display: inline-block;
+
+  margin-left: 5px;
+  margin-right: 5px;
+  bottom: 26px;
 }
 
 .playback-control {
