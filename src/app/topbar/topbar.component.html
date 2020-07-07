@@ -49,9 +49,16 @@
   </div>
 
   <div class="playback-control">
-    <h4> Test </h4>
-  </div>
+    <div class="playback-buttons">
+      <button mat-raised-button color="success" id="start-button"> Start! </button>
+      <button mat-raised-button color="accent" id="reset-button"> Reset </button>
+    </div>
 
+    <div class="playback-speed">
+      <p class="speeds"> Slow </p>
+      <mat-slider id="playback-slider"> </mat-slider>
+      <p class="speeds"> Fast </p>
+    </div>
 </div>
 
 
