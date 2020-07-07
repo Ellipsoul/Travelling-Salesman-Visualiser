@@ -32,10 +32,24 @@
 
   <div class="node-control">
     <h4 id="node-control-description"> Initialise Vertices </h4>
-    <div class="node-control-buttons">
-      <button mat-flat-button color="warn">Warn</button>
+    <div class="node-slider-and-display">
+      <h4 id="number-of-nodes"> 14 </h4>
+      <mat-slider thumbLabel min="2" max="200" id="node-slider"> </mat-slider>
     </div>
-    <div close="node-slider-and-display"> Test 2</div>
+    <div class="node-control-buttons">
+      <button mat-stroked-button color="primary" id="randomise-button"> Randomise! </button>
+      <button mat-stroked-button color="warn" id="clear-button"> Clear </button>
+    </div>
+  </div>
+
+  <div class="path-info">
+    <h4> Number of Possible Paths </h4>
+    <h4> Elapsed Duration: 3s </h4>
+    <h4> Estimated Duration: 5s</h4>
+  </div>
+
+  <div class="playback-control">
+    <h4> Test </h4>
   </div>
 
 </div>

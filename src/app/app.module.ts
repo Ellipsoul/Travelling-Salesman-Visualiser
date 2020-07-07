@@ -7,12 +7,13 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
-// import { MatSliderModule } from '@angular/material/slider';
-// import { MatButtonToggleModule } from '@angular/material/button-toggle';
-// import { MatGridListModule } from '@angular/material/grid-list';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TopbarComponent } from './topbar/topbar.component';
 import { GridComponent } from './grid/grid.component';
+// import { MatGridListModule } from '@angular/material/grid-list';
 
 @NgModule({
   declarations: [
@@ -27,9 +28,10 @@ import { GridComponent } from './grid/grid.component';
     MatRippleModule,
     MatSelectModule,
     BrowserAnimationsModule,
-    MatIconModule
-    // MatSliderModule,
-    // MatButtonToggleModule,
+    MatIconModule,
+    MatSliderModule,
+    MatButtonModule,
+    MatButtonToggleModule,
     // MatGridListModule,
   ],
   providers: [],

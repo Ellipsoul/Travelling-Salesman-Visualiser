@@ -7,7 +7,6 @@ import {FormControl} from '@angular/forms';
   styleUrls: ['./topbar.component.css']
 })
 
-
 export class TopbarComponent implements OnInit {
 
   constructor() { }
