@@ -1,2 +1,64 @@
-<p>topbar works!</p>
-<p>topbar code goes here</p>
+<!-- Entire container for the top menu bar -->
+<div class="topbar-container">
+
+  <!-- Project Title with Link to Tutorial -->
+  <h2 id=project-name> Travelling Salesman Problem Visualiser </h2>
+
+  <!-- Algorithm Selector -->
+  <div class="algorithm-selector">
+
+    <h4 id="algorithm-text"> Choose an Algorithm! </h4>
+
+    <mat-form-field appearance="fill" id="algorithm-dropdown">
+      <mat-label> Algorithm </mat-label>
+      <mat-select>
+
+        <mat-option> None </mat-option>
+        <mat-optgroup> Group 1 Algorithms
+          <mat-option> Algorithm A </mat-option>
+          <mat-option> Algorithm B </mat-option>
+          <mat-option> Algorithm C </mat-option>
+        </mat-optgroup>
+
+        <mat-optgroup> Group 2 Alogirthms
+          <mat-option> Algorithm D </mat-option>
+          <mat-option> Algorithm E </mat-option>
+          <mat-option> Algorithm F </mat-option>
+        </mat-optgroup>
+
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="node-control">
+    <h4 id="node-control-description"> Initialise Vertices </h4>
+    <div class="node-slider-and-display">
+      <h4 id="number-of-nodes"> 14 </h4>
+      <mat-slider thumbLabel min="2" max="200" id="node-slider"> </mat-slider>
+    </div>
+    <div class="node-control-buttons">
+      <button mat-stroked-button color="primary" id="randomise-button"> Randomise! </button>
+      <button mat-stroked-button color="warn" id="clear-button"> Clear </button>
+    </div>
+  </div>
+
+  <div class="path-info">
+    <h4> Number of Possible Paths </h4>
+    <h4> Elapsed Duration: 3s </h4>
+    <h4> Estimated Duration: 5s</h4>
+  </div>
+
+  <div class="playback-control">
+    <div class="playback-buttons">
+      <button mat-raised-button color="success" id="start-button"> Start! </button>
+      <button mat-raised-button color="accent" id="reset-button"> Reset </button>
+    </div>
+
+    <div class="playback-speed">
+      <p class="speeds"> Slow </p>
+      <mat-slider id="playback-slider"> </mat-slider>
+      <p class="speeds"> Fast </p>
+    </div>
+</div>
+
+
