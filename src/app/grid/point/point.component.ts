@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterContentInit } from '@angular/core';
+import { Component, OnInit, AfterContentInit, DoCheck } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { GridcommService } from '../../gridcomm.service';
 
@@ -9,31 +9,37 @@ import { GridcommService } from '../../gridcomm.service';
       state(
         "hoverednunselected",
         style({
-          backgroundColor: "pink",
+          backgroundColor: "black",
+          opacity: '15%',
           width: '15px',
-          height: '15px',
-          margin: '7.5px'
+          height: '15px'
         })
       ),
       state(
         "unselected",
         style({
-          backgroundColor: "red"
+          backgroundColor: "black",
+          opacity: '15%',
+          width: '10px',
+          height: '10px'
         })
       ),
       state(
         "hoverednselected",
         style({
-          backgroundColor: "skyblue",
-          width: '15px',
-          height: '15px',
-          margin: '7.5px'
+          backgroundColor: "black",
+          opacity: '100%',
+          width: '17px',
+          height: '17px'
         })
       ),
       state(
         "selected",
         style({
-          backgroundColor: "blue",
+          backgroundColor: "black",
+          opacity: '100%',
+          width: '12px',
+          height: '12px'
         })
       ),
       transition("* => *", [animate("0.05s")])
@@ -45,24 +51,22 @@ import { GridcommService } from '../../gridcomm.service';
   templateUrl: './point.component.html',
   styleUrls: ['./point.component.css']
 })
-export class PointComponent implements OnInit, AfterContentInit {
+export class PointComponent implements OnInit, AfterContentInit, DoCheck {
   isSelected = false;
   isHovered = false;
   x: Number;
   y: Number;
 
-  message: string;
 
-  // constructor() { }
   constructor(private data: GridcommService) { }
 
   selecttoggle() {
-    this.isSelected = !this.isSelected;
-    var outmessage = this.x.toString() + ',' + this.y.toString() + ',' + (this.isSelected?'Y':'N');
-
-    console.log(outmessage);
-
-    this.data.changeMessage(outmessage);
+    // this.isSelected = !this.isSelected;
+    if(this.isSelected){
+      this.data.removeFromSelPointsMessage({x: this.x, y: this.y})
+    }else{
+      this.data.addToSelPointsMessage({x: this.x, y: this.y})
+    }
   }
 
   hoverin() {
@@ -74,10 +78,13 @@ export class PointComponent implements OnInit, AfterContentInit {
   }
 
   ngOnInit(): void {
-    this.data.currentMessage.subscribe(message => this.message = message);
+    this.data.currentSelPointsMessage.subscribe(selPoints => this.isSelected = (selPoints.findIndex(i => i.x === this.x && i.y === this.y)) > -1);
   }
 
   ngAfterContentInit(): void {
+  }
+
+  ngDoCheck(): void {
   }
 
   setCoords(inx: number, iny: number){

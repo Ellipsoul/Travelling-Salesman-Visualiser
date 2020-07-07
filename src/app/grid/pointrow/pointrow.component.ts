@@ -10,15 +10,13 @@ import { PointDirective } from '../point/point.directive';
 export class PointrowComponent implements OnInit {
   @ViewChild(PointDirective, {static: true}) pointHost: PointDirective;
 
-  thesePoints: any[];
-
   constructor(private resolver: ComponentFactoryResolver) {
   }
 
   ngOnInit(): void {
   }
 
-  makePoints(numpoints: number, rownumber: number){
+  makePoints(numpoints: number, rownumber: number): void{
 
     const viewContainerRef = this.pointHost.viewContainerRef;
     viewContainerRef.clear();
