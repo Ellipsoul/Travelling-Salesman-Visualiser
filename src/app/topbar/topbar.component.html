@@ -43,21 +43,23 @@
   </div>
 
   <div class="path-info">
-    <h4> Number of Possible Paths </h4>
-    <h4> Elapsed Duration: 3s </h4>
-    <h4> Estimated Duration: 5s</h4>
+    <h4 id="path-info-text"> Possible Paths:  36 </h4>
+    <h4 id="path-info-text"> Elapsed Duration: 3s </h4>
+    <h4 id="path-info-text"> Estimated Duration: 5s</h4>
   </div>
 
   <div class="playback-control">
     <div class="playback-buttons">
-      <button mat-raised-button color="success" id="start-button"> Start! </button>
-      <button mat-raised-button color="accent" id="reset-button"> Reset </button>
+      <button mat-raised-button color="success" id="start-button"> <span id="playback-text"> Start! </span> </button>
+      <button mat-raised-button color="accent" id="reset-button"> <span id="playback-text"> Reset </span> </button>
     </div>
 
     <div class="playback-speed">
-      <p class="speeds"> Slow </p>
       <mat-slider id="playback-slider"> </mat-slider>
-      <p class="speeds"> Fast </p>
+      <div class="speeds">
+        <h4 class="speed-text" id="slow"> Slow </h4>
+        <h4 class="speed-text" id="fast"> Fast </h4>
+      </div>
     </div>
 </div>
 
