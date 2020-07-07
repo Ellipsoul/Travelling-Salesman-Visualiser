@@ -9,6 +9,7 @@
   width: 100%;
   height: 100%;
   position: relative;
+  background-color: white;
   border: 1px solid green;
 }
 
@@ -38,10 +39,12 @@
 
 .algorithm-selector {
   border: 1px solid yellow;
-  width: 220px;
+  width: 15vw;
   height: 100%;
   position: relative;
   display: inline-block;
+  margin-left: 5px;
+  margin-right: 5px;
   bottom: 15px;
 }
 
@@ -53,7 +56,7 @@
   font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
   text-align: center;
   font-size: 20px;
-  letter-spacing: 2px;
+  letter-spacing: 0.2vw;
   word-spacing: 2px;
   color: #000000;
   font-weight: 700;
@@ -67,19 +70,23 @@
   position: relative;
   display: inline-block;
   margin-left: 7px;
+  width: 14vw;
 }
 
 .node-control {
   border: 1px solid orange;
-  width: 210px;
+  width: 15vw;
   height: 100%;
   position: relative;
   display: inline-block;
+  bottom: 15px;
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
 #node-control-description {
   display: inline-block;
-  margin-left: 25px;
+  margin-left: 2vw;
   margin-top: 10px;
   margin-bottom: 10px;
 
@@ -87,7 +94,7 @@
   text-align: center;
   font-size: 17px;
   letter-spacing: 1.5px;
-  word-spacing: 2px;
+  word-spacing: 0px;
   color: #000000;
   font-weight: 700;
   text-decoration: none;
@@ -107,13 +114,13 @@
 #number-of-nodes{
   position: relative;
   display: inline-block;
-  margin-left: 15px;
-  margin-right: 10px;
+  margin-left: 0.8vw;
+  margin-right: 0.6vw;
 }
 
 #node-slider {
   display: inline-block;
-  width: 150px;
+  width: 12vw;
 }
 
 .node-control-buttons {
