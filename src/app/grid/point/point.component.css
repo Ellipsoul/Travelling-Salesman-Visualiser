@@ -1,0 +1,19 @@
+.point {
+  width:10px;
+  height:10px;
+  margin:10px;
+  border-radius:50%;
+  /* border: 1px black; */
+  /* border-style: solid; */
+}
+
+:host {
+  display: flex;
+  flex-wrap: nowrap;
+  /* float: left; */
+  /* background: greenyellow; */
+  /* border: 1px solid black; */
+  /* width: auto; */
+  /* padding: 10px; */
+
+}

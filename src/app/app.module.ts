@@ -13,15 +13,20 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TopbarComponent } from './topbar/topbar.component';
 import { GridComponent } from './grid/grid.component';
-import { PointComponent } from './point/point.component'
-// import { MatGridListModule } from '@angular/material/grid-list';
+import { PointComponent } from './grid/point/point.component';
+import { PointrowComponent } from './grid/pointrow/pointrow.component';
+import { PointrowDirective } from './grid/pointrow/pointrow.directive';
+import { PointDirective } from './grid/point/point.directive';
 
 @NgModule({
   declarations: [
     AppComponent,
     TopbarComponent,
     GridComponent,
-    PointComponent
+    PointComponent,
+    PointrowComponent,
+    PointrowDirective,
+    PointDirective
   ],
   imports: [
     BrowserModule,
