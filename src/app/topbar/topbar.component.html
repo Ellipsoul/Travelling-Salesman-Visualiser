@@ -31,33 +31,35 @@
   </div>
 
   <div class="node-control">
-    <h4 id="node-control-description"> Initialise Vertices </h4>
+    <h4 id="node-control-description"> <span> Initialise Vertices </span> </h4>
     <div class="node-slider-and-display">
       <h4 id="number-of-nodes"> 14 </h4>
       <mat-slider thumbLabel min="2" max="200" id="node-slider"> </mat-slider>
     </div>
     <div class="node-control-buttons">
-      <button mat-stroked-button color="primary" id="randomise-button"> Randomise! </button>
-      <button mat-stroked-button color="warn" id="clear-button"> Clear </button>
+      <button mat-raised-button color="primary" id="randomise-button"> <span class="node-buttons"> Randomise! </span></button>
+      <button mat-raised-button color="warn" id="clear-button"> <span class="node-buttons"> Clear </span> </button>
     </div>
   </div>
 
   <div class="path-info">
-    <h4> Number of Possible Paths </h4>
-    <h4> Elapsed Duration: 3s </h4>
-    <h4> Estimated Duration: 5s</h4>
+    <h4 id="path-info-text"> Possible Paths:  36 </h4>
+    <h4 id="path-info-text"> Elapsed Duration: 3s </h4>
+    <h4 id="path-info-text"> Estimated Duration: 5s</h4>
   </div>
 
   <div class="playback-control">
     <div class="playback-buttons">
-      <button mat-raised-button color="success" id="start-button"> Start! </button>
-      <button mat-raised-button color="accent" id="reset-button"> Reset </button>
+      <button mat-raised-button color="success" id="start-button"> <span id="playback-button-text"> Start! </span> </button>
+      <button mat-raised-button color="accent" id="reset-button"> <span id="playback-button-text"> Reset </span> </button>
     </div>
 
     <div class="playback-speed">
-      <p class="speeds"> Slow </p>
       <mat-slider id="playback-slider"> </mat-slider>
-      <p class="speeds"> Fast </p>
+      <div class="speeds">
+        <h4 class="speed-text" id="slow"> Slow </h4>
+        <h4 class="speed-text" id="fast"> Fast </h4>
+      </div>
     </div>
 </div>
 
