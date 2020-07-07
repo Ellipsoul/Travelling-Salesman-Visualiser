@@ -10,11 +10,11 @@
   height: 100%;
   position: relative;
   background-color: white;
-  border: 1px solid green;
+  /* border: 1px solid green; */
 }
 
 #project-name {
-  border: 1px solid red;
+  /* border: 1px solid red; */
 
   font-family: "Courier New", Courier, monospace;
   font-size: 32px;
@@ -39,7 +39,7 @@
 }
 
 .algorithm-selector {
-  border: 1px solid yellow;
+  /* border: 1px solid yellow; */
   width: 17vw;
   height: 100%;
   position: relative;
@@ -76,7 +76,7 @@
 }
 
 .node-control {
-  border: 1px solid orange;
+  /* border: 1px solid orange; */
   width: 16.5vw;
   height: 100%;
   position: relative;
@@ -90,7 +90,7 @@
   display: inline-block;
   margin-left: 2.2vw;
   margin-top: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
 
   font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
   text-align: center;
@@ -106,7 +106,7 @@
 }
 
 .node-slider-and-display {
-  border: 1px solid purple;
+  /* border: 1px solid purple; */
   width: 100%;
   height: 100%;
   position: relative;
@@ -133,7 +133,7 @@
 }
 
 .node-control-buttons {
-  border: 1px solid blue;
+  /* border: 1px solid blue; */
   width: 100%;
   height: 100%;
   position: relative;
@@ -142,7 +142,7 @@
 
 #randomise-button {
   position: relative;
-  margin-left: 0.8vw;
+  margin-left: 1.8vw;
   margin-right: 0.8vw;
   width: 7vw;
 }
@@ -155,7 +155,7 @@
 }
 
 .path-info {
-  border: 1px solid cyan;
+  /* border: 1px solid cyan; */
   width: 16vw;
   height: 130px;
   position: relative;
@@ -163,7 +163,7 @@
 
   margin-left: 5px;
   margin-right: 5px;
-  bottom: 50px;
+  bottom: 40px;
 }
 
 #path-info-text {
@@ -184,18 +184,19 @@
 }
 
 .playback-control {
-  border: 1px solid darkolivegreen;
+  /* border: 1px solid darkolivegreen; */
   width: 20vw;
   height: 100%;
   position: relative;
   display: inline-block;
-  top: 10px;
 
-  margin-left: 5px
+  top: 10px;
+  margin-left: 5px;
+  padding-bottom: 0px;
 }
 
 .playback-buttons {
-  border: 1px solid lightcoral;
+  /* border: 1px solid lightcoral; */
   margin-top: 10px;
   width: 100%;
   height: 100%;
@@ -203,7 +204,7 @@
   display: inline-block;
 }
 
-#playback-text {
+#playback-button-text {
   font-family: "Trebuchet MS", Helvetica, sans-serif;
   font-size: 19px;
   letter-spacing: 2px;
@@ -236,7 +237,7 @@
 }
 
 .playback-speed {
-  border: 1px solid lightcoral;
+  /* border: 1px solid lightcoral; */
   width: 100%;
   height: 100%;
   position: relative;
@@ -276,12 +277,12 @@
 
 #slow {
   float: left;
-  bottom: 10px;
+  bottom: 18px;
   margin-left: 10px;
 }
 
 #fast {
   float: right;
-  bottom: 10px;
+  bottom: 18px;
   margin-right: 40px;
 }
