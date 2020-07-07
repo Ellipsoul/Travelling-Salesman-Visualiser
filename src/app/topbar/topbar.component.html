@@ -9,6 +9,7 @@
 
     <h4 id="algorithm-text"> Choose an Algorithm! </h4>
 
+    <!-- Dropdown menu for algorithms (with groups) -->
     <mat-form-field appearance="fill" id="algorithm-dropdown">
       <mat-label> Algorithm </mat-label>
       <mat-select>
@@ -30,30 +31,36 @@
     </mat-form-field>
   </div>
 
+  <!-- Node randomiser and clearing -->
   <div class="node-control">
     <h4 id="node-control-description"> <span> Initialise Vertices </span> </h4>
+    <!-- Slider tracking number of nodes -->
     <div class="node-slider-and-display">
       <h4 id="number-of-nodes"> 14 </h4>
       <mat-slider thumbLabel min="2" max="200" id="node-slider"> </mat-slider>
     </div>
+    <!-- Randomise and clear node buttons -->
     <div class="node-control-buttons">
       <button mat-raised-button color="primary" id="randomise-button"> <span class="node-buttons"> Randomise! </span></button>
       <button mat-raised-button color="warn" id="clear-button"> <span class="node-buttons"> Clear </span> </button>
     </div>
   </div>
 
+  <!-- Information about Algorithm and path complexity (needs to be made dynamic) -->
   <div class="path-info">
-    <h4 id="path-info-text"> Possible Paths:  36 </h4>
+    <h4 id="path-info-text"> Possible Paths:  36 </h4> <!-- Function of only number of nodes-->
     <h4 id="path-info-text"> Elapsed Duration: 3s </h4>
-    <h4 id="path-info-text"> Estimated Duration: 5s</h4>
+    <h4 id="path-info-text"> Estimated Duration: 5s</h4> <!-- Function of number of nodes and algorithm -->
   </div>
 
+  <!-- Start/Pause and Reset Controls div -->
   <div class="playback-control">
+    <!-- Buttons -->
     <div class="playback-buttons">
       <button mat-raised-button color="success" id="start-button"> <span id="playback-button-text"> Start! </span> </button>
       <button mat-raised-button color="accent" id="reset-button"> <span id="playback-button-text"> Reset </span> </button>
     </div>
-
+    <!-- Slider controlling playback speed-->
     <div class="playback-speed">
       <mat-slider id="playback-slider"> </mat-slider>
       <div class="speeds">

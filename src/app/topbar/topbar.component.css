@@ -5,6 +5,7 @@
   overflow: hidden;
 }
 
+/* Entire page container */
 .topbar-container {
   width: 100%;
   height: 100%;
@@ -12,6 +13,8 @@
   background-color: white;
   /* border: 1px solid green; */
 }
+/*--------------------------------------------------------------------------------------------------------------*/
+/* Title*/
 
 #project-name {
   /* border: 1px solid red; */
@@ -37,6 +40,8 @@
   line-height: 2.8vw;
   bottom: 30px;
 }
+/*---------------------------------------------------------------------------------------------------------------*/
+/* Div for Algorithm Choice */
 
 .algorithm-selector {
   /* border: 1px solid yellow; */
@@ -48,6 +53,7 @@
   margin-right: 5px;
   bottom: 35px;
 }
+
 
 #algorithm-text {
   padding-top: 20px;
@@ -74,6 +80,8 @@
   text-align: left;
   width: 15vw;
 }
+/*---------------------------------------------------------------------------------------------------------------*/
+/* Div for managing number of nodes */
 
 .node-control {
   /* border: 1px solid orange; */
@@ -153,6 +161,8 @@
   margin-right: 0.8vw;
   width: 4vw;
 }
+/*---------------------------------------------------------------------------------------------------------------*/
+/* Additional Algorithm path information div */
 
 .path-info {
   /* border: 1px solid cyan; */
@@ -182,6 +192,8 @@
   font-variant: normal;
   text-transform: none;
 }
+/*---------------------------------------------------------------------------------------------------------------*/
+/* Algorithm play/pause/stop control div */
 
 .playback-control {
   /* border: 1px solid darkolivegreen; */
