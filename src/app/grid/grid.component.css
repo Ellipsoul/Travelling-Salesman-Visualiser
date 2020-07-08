@@ -14,14 +14,14 @@
   flex-direction: row;
 }
 
-.button {
+.random {
   align-self: center;
   width:100px;
   height:50px;
   background: plum;
 }
 
-.button:hover{
+.random:hover{
   background: purple;
 }
 

@@ -11,8 +11,10 @@ import { GridcommService } from '../../gridcomm.service';
         style({
           backgroundColor: "black",
           opacity: '15%',
-          width: '15px',
-          height: '15px'
+          width: '50%',
+          height: '50%'
+          // width: '15px',
+          // height: '15px'
         })
       ),
       state(
@@ -20,8 +22,10 @@ import { GridcommService } from '../../gridcomm.service';
         style({
           backgroundColor: "black",
           opacity: '15%',
-          width: '10px',
-          height: '10px'
+          width: '35%',
+          height: '35%'
+          // width: '10px',
+          // height: '10px'
         })
       ),
       state(
@@ -29,8 +33,10 @@ import { GridcommService } from '../../gridcomm.service';
         style({
           backgroundColor: "black",
           opacity: '100%',
-          width: '17px',
-          height: '17px'
+          width: '55%',
+          height: '55%'
+          // width: '17px',
+          // height: '17px'
         })
       ),
       state(
@@ -38,8 +44,10 @@ import { GridcommService } from '../../gridcomm.service';
         style({
           backgroundColor: "black",
           opacity: '100%',
-          width: '12px',
-          height: '12px'
+          width: '40%',
+          height: '40%'
+          // width: '12px',
+          // height: '12px'
         })
       ),
       transition("* => *", [animate("0.05s")])
@@ -54,8 +62,8 @@ import { GridcommService } from '../../gridcomm.service';
 export class PointComponent implements OnInit, AfterContentInit, DoCheck {
   isSelected = false;
   isHovered = false;
-  x: Number;
-  y: Number;
+  x: number;
+  y: number;
 
 
   constructor(private data: GridcommService) { }

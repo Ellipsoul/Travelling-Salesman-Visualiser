@@ -14,22 +14,22 @@ export class GridComponent implements OnInit, AfterContentInit, DoCheck {
 
   selectedPointString: string = '';
 
-  selectedPoints: {x: Number, y:Number}[] = [];
-  prevSelectedPoints: {x: Number, y:Number}[] = [];
+  selectedPoints: {x: number, y:number}[] = [];
+  prevSelectedPoints: {x: number, y:number}[] = [];
 
-  height = 15;
-  width = 50;
-  // public innerWidth: any;
-  // public innerHeight: any;
+  noRows = 21;
+  noCols = 50;
 
   constructor(private data: GridcommService, private resolver: ComponentFactoryResolver) {}
 
   ngOnInit(): void {
-    this.makeRows();
+    // const offsetHeight = 350;
+    // const offsetWidth = 300;
 
-    // this.innerHeight = window.innerHeight;
-    // this.innerWidth = window.innerWidth;
+    // this.noRows = (window.innerHeight - offsetHeight)/30;
+    // this.noCols = (window.innerWidth - offsetWidth)/30;
 
+    this.makeGrid(this.noRows, this.noCols);
     this.data.currentSelPointsMessage.subscribe(message => this.selectedPoints = message);
   }
 
@@ -37,23 +37,21 @@ export class GridComponent implements OnInit, AfterContentInit, DoCheck {
   }
 
   ngDoCheck() {
-    if(this.prevSelectedPoints !== this.selectedPoints){
+    if(!this.arraysEqual(this.prevSelectedPoints, this.selectedPoints)){
       this.createPointString();
-      console.log(this.prevSelectedPoints, this.selectedPoints);
-
       this.prevSelectedPoints = this.selectedPoints.slice(0);
     }
   }
 
 
-  makeRows(){
+  makeGrid(rows: number, cols: number){
     const viewContainerRef = this.pointHost.viewContainerRef;
     viewContainerRef.clear();
 
-    for(let i = 0; i < this.height; i++){
+    for(let i = 0; i < rows; i++){
       const newRow = viewContainerRef.createComponent(this.resolver.resolveComponentFactory(PointrowComponent));
 
-      (<PointrowComponent>newRow.instance).makePoints(this.width, i);
+      (<PointrowComponent>newRow.instance).makePoints(cols, i);
 
     }
   }
@@ -66,7 +64,7 @@ export class GridComponent implements OnInit, AfterContentInit, DoCheck {
 
   randomize(no: number){
     for(let num = 0; num < no; num++){
-      this.data.addToSelPointsMessage({x: this.getRandomNumberBetweenZ(this.width), y: this.getRandomNumberBetweenZ(this.height)});
+      this.data.addToSelPointsMessage({x: this.getRandomNumberBetweenZ(this.noCols), y: this.getRandomNumberBetweenZ(this.noRows)});
     }
     this.createPointString();
   }
@@ -78,6 +76,17 @@ export class GridComponent implements OnInit, AfterContentInit, DoCheck {
 
   getRandomNumberBetweenZ(max: number){
       return Math.floor(Math.random()*(max));
+  }
+
+  arraysEqual(a: any[], b: any[]) {
+    if (a === b) return true;
+    if (a == null || b == null) return false;
+    if (a.length !== b.length) return false;
+
+    for (var i = 0; i < a.length; ++i) {
+      if (a[i] !== b[i]) return false;
+    }
+    return true;
   }
 
 }

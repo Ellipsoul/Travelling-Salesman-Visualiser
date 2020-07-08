@@ -5,10 +5,10 @@ import { BehaviorSubject }  from 'rxjs';
   providedIn: 'root'
 })
 export class GridcommService {
-  selpoints: {x: Number; y:Number}[] = [];
+  selpoints: {x: number; y:number}[] = [];
 
   // private message = new BehaviorSubject<string>("lol");
-  private selPointsMessage = new BehaviorSubject<{x: Number; y:Number}[]>(this.selpoints);
+  private selPointsMessage = new BehaviorSubject<{x: number; y:number}[]>(this.selpoints);
 
   // currentMessage = this.message.asObservable();
   currentSelPointsMessage = this.selPointsMessage.asObservable();
@@ -17,13 +17,13 @@ export class GridcommService {
 
   }
 
-  changeSelPointMessage(message: {x: Number; y:Number}[]){
+  changeSelPointMessage(message: {x: number; y:number}[]){
     this.selpoints = message;
     this.selPointsMessage.next(this.selpoints);
     console.log(this.selpoints);
   }
 
-  addToSelPointsMessage(message: {x: Number; y:Number}){
+  addToSelPointsMessage(message: {x: number; y:number}){
     if(this.selpoints.findIndex(i => i.x === message.x && i.y === message.y) === -1){
       this.selpoints.push(message);
     }
@@ -31,7 +31,7 @@ export class GridcommService {
     console.log(this.selpoints);
   }
 
-  removeFromSelPointsMessage(message: {x: Number; y:Number}){
+  removeFromSelPointsMessage(message: {x: number; y:number}){
     this.selpoints = this.removeFromArray(this.selpoints, message);
     this.selPointsMessage.next(this.selpoints);
     console.log(this.selpoints);
