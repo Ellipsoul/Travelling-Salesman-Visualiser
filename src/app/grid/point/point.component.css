@@ -10,6 +10,8 @@
 
 :host {
   width:1.9vw;
+  min-width: 25px;
+  min-height: 25px;
   height:1.9vw;
   display: flex;
   flex-wrap: nowrap;
