@@ -40,7 +40,7 @@ export class GridComponent implements OnInit, AfterContentInit, DoCheck {
   ngDoCheck() { //runs whenever a change is detected in ANY component in the app (could be mouse changes or any data changes)
     if(!this.arraysEqual(this.prevSelectedPoints, this.selectedPoints)){ //if there is a change in selected points
       this.createPointString(); //update selected points string
-      this.prevSelectedPoints = this.selectedPoints.slice(0); //update previous selected points
+      this.prevSelectedPoints = this.selectedPoints.slice(0); //update previous selected points; slice makes copy of array - cannot just update with (=)
     }
   }
 

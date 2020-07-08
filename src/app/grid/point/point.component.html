@@ -1,3 +1,3 @@
-  <div class="point" (mousedown)="selecttoggle()" (mouseenter)="hoverin()" (mouseleave)="hoverout()" [@selector]="isSelected ? (isHovered ? 'hoverednselected' : 'selected') : (isHovered ? 'hoverednunselected' : 'unselected')"></div>
+  <div class="point" (mousedown)="selectToggle()" (mouseenter)="hoverIn()" (mouseleave)="hoverOut()" [@selector]="isSelected ? (isHovered ? 'hoverednselected' : 'selected') : (isHovered ? 'hoverednunselected' : 'unselected')"></div>
 <!-- [@selector]="isSelected ? (isHovered ? 'hoverednselected' : 'selected') : (isHovered ? 'hoverednunselected' : 'unselected')" -->
 <!-- ^^ Decides the animation state based on booleans 'isSelected' and 'isHovered' -->

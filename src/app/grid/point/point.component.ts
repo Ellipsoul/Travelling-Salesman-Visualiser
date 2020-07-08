@@ -62,7 +62,7 @@ export class PointComponent implements OnInit, AfterContentInit, DoCheck {
 
   constructor(private data: GridcommService) { }
 
-  selecttoggle() { //called in html when point is clicked
+  selectToggle() { //called in html when point is clicked
     // this.isSelected = !this.isSelected;
     if(this.isSelected){
       this.data.removeFromSelPointsMessage({x: this.x, y: this.y}) //remove this point from the selectedpoints 'message'
@@ -71,11 +71,11 @@ export class PointComponent implements OnInit, AfterContentInit, DoCheck {
     }
   }
 
-  hoverin() { //called in html when mouse moves into the component
+  hoverIn() { //called in html when mouse moves into the component
     this.isHovered = true;
   }
 
-  hoverout() { //called in html when mouse leaves the component
+  hoverOut() { //called in html when mouse leaves the component
     this.isHovered = false;
   }
 
