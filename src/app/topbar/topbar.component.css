@@ -38,8 +38,10 @@
   padding-top: 10px;
   padding-left: 0px;
   padding-right: 10px;
-  line-height: 2.8vw;
+  line-height: 35px;
   bottom: 30px;
+
+  min-width: 200px;
 }
 /*---------------------------------------------------------------------------------------------------------------*/
 /* Div for Algorithm Choice */
@@ -47,6 +49,7 @@
 .algorithm-selector {
   /* border: 1px solid yellow; */
   width: 17vw;
+  min-width: 175px;
   height: 100%;
   position: relative;
   display: inline-block;
@@ -60,6 +63,7 @@
   padding-top: 20px;
   margin-right: 10px;
   display: inline-block;
+  min-width: 170px;
 
   font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
   text-align: center;
@@ -80,6 +84,7 @@
   margin-left: 12px;
   text-align: left;
   width: 15vw;
+  min-width: 150px;
 }
 /*---------------------------------------------------------------------------------------------------------------*/
 /* Div for managing number of nodes */
@@ -93,6 +98,7 @@
   bottom: 35px;
   margin-left: 5px;
   margin-right: 5px;
+  min-width: 200px;
 }
 
 #node-control-description {
@@ -103,7 +109,7 @@
 
   font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
   text-align: center;
-  font-size: 1.2vw;
+  font-size: 18px;
   letter-spacing: 1.5px;
   word-spacing: 0px;
   color: #000000;
@@ -117,6 +123,7 @@
 .node-slider-and-display {
   /* border: 1px solid purple; */
   width: 100%;
+  min-width: 160px;
   height: 100%;
   position: relative;
   display: inline-block;
@@ -127,18 +134,21 @@
   display: inline-block;
   margin-left: 0.8vw;
   margin-right: 0.6vw;
-  font-size: 1vw;
+  font-size: 15px;
 }
 
 #node-slider {
   display: inline-block;
   width: 13vw;
+  min-width: 160px;
   height: 3.5vw;
 }
 
 .node-buttons {
-  font-size: 0.9vw;
+  font-size: 14px;
   text-align: left;
+  min-width: 160px;
+  margin-right: 2px;
 }
 
 .node-control-buttons {
@@ -154,6 +164,8 @@
   margin-left: 1.8vw;
   margin-right: 0.8vw;
   width: 7vw;
+  min-width: 90px;
+  font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
 
 #clear-button {
@@ -161,6 +173,8 @@
   margin-left: 0.8vw;
   margin-right: 0.8vw;
   width: 4vw;
+  min-width: 60px;
+  font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
 /*---------------------------------------------------------------------------------------------------------------*/
 /* Additional Algorithm path information div */
@@ -168,22 +182,24 @@
 .path-info {
   /* border: 1px solid cyan; */
   width: 16vw;
+  min-width: 230px;
   height: 130px;
   position: relative;
   display: inline-block;
 
   margin-left: 5px;
   margin-right: 5px;
-  bottom: 40px;
+  bottom: 30px;
 }
 
-#path-info-text {
+.path-info-text {
   display: inline-block;
   margin-left: 5px;
-  height: 3vh;
+  height: 2vh;
+  padding-bottom: 3px;
 
   font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
-  font-size: 1.1vw;
+  font-size: 16px;
   letter-spacing: 2px;
   word-spacing: 0px;
   color: #000000;
@@ -199,6 +215,7 @@
 .playback-control {
   /* border: 1px solid darkolivegreen; */
   width: 20vw;
+  min-width: 265px;
   height: 100%;
   position: relative;
   display: inline-block;
@@ -212,6 +229,7 @@
   /* border: 1px solid lightcoral; */
   margin-top: 10px;
   width: 100%;
+  min-width: 265px;
   height: 100%;
   position: relative;
   display: inline-block;
@@ -234,13 +252,17 @@
   margin-left: 1vw;
   margin-right: 1vw;
   width: 8vw;
+  min-width: 100px;
   height: 8vh;
+  min-height: 37px;
 }
 
 #reset-button {
   display: inline-block;
   width: 8vw;
+  min-width: 100px;
   height: 8vh;
+  min-height: 37px;
   margin-left: 1vw;
 }
 
@@ -261,7 +283,7 @@
   position: relative;
   display: inline-block;
   margin-left: 1vw;
-  width: 18vw;
+  width: 17.5vw;
 }
 
 .speeds {
@@ -295,7 +317,8 @@
 }
 
 #fast {
-  float: right;
+  float: left;
   bottom: 18px;
+  margin-left: 15vw;
   margin-right: 40px;
 }
