@@ -2,13 +2,17 @@
   display: block;
   left: 0;
   width: 100%;
-  overflow: hidden;
+  overflow-y: hidden;
+  overflow-x: visible;
+  z-index: 1;
 }
 
 /* Entire page container */
 .topbar-container {
   top: 15px;
   width: 100%;
+  min-width: 1300px;
+  max-width: 1500px;
   height: 100%;
   position: relative;
   background-color: white;
@@ -40,6 +44,7 @@
   padding-right: 10px;
   line-height: 35px;
   bottom: 30px;
+  left: 10px;
 
   min-width: 200px;
 }
@@ -76,6 +81,8 @@
   font-style: normal;
   font-variant: normal;
   text-transform: none;
+  line-height: 20px;
+  margin-bottom: 10px;
 }
 
 #algorithm-dropdown {
@@ -98,7 +105,7 @@
   bottom: 35px;
   margin-left: 5px;
   margin-right: 5px;
-  min-width: 200px;
+  min-width: 210px;
 }
 
 #node-control-description {
@@ -141,14 +148,14 @@
   display: inline-block;
   width: 13vw;
   min-width: 160px;
-  height: 3.5vw;
+  height: 53px;
 }
 
 .node-buttons {
   font-size: 14px;
   text-align: left;
   min-width: 160px;
-  margin-right: 2px;
+  margin-right: 10px;
 }
 
 .node-control-buttons {
@@ -189,7 +196,7 @@
 
   margin-left: 5px;
   margin-right: 5px;
-  bottom: 30px;
+  bottom: 23px;
 }
 
 .path-info-text {
@@ -215,12 +222,12 @@
 .playback-control {
   /* border: 1px solid darkolivegreen; */
   width: 20vw;
-  min-width: 265px;
+  min-width: 280px;
   height: 100%;
   position: relative;
   display: inline-block;
 
-  top: 10px;
+  top: 18px;
   margin-left: 5px;
   padding-bottom: 0px;
 }
