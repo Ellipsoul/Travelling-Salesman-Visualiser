@@ -1,42 +1,48 @@
-import { Component, OnInit, AfterContentInit } from '@angular/core';
+import { Component, OnInit, AfterContentInit, DoCheck } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { GridcommService } from '../../gridcomm.service';
 
 @Component({
   selector: 'app-point',
-  animations: [
+  animations: [ //animation states - states are selected from the html tag (check point.component.html)
     trigger("selector", [
       state(
-        "hoverednunselected",
+        "hoverednunselected", //when mouse is hovered over and point is unselected
         style({
-          backgroundColor: "pink",
-          width: '15px',
-          height: '15px',
-          margin: '7.5px'
+          backgroundColor: "black",
+          opacity: '15%',
+          width: '50%',
+          height: '50%'
         })
       ),
       state(
-        "unselected",
+        "unselected", //when mouse is NOT hovered over and point is unselected
         style({
-          backgroundColor: "red"
+          backgroundColor: "black",
+          opacity: '15%',
+          width: '35%',
+          height: '35%'
         })
       ),
       state(
-        "hoverednselected",
+        "hoverednselected", //when mouse is hovered over and point is selected
         style({
-          backgroundColor: "skyblue",
-          width: '15px',
-          height: '15px',
-          margin: '7.5px'
+          backgroundColor: "black",
+          opacity: '100%',
+          width: '55%',
+          height: '55%'
         })
       ),
       state(
-        "selected",
+        "selected", //when mouse is NOT hovered over and point is selected
         style({
-          backgroundColor: "blue",
+          backgroundColor: "black",
+          opacity: '100%',
+          width: '40%',
+          height: '40%'
         })
       ),
-      transition("* => *", [animate("0.05s")])
+      transition("* => *", [animate("0.05s")]) //transition time from ANY state to ANY state
       // transition("* => selected", [animate("0.5s")]),
       // transition("* => hovered", [animate("0.5s")]),
       // transition("* => unselected", [animate("0.5s")])
@@ -45,42 +51,48 @@ import { GridcommService } from '../../gridcomm.service';
   templateUrl: './point.component.html',
   styleUrls: ['./point.component.css']
 })
-export class PointComponent implements OnInit, AfterContentInit {
+export class PointComponent implements OnInit, AfterContentInit, DoCheck {
   isSelected = false;
   isHovered = false;
-  x: Number;
-  y: Number;
 
-  message: string;
+  //stores this point's coordinates
+  x: number;
+  y: number;
 
-  // constructor() { }
+
   constructor(private data: GridcommService) { }
 
-  selecttoggle() {
-    this.isSelected = !this.isSelected;
-    var outmessage = this.x.toString() + ',' + this.y.toString() + ',' + (this.isSelected?'Y':'N');
-
-    console.log(outmessage);
-
-    this.data.changeMessage(outmessage);
+  selectToggle() { //called in html when point is clicked
+    // this.isSelected = !this.isSelected;
+    if(this.isSelected){
+      this.data.removeFromSelPointsMessage({x: this.x, y: this.y}) //remove this point from the selectedpoints 'message'
+    }else{
+      this.data.addToSelPointsMessage({x: this.x, y: this.y}) //add this point to the selectedpoints 'message'
+    }
   }
 
-  hoverin() {
+  hoverIn() { //called in html when mouse moves into the component
     this.isHovered = true;
   }
 
-  hoverout() {
+  hoverOut() { //called in html when mouse leaves the component
     this.isHovered = false;
   }
 
   ngOnInit(): void {
-    this.data.currentMessage.subscribe(message => this.message = message);
+    this.data.currentSelPointsMessage.subscribe(selPoints => this.isSelected = (selPoints.findIndex(i => i.x === this.x && i.y === this.y)) > -1); //subscribe to selectedpoints 'message' - accesses the selectedpoints array held in the service; any updates will immediately be pushed to this.selectedPoints
+    //An extra anonymous function is used:
+    //this.isSelected = (selPoints.findIndex(i => i.x === this.x && i.y === this.y)) > -1
+    //Whenever the 'message' is updated --> update this coordinate's selected state
   }
 
   ngAfterContentInit(): void {
   }
 
-  setCoords(inx: number, iny: number){
+  ngDoCheck(): void {
+  }
+
+  setCoords(inx: number, iny: number){ //function to set this point component's coordinates
     this.x = inx;
     this.y = iny;
   }

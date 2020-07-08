@@ -1,8 +1,8 @@
 :host {
   display: flex;
   flex-direction: row;
-  /* background: cyan;
-  border: 1px solid black; */
+  /* background: lightblue; */
+  /* border: 1px solid black; */
   /* width: 100%; */
   /* clear: both; */
 }

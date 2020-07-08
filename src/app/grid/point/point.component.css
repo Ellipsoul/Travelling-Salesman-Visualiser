@@ -1,19 +1,24 @@
 .point {
-  width:10px;
-  height:10px;
-  margin:10px;
+  /* width:10px;
+  height:10px; */
+  width:35%;
+  height:35%;
   border-radius:50%;
   /* border: 1px black; */
   /* border-style: solid; */
 }
 
 :host {
+  width:1.9vw;
+  min-width: 25px;
+  min-height: 25px;
+  height:1.9vw;
   display: flex;
   flex-wrap: nowrap;
-  /* float: left; */
+  justify-content: center;
+  align-items: center;
   /* background: greenyellow; */
-  /* border: 1px solid black; */
-  /* width: auto; */
-  /* padding: 10px; */
+  /* border: 1px dashed black; */
+  /* border-radius: 25%; */
 
 }
