@@ -12,7 +12,7 @@
   top: 15px;
   width: 100%;
   min-width: 1300px;
-  max-width: 1500px;
+  max-width: 1500px; /* this line is what is causing my display problems - not sure why but yeah */
   height: 100%;
   position: relative;
   background-color: white;
