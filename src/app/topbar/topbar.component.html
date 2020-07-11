@@ -35,10 +35,10 @@
   <div class="node-control">
     <h4 id="node-control-description"> <span> Initialise Vertices </span> </h4>
     <!-- Slider tracking number of nodes -->
-    <div class="node-slider-and-display">
+    <span class="node-slider-and-display">
       <h4 id="number-of-nodes"> {{randomPointAmount}} </h4>
-      <mat-slider thumbLabel min="2" max="200" id="node-slider" (input)="updateRandomAmount($event)"> </mat-slider>
-    </div>
+      <mat-slider min="2" max="50" id="node-slider" (input)="updateRandomAmount($event)"> </mat-slider>
+    </span>
     <!-- Randomise and clear node buttons -->
     <div class="node-control-buttons">
       <button mat-raised-button color="primary" id="randomise-button" (mousedown)="randomize(currPointAmount)"> <span class="node-buttons"> Randomise! </span></button>
@@ -48,10 +48,28 @@
 
   <!-- Information about Algorithm and path complexity (needs to be made dynamic) -->
   <div class="path-info">
-    <h4 class="path-info-text"> Possible Paths:  {{currPointAmount}}! </h4> <!-- Function of only number of nodes-->
-    <h4 class="path-info-text"> Elapsed Duration: 3s </h4>
-    <h4 class="path-info-text"> Current Distance: 5m </h4> <!-- Function of number of nodes and algorithm -->
-    <h4 class="path-info-text"> Minimum Distance: 4m </h4>
+    <div class="top-path-info">
+      <div>
+        <h4 class="path-info-text"> Possible Paths: </h4> <!-- Function of only number of nodes-->
+        <h4 class="path-info-text bold-info"> {{ currPointAmount }}! </h4>
+      </div>
+      <div>
+        <h4 class="path-info-text"> Elapsed: </h4>
+        <h4 class="path-info-text bold-info"> 0s </h4>
+      </div>
+    </div>
+    <div class="bottom-path-info">
+      <div>
+        <h4 class="path-info-text"> Current Distance: </h4> <!-- Function of number of nodes and algorithm -->
+        <h4 class="path-info-text bold-info"> 5m </h4>
+      </div>
+      <div>
+        <h4 class="path-info-text"> Minimum Distance: </h4>
+        <h4 class="path-info-text bold-info"> 4m </h4>
+      </div>
+
+
+    </div>
   </div>
 
   <!-- Start/Pause and Reset Controls div -->

@@ -7,11 +7,15 @@
   z-index: 1;
 }
 
+.mat-typography {
+  margin-top: 0px;
+}
+
 /* Entire page container */
 .topbar-container {
   top: 15px;
   width: 100%;
-  min-width: 1300px;
+  min-width: 1310px;
   max-width: 1500px; /* this line is what is causing my display problems - not sure why but yeah */
   height: 100%;
   position: relative;
@@ -43,7 +47,7 @@
   padding-left: 0px;
   padding-right: 10px;
   line-height: 35px;
-  bottom: 30px;
+  bottom: 25px;
   left: 10px;
 
   min-width: 200px;
@@ -76,7 +80,7 @@
   letter-spacing: 0.2vw;
   word-spacing: 2px;
   color: #000000;
-  font-weight: 700;
+  font-weight: normal;
   text-decoration: none;
   font-style: normal;
   font-variant: normal;
@@ -110,9 +114,11 @@
 
 #node-control-description {
   display: inline-block;
-  margin-left: 2.2vw;
+  margin-left: 2.6vw;
   margin-top: 10px;
   margin-bottom: 0px;
+  position: relative;
+  top: 15px;
 
   font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
   text-align: center;
@@ -120,7 +126,7 @@
   letter-spacing: 1.5px;
   word-spacing: 0px;
   color: #000000;
-  font-weight: 700;
+  font-weight: normal;
   text-decoration: none;
   font-style: normal;
   font-variant: normal;
@@ -134,20 +140,23 @@
   height: 100%;
   position: relative;
   display: inline-block;
+  top: 6px;
 }
 
 #number-of-nodes{
   position: relative;
   display: inline-block;
   margin-left: 0.8vw;
-  margin-right: 0.6vw;
+  margin-right: 0.8vw;
   font-size: 15px;
+  text-align: left;
+  width: 8px;
 }
 
 #node-slider {
   display: inline-block;
-  width: 13vw;
-  min-width: 160px;
+  width: 12.5vw;
+  min-width: 170px;
   height: 53px;
 }
 
@@ -164,14 +173,16 @@
   height: 100%;
   position: relative;
   display: inline-block;
+  margin-left: 15px;
+  right: 0.5vw;
 }
 
 #randomise-button {
   position: relative;
-  margin-left: 1.8vw;
+  margin-left: 0.8vw;
   margin-right: 0.8vw;
   width: 7vw;
-  min-width: 90px;
+  min-width: 107px;
   font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
 
@@ -199,29 +210,38 @@
   bottom: 23px;
 }
 
+.top-path-info {
+  margin-bottom: 2vh;
+}
+
 .path-info-text {
   display: inline-block;
   margin-left: 5px;
-  height: 2vh;
-  padding-bottom: 3px;
+  height: 1vh;
+  padding-bottom: 0px;
 
   font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
   font-size: 16px;
   letter-spacing: 2px;
   word-spacing: 0px;
   color: #000000;
-  font-weight: 700;
+  font-weight: normal;
   text-decoration: none;
   font-style: normal;
   font-variant: normal;
   text-transform: none;
 }
+
+.bold-info {
+  font-weight: 700;
+}
+
 /*---------------------------------------------------------------------------------------------------------------*/
 /* Algorithm play/pause/stop control div */
 
 .playback-control {
   /* border: 1px solid darkolivegreen; */
-  width: 20vw;
+  width: 295px;
   min-width: 280px;
   height: 100%;
   position: relative;
@@ -256,9 +276,9 @@
 
 #start-button {
   display: inline-block;
-  margin-left: 1vw;
-  margin-right: 1vw;
-  width: 8vw;
+  margin-left: 15px;
+  margin-right: 15px;
+  width: 120px;
   min-width: 100px;
   height: 8vh;
   min-height: 37px;
@@ -266,11 +286,11 @@
 
 #reset-button {
   display: inline-block;
-  width: 8vw;
+  width: 120px;
   min-width: 100px;
   height: 8vh;
   min-height: 37px;
-  margin-left: 1vw;
+  margin-left: 15px;
 }
 
 .mat-success {
@@ -290,7 +310,7 @@
   position: relative;
   display: inline-block;
   margin-left: 1vw;
-  width: 17.5vw;
+  width: 275px;
 }
 
 .speeds {
@@ -320,12 +340,11 @@
 #slow {
   float: left;
   bottom: 18px;
-  margin-left: 10px;
+  left: 30px;
 }
 
 #fast {
   float: left;
   bottom: 18px;
-  margin-left: 15vw;
-  margin-right: 40px;
+  left: 235px;
 }
