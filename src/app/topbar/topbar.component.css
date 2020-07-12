@@ -16,7 +16,7 @@
   top: 15px;
   width: 100%;
   min-width: 1310px;
-  max-width: 1500px; /* this line is what is causing my display problems - not sure why but yeah */
+  max-width: 1500px; /* JUSTIN: this line is what is causing my display problems - my pixel width for chrome is greater than 1500px ~ that's why it's wrapping to the second row*/
   height: 100%;
   position: relative;
   background-color: white;
