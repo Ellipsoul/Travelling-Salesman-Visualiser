@@ -4,6 +4,7 @@
   width:35%;
   height:35%;
   border-radius:50%;
+  cursor: pointer;
   /* border: 1px black; */
   /* border-style: solid; */
 }
@@ -20,5 +21,4 @@
   /* background: greenyellow; */
   /* border: 1px dashed black; */
   /* border-radius: 25%; */
-
 }

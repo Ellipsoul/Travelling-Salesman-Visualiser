@@ -28,22 +28,21 @@ export class TopbarComponent implements OnInit, DoCheck {
     this.setPossiblePaths();
   }
 
-  ngDoCheck() {  // Runs whenever a change is detected in ANY component in the app (could be mouse changes or any data changes)
+  ngDoCheck(): void {  // Runs whenever a change is detected in ANY component in the app (could be mouse changes or any data changes)
     if(!this.arraysEqual(this.prevSelectedPoints, this.selectedPoints)){ //if there is a change in selected points
       this.prevSelectedPoints = this.selectedPoints.slice(0); //update previous selected points; slice makes copy of array - cannot just update with (=)
       this.currPointAmount = this.selectedPoints.length;
-      console.log("changed");
     }
   }
 
-  updateRandomAmount(event) {
+  updateRandomAmount(event): void {
     this.randomPointAmount = event.value;
     this.setPossiblePaths();
   }
 
   randomize(no: number): void{  // Auxiliary function (can be called from html) to add a number (no) of random points in the grid - combine with clearAll for generation instead of appending random points
     this.clearAll();
-    for(let num = 0; num < this.randomPointAmount; num++){
+    for(let num = 0; num < no; num++){
       var added = false;
       while(!added){
         added = this.data.addToSelPointsMessage({x: this.getRandomNumberBetweenZ(this.noCols), y: this.getRandomNumberBetweenZ(this.noRows)}); //updates the selectedpoints 'message' with the new random point - see gridcomm.service.ts for more information
@@ -59,11 +58,11 @@ export class TopbarComponent implements OnInit, DoCheck {
     this.possPaths = this.currPointAmount.toString();
   }
 
-  getRandomNumberBetweenZ(max: number){  // Helper function to generate random number
+  getRandomNumberBetweenZ(max: number): number{  // Helper function to generate random number
     return Math.floor(Math.random()*(max));
   }
 
-  arraysEqual(a: any[], b: any[]) {  // Array equality checker (can't simply call [] === [] in typescript)
+  arraysEqual(a: any[], b: any[]): boolean {  // Array equality checker (can't simply call [] === [] in typescript)
     if (a === b) return true;
     if (a == null || b == null) return false;
     if (a.length !== b.length) return false;
