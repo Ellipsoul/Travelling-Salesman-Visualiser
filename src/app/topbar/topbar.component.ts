@@ -51,6 +51,9 @@ export class TopbarComponent implements OnInit, DoCheck {
 
   // Calculate the possible number of paths
   calculatePossiblePaths(currPointAmount:number): string{
+    if (currPointAmount < 3) {
+      return "N/A"
+    }
     // Format properly depending on number size
     let possiblePaths = this.factorial(currPointAmount - 1) / 2
     if (possiblePaths < 100000000) {
