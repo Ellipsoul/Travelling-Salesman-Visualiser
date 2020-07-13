@@ -20,7 +20,7 @@ export class TopbarComponent implements OnInit, DoCheck {
   noCols = 50;  // Number of columns of points
 
   currPointAmount:number = 0;
-  randomPointAmount: number = 2; //start at min number of points
+  randomPointAmount: number = 3; // Start at min number of points
   possPaths:string = "0";  // Possible number of paths - string so we can format it better?
 
   ngOnInit(): void {
@@ -38,7 +38,7 @@ export class TopbarComponent implements OnInit, DoCheck {
 
   // Calculate the possible number of paths
   calculatePossiblePaths(currPointAmount:number): string{
-    let possiblePaths = this.factorial(currPointAmount) / 2
+    let possiblePaths = this.factorial(currPointAmount - 1) / 2
     if (possiblePaths < 100000000) {
       return possiblePaths.toString()
     }
