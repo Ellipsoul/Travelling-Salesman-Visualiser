@@ -131,6 +131,7 @@ export class TopbarComponent implements OnInit, DoCheck {
   // Reset timer
   resetTimer(): void {
     this.timerRunning = false;
+    this.startButtonColor = "success";
     this.startText = "Start!";
     this.counter = 0;
     this.counterSeconds = 0;
