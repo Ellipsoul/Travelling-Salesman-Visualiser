@@ -37,7 +37,7 @@
     <!-- Slider tracking number of nodes -->
     <span class="node-slider-and-display">
       <h4 id="number-of-nodes"> {{randomPointAmount}} </h4>
-      <mat-slider min="2" max="50" id="node-slider" (input)="updateRandomAmount($event)"> </mat-slider>
+      <mat-slider min="3" max="50" id="node-slider" (input)="updateRandomAmount($event)"> </mat-slider>
     </span>
     <!-- Randomise and clear node buttons -->
     <div class="node-control-buttons">
@@ -51,11 +51,11 @@
     <div class="top-path-info">
       <div>
         <h4 class="path-info-text"> Possible Paths: </h4> <!-- Function of only number of nodes-->
-        <h4 class="path-info-text bold-info"> {{ currPointAmount }}! </h4>
+        <h4 class="path-info-text bold-info"> {{ possPaths }} </h4>
       </div>
       <div>
         <h4 class="path-info-text"> Elapsed: </h4>
-        <h4 class="path-info-text bold-info"> 0s </h4>
+        <h4 class="path-info-text bold-info"> {{ counterSeconds }}s </h4>
       </div>
     </div>
     <div class="bottom-path-info">
@@ -76,8 +76,12 @@
   <div class="playback-control">
     <!-- Buttons -->
     <div class="playback-buttons">
-      <button mat-raised-button color="success" id="start-button"> <span id="playback-button-text"> Start! </span> </button>
-      <button mat-raised-button color="accent" id="reset-button"> <span id="playback-button-text"> Reset </span> </button>
+      <button mat-raised-button id="start-button" color={{startButtonColor}} (mousedown)="startTimer()">
+        <span id="playback-button-text"> {{ startText }} </span>
+      </button>
+      <button mat-raised-button color="warn" id="reset-button">
+        <span id="playback-button-text" (mousedown)="resetTimer()"> Reset </span>
+      </button>
     </div>
     <!-- Slider controlling playback speed-->
     <div class="playback-speed">
