@@ -79,8 +79,8 @@
       <button mat-raised-button id="start-button" color={{startButtonColor}} (mousedown)="startTimer()">
         <span id="playback-button-text"> {{ startText }} </span>
       </button>
-      <button mat-raised-button color="warn" id="reset-button">
-        <span id="playback-button-text" (mousedown)="resetTimer()"> Reset </span>
+      <button mat-raised-button color="warn" id="reset-button" (mousedown)="resetTimer()">
+        <span id="playback-button-text"> Reset </span>
       </button>
     </div>
     <!-- Slider controlling playback speed-->
