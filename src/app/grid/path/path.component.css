@@ -1,0 +1,35 @@
+.bltr {
+  /* position: absolute; */
+  /* top:0px;
+  left:0px;
+  width:200px;
+  height:100px; */
+  background: linear-gradient(to top left, rgba(0,0,0,0) calc(50% - 1px), rgba(0,0,0,1.0), rgba(0,0,0,0) calc(50% + 1px));
+  /* pointer-events: none; */
+}
+
+.tlbr {
+  /* position: absolute; */
+  /* top:0px;
+  left:0px;
+  width:200px;
+  height:100px; */
+  background: linear-gradient(to top right, rgba(0,0,0,0) calc(50% - 1px), rgba(0,0,0,1.0), rgba(0,0,0,0) calc(50% + 1px));
+  /* pointer-events: none; */
+}
+.v {
+  /* position: absolute; */
+  /* border-style: none none none solid; */
+  border-right: 1px solid rgba(0,0,0,1.0);
+}
+
+.h {
+  /* position: absolute; */
+  /* border-style: solid none none none; */
+  border-top: 1px solid rgba(0,0,0,1.0);
+}
+
+.path {
+  position: absolute;
+  pointer-events: none;
+}

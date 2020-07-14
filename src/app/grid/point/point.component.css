@@ -10,10 +10,10 @@
 }
 
 :host {
-  width:1.9vw;
-  min-width: 25px;
-  min-height: 25px;
-  height:1.9vw;
+  width:34px; /*OLD(1.9vw) TESTING*/
+  min-width: 34px; /*OLD(25px) TESTING*/
+  min-height: 34px; /*OLD(25px) TESTING*/
+  height:34px; /*OLD(1.9vw) TESTING*/
   display: flex;
   flex-wrap: nowrap;
   justify-content: center;
