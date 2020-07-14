@@ -17,6 +17,8 @@ import { PointComponent } from './grid/point/point.component';
 import { PointrowComponent } from './grid/pointrow/pointrow.component';
 import { PointrowDirective } from './grid/pointrow/pointrow.directive';
 import { PointDirective } from './grid/point/point.directive';
+import { PathComponent } from './grid/path/path.component';
+import { PathDirective } from './grid/path/path.directive';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,9 @@ import { PointDirective } from './grid/point/point.directive';
     PointComponent,
     PointrowComponent,
     PointrowDirective,
-    PointDirective
+    PointDirective,
+    PathComponent,
+    PathDirective
   ],
   imports: [
     BrowserModule,
