@@ -39,7 +39,7 @@ export class PathComponent implements OnInit {
       this.type = 0;
       this.pathWidth = 5;
       this.pathHeight = Math.abs(ydiff) * this.pointSpacing;
-      this.pathLeft = 24.5 + this.pointSpacing / 2 + xmin * this.pointSpacing;
+      this.pathLeft = 27 + this.pointSpacing / 2 + xmin * this.pointSpacing;
       this.pathTop = this.pointSpacing / 2 + ymin * this.pointSpacing;
     } else if (ydiff == 0) {
       // Horizontal line
@@ -47,7 +47,7 @@ export class PathComponent implements OnInit {
       this.pathWidth = Math.abs(xdiff) * this.pointSpacing;
       this.pathHeight = 5;
       this.pathLeft = 30 + this.pointSpacing / 2 + xmin * this.pointSpacing;
-      this.pathTop = this.pointSpacing / 2 + ymin * this.pointSpacing;
+      this.pathTop = this.pointSpacing / 2 + ymin * this.pointSpacing - 2.7;
     } else if (xdiff / ydiff < 0) {
       // Bot-left to top-right
       this.type = 2;
