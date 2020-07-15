@@ -1,8 +1,8 @@
-import { Component, OnInit, DoCheck } from '@angular/core';
+import { Component, OnInit, DoCheck, ViewEncapsulation } from '@angular/core';
 import {FormControl} from '@angular/forms';
 import { GridcommService } from '../gridcomm.service';
 import { timer } from 'rxjs';
-
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-topbar',

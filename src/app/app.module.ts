@@ -19,6 +19,7 @@ import { PointrowDirective } from './grid/pointrow/pointrow.directive';
 import { PointDirective } from './grid/point/point.directive';
 import { PathComponent } from './grid/path/path.component';
 import { PathDirective } from './grid/path/path.directive';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { PathDirective } from './grid/path/path.directive';
     MatSliderModule,
     MatButtonModule,
     MatButtonToggleModule,
-   BrowserAnimationsModule
+    BrowserAnimationsModule,
+    NgbModule,
     // MatGridListModule,
   ],
   providers: [],
