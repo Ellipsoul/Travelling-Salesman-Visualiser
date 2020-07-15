@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatRippleModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSliderModule } from '@angular/material/slider';
@@ -46,7 +47,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     MatButtonToggleModule,
     BrowserAnimationsModule,
     NgbModule,
-    // MatGridListModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]
