@@ -9,15 +9,15 @@ export class PathComponent implements OnInit {
   pointA: { x: number; y: number };
   pointB: { x: number; y: number };
 
-  // 0 - light grey, 1 - dark grey, 2 - coloured?
+  // 0 - vertical; 1 - horizontal, 2 - bot-left to top-right; 3 - top-left to bot-right
   type: number = 0; //later on for setting colour
   pointSpacing: number = 34;
 
-  pathWidth: number; // Div width
-  pathHeight: number; // Div height
-  pathLeft: number; // Div offset from left
-  pathTop: number; // Div offset from top
-  rotation: number; // Div rotation from top left
+  pathWidth: number = 50; // Div width
+  pathHeight: number = 50; // Div height
+  pathLeft: number = 30 + 12.5; // Div offset from left
+  pathTop: number = 12.5; // Div offset from top
+  rotation: number = 0; // Div rotation from top left
 
   constructor() {}
 

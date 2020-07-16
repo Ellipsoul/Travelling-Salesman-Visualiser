@@ -14,25 +14,34 @@ import { DialogInfoComponent } from './dialog-info/dialog-info.component';
 
 export class TopbarComponent implements OnInit, DoCheck {
 
-  // Emptry constructor for now
+  // Constructor requires the GridcommService and MatDialog inputs
   constructor(private data: GridcommService, public dialog: MatDialog) { }
 
+  // ------------------------------------------------------------------------------------------------------------------
+  // Variables
+
+  // Paths management
   selectedPoints: {x: number, y:number}[] = [];     // Array of coordinate objects to store only selected points
   prevSelectedPoints: {x: number, y:number}[] = []; // Array with previous selected points for change detection
-
+  // Points management
   noRows = 21;  // Number of rows of points
   noCols = 50;  // Number of columns of points
 
+  // Top Bar points and possible paths counter
   currPointAmount:number = 0;     // Number of current points
   randomPointAmount: number = 3;  // Start at min number of points
   possPaths:string = "0";         // Possible number of paths
 
+  // Timer control
   counter:number = 0;                   // Timer counter
   counterSeconds:number = 0;            // Timer counter in seconds
   timerRunning:boolean = false;         // Boolean to know if timer is running
   startText:string = "Start!";          // Text at beginning
-  timeRef;                              // Reference time from start time
+  timeRef:any;                          // Reference time from start time
   startButtonColor:string = "success";  // Button color
+
+  // ------------------------------------------------------------------------------------------------------------------
+  // Class functions
 
   // Subscribe to selectedpoints 'message' - accesses the selectedpoints array held in the service;
   // Any updates will immediately be pushed to this.selectedPoints
@@ -105,7 +114,8 @@ export class TopbarComponent implements OnInit, DoCheck {
 
   // Creates path specified by A and B coordinates
   createPath(inPath: {A:{x: number; y:number}; B: {x: number; y:number}}): void {
-    this.data.addToPaths(inPath);
+    this.data.addToPaths(inPath);           // Create the path
+    this.data.currPaths.push(inPath);       // Add path to paths list
   }
 
   // Removes path specified by A and B coordinates
@@ -127,9 +137,7 @@ export class TopbarComponent implements OnInit, DoCheck {
 
   // Start timer
   startTimer(): void {
-    this.createPath({A:{x:1,y:2},B:{x:3,y:4}});
-    this.createPath({A:{x:5,y:2},B:{x:3,y:7}});
-    this.createPath({A:{x:1,y:5},B:{x:3,y:5}});
+    this.createPath({A:{x:1,y:1},B:{x:3,y:3}});
     this.timerRunning = !this.timerRunning  // Negate whether timer is running
     if (this.timerRunning) {
       this.startText = "Pause";
@@ -149,8 +157,7 @@ export class TopbarComponent implements OnInit, DoCheck {
 
   // Reset timer
   resetTimer(): void {
-    this.removePath({A:{x:1,y:2},B:{x:3,y:4}});
-    this.removePath({A:{x:1,y:5},B:{x:3,y:5}});
+    this.removePath({A:{x:1,y:1},B:{x:3,y:3}});
     this.timerRunning = false;
     this.startButtonColor = "success";
     this.startText = "Start!";
