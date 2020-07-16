@@ -17,8 +17,8 @@ export class GridComponent implements OnInit, AfterContentInit, DoCheck {
 
   @ViewChild(PathDirective, {static: true}) pathHost: PathDirective; //reference to container to host the new components -- see path.directive.ts
 
-  noRows = Math.floor(window.innerHeight/46); //number of rows of points
-  noCols = Math.floor(window.innerWidth/35); //number of columns of points
+  noRows = Math.floor(window.innerHeight/46); // Dynamically allocate number of rows of points
+  noCols = Math.floor(window.innerWidth/35);  // Dynamically allocate number of columns of points
 
   pathContainer: ViewContainerRef = null;
 
