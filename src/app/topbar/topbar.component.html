@@ -10,27 +10,20 @@
   <!--[style.width.px]="pathWidth"-->
   <!-- Algorithm Selector -->
   <div class="algorithm-selector">
-
     <h4 id="algorithm-text"> Choose an Algorithm! </h4>
 
     <!-- Dropdown menu for algorithms (with groups) -->
     <mat-form-field appearance="fill" id="algorithm-dropdown">
-      <mat-label> Algorithm </mat-label>
-      <mat-select>
-
-        <mat-option> None </mat-option>
-        <mat-optgroup> Group 1 Algorithms
-          <mat-option> Algorithm A </mat-option>
-          <mat-option> Algorithm B </mat-option>
-          <mat-option> Algorithm C </mat-option>
+      <mat-label> Algorithm Selector </mat-label>
+      <!-- Bind the algorithmControl formControl-->
+      <mat-select [formControl]="algorithmControl" [(value)]="selectedAlgorithm">
+        <mat-option> -- No Selection -- </mat-option>
+        <!-- For loop iteration through each group and option within groups -->
+        <mat-optgroup *ngFor="let algorithmGroup of algorithmsMenu" [label]="algorithmGroup.name">
+          <mat-option *ngFor="let algorithm of algorithmGroup.algorithm" [value]="algorithm.value">
+          {{ algorithm.viewValue }}
+          </mat-option>
         </mat-optgroup>
-
-        <mat-optgroup> Group 2 Alogirthms
-          <mat-option> Algorithm D </mat-option>
-          <mat-option> Algorithm E </mat-option>
-          <mat-option> Algorithm F </mat-option>
-        </mat-optgroup>
-
       </mat-select>
     </mat-form-field>
   </div>
@@ -45,8 +38,22 @@
     </span>
     <!-- Randomise and clear node buttons -->
     <div class="node-control-buttons">
-      <button mat-stroked-button color="primary" id="randomise-button" (mousedown)="randomize(randomPointAmount)"> <span class="node-buttons"> Randomise! </span></button>
-      <button mat-stroked-button color="warn" id="clear-button" (mousedown)="clearAll()"> <span class="node-buttons"> Clear </span> </button>
+      <button
+        mat-stroked-button
+        color="primary"
+        id="randomise-button"
+        (mousedown)="randomize(randomPointAmount)"
+        [disabled]="verticesButtonsDisabled">
+        <span class="node-buttons"> Randomise! </span>
+      </button>
+
+      <button
+        mat-stroked-button
+        color="warn"
+        id="clear-button"
+        (mousedown)="clearAll()"
+        [disabled]="verticesButtonsDisabled">
+        <span class="node-buttons"> Clear </span> </button>
     </div>
   </div>
 

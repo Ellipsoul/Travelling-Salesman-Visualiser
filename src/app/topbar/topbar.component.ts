@@ -1,10 +1,24 @@
 import { Component, OnInit, DoCheck, ViewEncapsulation } from '@angular/core';
-import {FormControl} from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GridcommService } from '../gridcomm.service';
 import { MatDialog } from '@angular/material/dialog'
 import { timer } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DialogInfoComponent } from './dialog-info/dialog-info.component';
+import { unescapeIdentifier } from '@angular/compiler';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
+// Define interface for single algorithm
+interface Algorithms {
+  value: string;
+  viewValue: string;
+}
+
+// Define interface for groups of algorithms
+interface AlgorithmGroup {
+  name: string;
+  algorithm: Algorithms[];
+}
 
 @Component({
   selector: 'app-topbar',
@@ -14,25 +28,67 @@ import { DialogInfoComponent } from './dialog-info/dialog-info.component';
 
 export class TopbarComponent implements OnInit, DoCheck {
 
-  // Emptry constructor for now
-  constructor(private data: GridcommService, public dialog: MatDialog) { }
+  // Constructor requires the GridcommService and MatDialog inputs
+  constructor(private data: GridcommService, public dialog: MatDialog, private _snackBar: MatSnackBar) { }
 
+  // ------------------------------------------------------------------------------------------------------------------
+  // Variables
+
+  // Paths management
   selectedPoints: {x: number, y:number}[] = [];     // Array of coordinate objects to store only selected points
   prevSelectedPoints: {x: number, y:number}[] = []; // Array with previous selected points for change detection
-
+  // Points management
   noRows = 21;  // Number of rows of points
   noCols = 50;  // Number of columns of points
 
+  // Vertices buttons manager
+  verticesButtonsDisabled:boolean = false;
+
+  // Top Bar points and possible paths counter
   currPointAmount:number = 0;     // Number of current points
   randomPointAmount: number = 3;  // Start at min number of points
   possPaths:string = "0";         // Possible number of paths
 
+  // Timer control
   counter:number = 0;                   // Timer counter
   counterSeconds:number = 0;            // Timer counter in seconds
   timerRunning:boolean = false;         // Boolean to know if timer is running
   startText:string = "Start!";          // Text at beginning
-  timeRef;                              // Reference time from start time
+  timeRef:any;                          // Reference time from start time
   startButtonColor:string = "success";  // Button color
+
+  // Algorithm Select
+  algorithmControl =  new FormControl();  // Initialise form control for algorithm selector
+  algorithmsMenu: AlgorithmGroup[] = [
+    {
+      name: "Exhaustive Algorithms",
+      algorithm: [
+        {value: "depth-first-search", viewValue: "Depth First Search"},
+        {value: "random-search", viewValue: "Random"},
+        {value: "branch-and-bound", viewValue: "Branch and Bound"}
+      ]
+    },
+    {
+      name: "Heuristic Algorithms",
+      algorithm: [
+        {value: "nearest-neighbour", viewValue: "Nearest Neighbour"},
+        {value: "arbitrary-insertion", viewValue: "Arbitrary Insertion"},
+        {value: "nearest-insertion", viewValue: "Nearest Insertion"},
+        {value: "furthest-insertion", viewValue: "Furthest Insertion"}
+      ]
+    },
+    {
+      name: "Improved Heuristic",
+      algorithm: [
+        {value: "two-opt-inversion", viewValue: "Two Opt Inversion"},
+        {value: "two-opt-reciprocal-exchange", viewValue: "Two Opt Reciprocal Exchange"}
+      ]
+    }
+  ]
+  selectedAlgorithm:string;
+
+  // ------------------------------------------------------------------------------------------------------------------
+  // Class functions
 
   // Subscribe to selectedpoints 'message' - accesses the selectedpoints array held in the service;
   // Any updates will immediately be pushed to this.selectedPoints
@@ -105,7 +161,8 @@ export class TopbarComponent implements OnInit, DoCheck {
 
   // Creates path specified by A and B coordinates
   createPath(inPath: {A:{x: number; y:number}; B: {x: number; y:number}}): void {
-    this.data.addToPaths(inPath);
+    this.data.addToPaths(inPath);           // Create the path
+    this.data.currPaths.push(inPath);       // Add path to paths list
   }
 
   // Removes path specified by A and B coordinates
@@ -127,30 +184,39 @@ export class TopbarComponent implements OnInit, DoCheck {
 
   // Start timer
   startTimer(): void {
-    this.createPath({A:{x:1,y:2},B:{x:3,y:4}});
-    this.createPath({A:{x:5,y:2},B:{x:3,y:7}});
-    this.createPath({A:{x:1,y:5},B:{x:3,y:5}});
-    this.timerRunning = !this.timerRunning  // Negate whether timer is running
-    if (this.timerRunning) {
-      this.startText = "Pause";
-      this.startButtonColor = "accent";
-      const startTime = Date.now() - this.counter;
-      this.timeRef = setInterval(() => {
-        this.counter = Date.now() - startTime;
-        this.counterSeconds = Math.round(this.counter/1000);
-      });
+    // Check if an algorithm is actually selected
+    if (this.selectedAlgorithm === undefined) {
+      this.noAlgorithmSelected();
+    }
+    // Check that enough nodes were selected
+    else if (this.currPointAmount < 3) {
+      this.notEnoughNodesSelected();
     }
     else {
-      this.startText = "Start!";
-      this.startButtonColor = "success";
-      clearInterval(this.timeRef);
+      this.createPath({A:{x:1,y:1},B:{x:3,y:3}}); // Temporary test to create a path
+      this.timerRunning = !this.timerRunning      // Negate whether timer is running
+      this.verticesButtonsDisabled = true;        // Disable vertices control buttons
+      if (this.timerRunning) {
+        this.startText = "Pause";
+        this.startButtonColor = "accent";
+        const startTime = Date.now() - this.counter;
+        this.timeRef = setInterval(() => {
+          this.counter = Date.now() - startTime;
+          this.counterSeconds = Math.round(this.counter/1000);
+        });
+      }
+      else {
+        this.startText = "Start!";
+        this.startButtonColor = "success";
+        clearInterval(this.timeRef);
+      }
     }
   }
 
   // Reset timer
   resetTimer(): void {
-    this.removePath({A:{x:1,y:2},B:{x:3,y:4}});
-    this.removePath({A:{x:1,y:5},B:{x:3,y:5}});
+    this.removePath({A:{x:1,y:1},B:{x:3,y:3}}); // Temporary for demonstration
+    this.verticesButtonsDisabled = false;
     this.timerRunning = false;
     this.startButtonColor = "success";
     this.startText = "Start!";
@@ -163,4 +229,19 @@ export class TopbarComponent implements OnInit, DoCheck {
   openDialog():void {
     this.dialog.open(DialogInfoComponent);
   }
+
+  // Opens the snackbar warning of no algorithm selected
+  noAlgorithmSelected():void {
+    this._snackBar.open("Please select an algorithm!", "Close", {
+      duration: 5000,
+    });
+  }
+
+  // Opens a snackbar warning user that not enough nodes were selected
+  notEnoughNodesSelected():void {
+    this._snackBar.open("You must initialise at least 3 vertices!", "Close", {
+      duration: 5000
+    })
+  }
+
 }
