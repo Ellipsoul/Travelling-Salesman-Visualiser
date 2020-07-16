@@ -1,38 +1,15 @@
-.bltr {
-  /* position: absolute; */
-  /* top:0px;
-  left:0px;
-  width:200px;
-  height:100px; */
-  background: linear-gradient(to top left, transparent calc(50% - 3px), rgba(0,0,0,0.9), transparent calc(50% + 3px));
-  /* pointer-events: none; */
+.type0 {
+}
+.type1 {
 }
 
-.tlbr {
-  /* position: absolute; */
-  /* top:0px;
-  left:0px;
-  width:200px;
-  height:100px; */
-  /* background: linear-gradient(36.869897657779deg, transparent calc(50% - 3px), rgba(0,0,0,0.7), transparent calc(50% + 3px)); */
-  background: linear-gradient(to top right, transparent calc(50% - 3px), rgba(0,0,0,0.7), transparent calc(50% + 3px));
-  /* pointer-events: none; */
-}
-.v {
-  /* position: absolute; */
-  /* border-style: none none none solid; */
-  background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.7) 100%);
-  /* border-left: 10px solid rgba(0,0,0,0.7); */
-}
-
-.h {
-  /* position: absolute; */
-  /* border-style: solid none none none; */
-  background: linear-gradient(0deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.7) 100%);
-  /* border-top: 1px solid rgba(0,0,0,1.0); */
-}
 
 .path {
   position: absolute;
   pointer-events: none;
+  transform-origin: top left;
+  /* border: 1px black; */
+  /* border-style: solid; */
+  /* border-top: 1px solid red; */
+  border-top: 6px solid rgba(0,0,0,0.7);
 }
