@@ -1,8 +1,10 @@
-import { Component, OnInit, DoCheck } from '@angular/core';
+import { Component, OnInit, DoCheck, ViewEncapsulation } from '@angular/core';
 import {FormControl} from '@angular/forms';
 import { GridcommService } from '../gridcomm.service';
+import { MatDialog } from '@angular/material/dialog'
 import { timer } from 'rxjs';
-
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { DialogInfoComponent } from './dialog-info/dialog-info.component';
 
 @Component({
   selector: 'app-topbar',
@@ -13,7 +15,7 @@ import { timer } from 'rxjs';
 export class TopbarComponent implements OnInit, DoCheck {
 
   // Emptry constructor for now
-  constructor(private data: GridcommService) { }
+  constructor(private data: GridcommService, public dialog: MatDialog) { }
 
   selectedPoints: {x: number, y:number}[] = [];     // Array of coordinate objects to store only selected points
   prevSelectedPoints: {x: number, y:number}[] = []; // Array with previous selected points for change detection
@@ -37,6 +39,7 @@ export class TopbarComponent implements OnInit, DoCheck {
   ngOnInit(): void {
     this.data.currentSelPointsMessage.subscribe(message => this.selectedPoints = message);
     this.possPaths = this.calculatePossiblePaths(this.currPointAmount);
+    this.openDialog();
   }
 
   // Runs whenever a change is detected in ANY component in the app (could be mouse changes or any data changes)
@@ -141,4 +144,8 @@ export class TopbarComponent implements OnInit, DoCheck {
     clearInterval(this.timeRef);
   }
 
+  // Opens the dialog
+  openDialog():void {
+    this.dialog.open(DialogInfoComponent);
+  }
 }

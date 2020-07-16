@@ -2,8 +2,12 @@
 <div class="topbar-container">
 
   <!-- Project Title with Link to Tutorial -->
-  <h2 id=project-name> Travelling Salesman Problem Visualiser </h2>
-
+  <h2
+    id=project-name
+    (mousedown)="openDialog()">
+    Travelling Salesman Problem Visualiser
+  </h2>
+  <!--[style.width.px]="pathWidth"-->
   <!-- Algorithm Selector -->
   <div class="algorithm-selector">
 

@@ -4,10 +4,9 @@ import { Directive, ViewContainerRef } from '@angular/core';
   selector: '[app-pathhost]',
 })
 export class PathDirective {
-  constructor(public viewContainerRef: ViewContainerRef) { } //acts as a container for the paths - use in html as <ng-template app-pathhost></ng-template>
+  // Acts as a container for the paths - use in html as <ng-template app-pathhost></ng-template>
+  constructor(public viewContainerRef: ViewContainerRef) {}
 }
-
-
 
 /*
 Copyright Google LLC. All Rights Reserved.

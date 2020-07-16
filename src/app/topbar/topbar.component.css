@@ -53,6 +53,11 @@
   min-width: 200px;
   max-width: 320px;
 }
+
+#project-name:hover {
+  opacity: 0.6;
+  cursor: pointer;
+}
 /*---------------------------------------------------------------------------------------------------------------*/
 /* Div for Algorithm Choice */
 
