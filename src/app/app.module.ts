@@ -21,6 +21,7 @@ import { PointDirective } from './grid/point/point.directive';
 import { PathComponent } from './grid/path/path.component';
 import { PathDirective } from './grid/path/path.directive';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { DialogInfoComponent } from './topbar/dialog-info/dialog-info.component';
 
 @NgModule({
   declarations: [
@@ -32,8 +33,10 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     PointrowDirective,
     PointDirective,
     PathComponent,
-    PathDirective
+    PathDirective,
+    DialogInfoComponent
   ],
+  entryComponents: [DialogInfoComponent],
   imports: [
     BrowserModule,
     MatFormFieldModule,
