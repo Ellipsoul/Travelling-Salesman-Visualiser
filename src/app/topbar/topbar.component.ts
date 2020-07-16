@@ -1,10 +1,24 @@
 import { Component, OnInit, DoCheck, ViewEncapsulation } from '@angular/core';
-import {FormControl} from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GridcommService } from '../gridcomm.service';
 import { MatDialog } from '@angular/material/dialog'
 import { timer } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DialogInfoComponent } from './dialog-info/dialog-info.component';
+import { unescapeIdentifier } from '@angular/compiler';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
+// Define interface for single algorithm
+interface Algorithms {
+  value: string;
+  viewValue: string;
+}
+
+// Define interface for groups of algorithms
+interface AlgorithmGroup {
+  name: string;
+  algorithm: Algorithms[];
+}
 
 @Component({
   selector: 'app-topbar',
@@ -15,7 +29,7 @@ import { DialogInfoComponent } from './dialog-info/dialog-info.component';
 export class TopbarComponent implements OnInit, DoCheck {
 
   // Constructor requires the GridcommService and MatDialog inputs
-  constructor(private data: GridcommService, public dialog: MatDialog) { }
+  constructor(private data: GridcommService, public dialog: MatDialog, private _snackBar: MatSnackBar) { }
 
   // ------------------------------------------------------------------------------------------------------------------
   // Variables
@@ -26,6 +40,9 @@ export class TopbarComponent implements OnInit, DoCheck {
   // Points management
   noRows = 21;  // Number of rows of points
   noCols = 50;  // Number of columns of points
+
+  // Vertices buttons manager
+  verticesButtonsDisabled:boolean = false;
 
   // Top Bar points and possible paths counter
   currPointAmount:number = 0;     // Number of current points
@@ -39,6 +56,36 @@ export class TopbarComponent implements OnInit, DoCheck {
   startText:string = "Start!";          // Text at beginning
   timeRef:any;                          // Reference time from start time
   startButtonColor:string = "success";  // Button color
+
+  // Algorithm Select
+  algorithmControl =  new FormControl();  // Initialise form control for algorithm selector
+  algorithmsMenu: AlgorithmGroup[] = [
+    {
+      name: "Exhaustive Algorithms",
+      algorithm: [
+        {value: "depth-first-search", viewValue: "Depth First Search"},
+        {value: "random-search", viewValue: "Random"},
+        {value: "branch-and-bound", viewValue: "Branch and Bound"}
+      ]
+    },
+    {
+      name: "Heuristic Algorithms",
+      algorithm: [
+        {value: "nearest-neighbour", viewValue: "Nearest Neighbour"},
+        {value: "arbitrary-insertion", viewValue: "Arbitrary Insertion"},
+        {value: "nearest-insertion", viewValue: "Nearest Insertion"},
+        {value: "furthest-insertion", viewValue: "Furthest Insertion"}
+      ]
+    },
+    {
+      name: "Improved Heuristic",
+      algorithm: [
+        {value: "two-opt-inversion", viewValue: "Two Opt Inversion"},
+        {value: "two-opt-reciprocal-exchange", viewValue: "Two Opt Reciprocal Exchange"}
+      ]
+    }
+  ]
+  selectedAlgorithm:string;
 
   // ------------------------------------------------------------------------------------------------------------------
   // Class functions
@@ -137,27 +184,39 @@ export class TopbarComponent implements OnInit, DoCheck {
 
   // Start timer
   startTimer(): void {
-    this.createPath({A:{x:1,y:1},B:{x:3,y:3}});
-    this.timerRunning = !this.timerRunning  // Negate whether timer is running
-    if (this.timerRunning) {
-      this.startText = "Pause";
-      this.startButtonColor = "accent";
-      const startTime = Date.now() - this.counter;
-      this.timeRef = setInterval(() => {
-        this.counter = Date.now() - startTime;
-        this.counterSeconds = Math.round(this.counter/1000);
-      });
+    // Check if an algorithm is actually selected
+    if (this.selectedAlgorithm === undefined) {
+      this.noAlgorithmSelected();
+    }
+    // Check that enough nodes were selected
+    else if (this.currPointAmount < 3) {
+      this.notEnoughNodesSelected();
     }
     else {
-      this.startText = "Start!";
-      this.startButtonColor = "success";
-      clearInterval(this.timeRef);
+      this.createPath({A:{x:1,y:1},B:{x:3,y:3}}); // Temporary test to create a path
+      this.timerRunning = !this.timerRunning      // Negate whether timer is running
+      this.verticesButtonsDisabled = true;        // Disable vertices control buttons
+      if (this.timerRunning) {
+        this.startText = "Pause";
+        this.startButtonColor = "accent";
+        const startTime = Date.now() - this.counter;
+        this.timeRef = setInterval(() => {
+          this.counter = Date.now() - startTime;
+          this.counterSeconds = Math.round(this.counter/1000);
+        });
+      }
+      else {
+        this.startText = "Start!";
+        this.startButtonColor = "success";
+        clearInterval(this.timeRef);
+      }
     }
   }
 
   // Reset timer
   resetTimer(): void {
-    this.removePath({A:{x:1,y:1},B:{x:3,y:3}});
+    this.removePath({A:{x:1,y:1},B:{x:3,y:3}}); // Temporary for demonstration
+    this.verticesButtonsDisabled = false;
     this.timerRunning = false;
     this.startButtonColor = "success";
     this.startText = "Start!";
@@ -170,4 +229,19 @@ export class TopbarComponent implements OnInit, DoCheck {
   openDialog():void {
     this.dialog.open(DialogInfoComponent);
   }
+
+  // Opens the snackbar warning of no algorithm selected
+  noAlgorithmSelected():void {
+    this._snackBar.open("Please select an algorithm!", "Close", {
+      duration: 5000,
+    });
+  }
+
+  // Opens a snackbar warning user that not enough nodes were selected
+  notEnoughNodesSelected():void {
+    this._snackBar.open("You must initialise at least 3 vertices!", "Close", {
+      duration: 5000
+    })
+  }
+
 }

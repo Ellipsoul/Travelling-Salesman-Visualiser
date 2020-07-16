@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatRippleModule } from '@angular/material/core';
@@ -21,6 +21,7 @@ import { PointDirective } from './grid/point/point.directive';
 import { PathComponent } from './grid/path/path.component';
 import { PathDirective } from './grid/path/path.directive';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { DialogInfoComponent } from './topbar/dialog-info/dialog-info.component';
 
 @NgModule({
@@ -50,7 +51,10 @@ import { DialogInfoComponent } from './topbar/dialog-info/dialog-info.component'
     MatButtonToggleModule,
     BrowserAnimationsModule,
     NgbModule,
-    MatDialogModule
+    MatDialogModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatSnackBarModule
   ],
   providers: [],
   bootstrap: [AppComponent]
