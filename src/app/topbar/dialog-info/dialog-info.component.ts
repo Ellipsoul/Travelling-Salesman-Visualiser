@@ -11,6 +11,7 @@ export class DialogInfoComponent implements OnInit {
   constructor(public dialogRef: MatDialogRef<any>) { }
 
   ngOnInit():void {
+    // Sets the size of the window, tweak this so that it works well with all window sizes
     this.dialogRef.updateSize('50%', '80%');
   }
 

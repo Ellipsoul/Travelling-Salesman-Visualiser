@@ -39,6 +39,7 @@ export class TopbarComponent implements OnInit, DoCheck {
   ngOnInit(): void {
     this.data.currentSelPointsMessage.subscribe(message => this.selectedPoints = message);
     this.possPaths = this.calculatePossiblePaths(this.currPointAmount);
+    this.openDialog();
   }
 
   // Runs whenever a change is detected in ANY component in the app (could be mouse changes or any data changes)
