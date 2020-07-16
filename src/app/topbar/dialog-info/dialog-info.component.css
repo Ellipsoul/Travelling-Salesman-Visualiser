@@ -22,10 +22,12 @@
 
 #prev-button {
   margin-left: 10px;
+  font-weight: bold;
 }
 
 #next-button {
   margin-left: 10px;
+  font-weight: bold;
 }
 
 #close-button {

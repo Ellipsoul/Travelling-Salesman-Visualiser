@@ -190,6 +190,7 @@
   margin-left: 0.8vw;
   margin-right: 0.8vw;
   width: 7vw;
+  font-weight: bold;
   min-width: 107px;
   font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
@@ -199,6 +200,7 @@
   margin-left: 0.8vw;
   margin-right: 0.8vw;
   width: 4vw;
+  font-weight: bold;
   min-width: 60px;
   font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
