@@ -1,6 +1,12 @@
 .type0 {
+  border-top: 6px solid rgba(0,0,0,0.3);
 }
+
 .type1 {
+  border-top: 6px solid rgba(0,0,0,0.7);
+}
+
+.type2 {
 }
 
 
@@ -11,5 +17,5 @@
   /* border: 1px black; */
   /* border-style: solid; */
   /* border-top: 1px solid red; */
-  border-top: 6px solid rgba(0,0,0,0.7);
+
 }

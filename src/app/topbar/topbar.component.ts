@@ -103,6 +103,16 @@ export class TopbarComponent implements OnInit, DoCheck {
     return Math.floor(Math.random()*(max));
   }
 
+  // Creates path specified by A and B coordinates
+  createPath(inPath: {A:{x: number; y:number}; B: {x: number; y:number}}): void {
+    this.data.addToPaths(inPath);
+  }
+
+  // Removes path specified by A and B coordinates
+  removePath(inPath: {A:{x: number; y:number}; B: {x: number; y:number}}): void {
+    this.data.removeFromPaths(inPath);
+  }
+
   // Array equality checker (can't simply call [] === [] in typescript)
   arraysEqual(a: any[], b: any[]): boolean {
     if (a === b) return true;
@@ -117,6 +127,9 @@ export class TopbarComponent implements OnInit, DoCheck {
 
   // Start timer
   startTimer(): void {
+    this.createPath({A:{x:1,y:2},B:{x:3,y:4}});
+    this.createPath({A:{x:5,y:2},B:{x:3,y:7}});
+    this.createPath({A:{x:1,y:5},B:{x:3,y:5}});
     this.timerRunning = !this.timerRunning  // Negate whether timer is running
     if (this.timerRunning) {
       this.startText = "Pause";
@@ -136,6 +149,8 @@ export class TopbarComponent implements OnInit, DoCheck {
 
   // Reset timer
   resetTimer(): void {
+    this.removePath({A:{x:1,y:2},B:{x:3,y:4}});
+    this.removePath({A:{x:1,y:5},B:{x:3,y:5}});
     this.timerRunning = false;
     this.startButtonColor = "success";
     this.startText = "Start!";
