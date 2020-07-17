@@ -87,7 +87,7 @@ export class GridcommService { //Use of a service enables multiple-way communica
 
 
   removeFromArray(array: any[], value: any): any[]{ //helper function to remove object from array based on coordinate equality
-    var index = array.findIndex(i => i === value);
+    var index = array.findIndex(i => i.x === value.x && i.y === value.y);
     if (index !== -1) {
         array.splice(index, 1); //remove one object at the found index
     }
