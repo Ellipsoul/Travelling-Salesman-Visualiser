@@ -223,9 +223,11 @@ export class TopbarComponent implements OnInit, DoCheck {
 
       // Run the algorithm!
       this.runAlgorithm()
+      // TODO: Run cleanup functions once algorithm finishes (call the resetTimer + removeAllPaths)
     }
   }
 
+  // Redirect to all the different algorithms depending on the selected one
   runAlgorithm(): void {
 
   }
