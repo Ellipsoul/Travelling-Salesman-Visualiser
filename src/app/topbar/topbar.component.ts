@@ -2,7 +2,7 @@ import { Component, OnInit, DoCheck, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GridcommService } from '../gridcomm.service';
 import { MatDialog } from '@angular/material/dialog'
-import { timer } from 'rxjs';
+import { timer, range } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DialogInfoComponent } from './dialog-info/dialog-info.component';
 import { unescapeIdentifier } from '@angular/compiler';
@@ -38,8 +38,8 @@ export class TopbarComponent implements OnInit, DoCheck {
   selectedPoints: {x: number, y:number}[] = [];     // Array of coordinate objects to store only selected points
   prevSelectedPoints: {x: number, y:number}[] = []; // Array with previous selected points for change detection
   // Points management
-  noRows = 21;  // Number of rows of points
-  noCols = 50;  // Number of columns of points
+  noRows = Math.floor(window.innerHeight/46); // Dynamically allocate number of rows of points
+  noCols = Math.floor(window.innerWidth/35);  // Dynamically allocate number of columns of points
 
   // Vertices buttons manager
   verticesButtonsDisabled:boolean = false;
@@ -50,12 +50,13 @@ export class TopbarComponent implements OnInit, DoCheck {
   possPaths:string = "0";         // Possible number of paths
 
   // Timer control
-  counter:number = 0;                   // Timer counter
-  counterSeconds:number = 0;            // Timer counter in seconds
-  timerRunning:boolean = false;         // Boolean to know if timer is running
-  startText:string = "Start!";          // Text at beginning
-  timeRef:any;                          // Reference time from start time
-  startButtonColor:string = "success";  // Button color
+  counter:number = 0;                     // Timer counter
+  counterSeconds:number = 0;              // Timer counter in seconds
+  timerRunning:boolean = false;           // Boolean to know if timer is running
+  startText:string = "Start!";            // Text at beginning
+  timeRef:any;                            // Reference time from start time
+  startButtonColor:string = "success";    // Button color
+  startButtonDisabled:boolean = false;  // Start button disabled or not
 
   // Algorithm Select
   algorithmControl =  new FormControl();  // Initialise form control for algorithm selector
@@ -170,6 +171,14 @@ export class TopbarComponent implements OnInit, DoCheck {
     this.data.removeFromPaths(inPath);
   }
 
+  // Remove all paths
+  removeAllPaths():void {
+    console.log(this.data.currPaths)
+    for (let i in range(this.data.currPaths.length)) {
+      console.log(i)
+    }
+  }
+
   // Array equality checker (can't simply call [] === [] in typescript)
   arraysEqual(a: any[], b: any[]): boolean {
     if (a === b) return true;
@@ -180,6 +189,11 @@ export class TopbarComponent implements OnInit, DoCheck {
       if (a[i] !== b[i]) return false;
     }
     return true;
+  }
+
+  // Randomise point order
+  randomiseSelectedPoints(): void {
+    this.selectedPoints.sort(() => Math.random() - 0.5)
   }
 
   // Start timer
@@ -196,29 +210,34 @@ export class TopbarComponent implements OnInit, DoCheck {
       this.createPath({A:{x:1,y:1},B:{x:3,y:3}}); // Temporary test to create a path
       this.timerRunning = !this.timerRunning      // Negate whether timer is running
       this.verticesButtonsDisabled = true;        // Disable vertices control buttons
-      if (this.timerRunning) {
-        this.startText = "Pause";
-        this.startButtonColor = "accent";
-        const startTime = Date.now() - this.counter;
-        this.timeRef = setInterval(() => {
-          this.counter = Date.now() - startTime;
-          this.counterSeconds = Math.round(this.counter/1000);
-        });
-      }
-      else {
-        this.startText = "Start!";
-        this.startButtonColor = "success";
-        clearInterval(this.timeRef);
-      }
+
+      // Handles starting the timer
+      this.startText = "Running";
+      this.startButtonDisabled = true;
+      this.startButtonColor = "accent";
+      const startTime = Date.now() - this.counter;
+      this.timeRef = setInterval(() => {
+        this.counter = Date.now() - startTime;
+        this.counterSeconds = Math.round(this.counter/1000);
+      });
+
+      // Run the algorithm!
+      this.runAlgorithm()
     }
   }
 
+  runAlgorithm(): void {
+
+  }
+
+
   // Reset timer
   resetTimer(): void {
-    this.removePath({A:{x:1,y:1},B:{x:3,y:3}}); // Temporary for demonstration
+    //this.removePath({A:{x:1,y:1},B:{x:3,y:3}}); // Temporary for demonstration
     this.verticesButtonsDisabled = false;
     this.timerRunning = false;
     this.startButtonColor = "success";
+    this.startButtonDisabled = false;
     this.startText = "Start!";
     this.counter = 0;
     this.counterSeconds = 0;
