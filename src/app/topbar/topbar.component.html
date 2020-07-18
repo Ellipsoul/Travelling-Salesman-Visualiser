@@ -87,7 +87,12 @@
   <div class="playback-control">
     <!-- Buttons -->
     <div class="playback-buttons">
-      <button mat-raised-button id="start-button" color={{startButtonColor}} (mousedown)="startTimer()">
+      <button
+        mat-raised-button
+        id="start-button"
+        color={{startButtonColor}}
+        (mousedown)="startTimer()"
+        [disabled]="startButtonDisabled">
         <span id="playback-button-text"> {{ startText }} </span>
       </button>
       <button mat-raised-button color="warn" id="reset-button" (mousedown)="resetTimer()">
