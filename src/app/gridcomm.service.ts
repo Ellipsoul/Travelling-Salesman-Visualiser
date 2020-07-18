@@ -70,7 +70,6 @@ export class GridcommService { //Use of a service enables multiple-way communica
 
   addToPaths(inPath: {A:{x: number; y:number}; B: {x: number; y:number}}): void {
     this.currPaths.push(inPath);
-    // this.currPathsMessage.next(this.currPaths);
     this.dispPathsMessage.next(inPath);
     console.log(this.currPaths);
   }
@@ -79,9 +78,14 @@ export class GridcommService { //Use of a service enables multiple-way communica
     var idxPath = this.currPaths.findIndex(i => i.A.x === inPath.A.x && i.A.y === inPath.A.y && i.B.x === inPath.B.x && i.B.y === inPath.B.y); //find the path
     if(idxPath !== -1){ //if the path was found then remove it from the currPaths array
       this.currPaths.splice(idxPath, 1);
-      // this.currPathsMessage.next(this.currPaths);
     }
     this.removePathsIndexMessage.next(idxPath);
+    console.log(this.currPaths);
+  }
+
+  clearAllPaths(): void {
+    this.currPaths = [];
+    this.removePathsIndexMessage.next(-2);
     console.log(this.currPaths);
   }
 

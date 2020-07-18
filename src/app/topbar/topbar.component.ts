@@ -58,6 +58,9 @@ export class TopbarComponent implements OnInit, DoCheck {
   startButtonColor:string = "success";    // Button color
   startButtonDisabled:boolean = false;  // Start button disabled or not
 
+  // Test for timer
+  prevCounterSeconds:number = 0;
+
   // Algorithm Select
   algorithmControl =  new FormControl();  // Initialise form control for algorithm selector
   algorithmsMenu: AlgorithmGroup[] = [
@@ -163,7 +166,8 @@ export class TopbarComponent implements OnInit, DoCheck {
   // Creates path specified by A and B coordinates
   createPath(inPath: {A:{x: number; y:number}; B: {x: number; y:number}}): void {
     this.data.addToPaths(inPath);           // Create the path
-    this.data.currPaths.push(inPath);       // Add path to paths list
+    // this.data.currPaths.push(inPath);       // Add path to paths list
+    //JUSTIN: ^^ adding to the path list is already included in the data.addToPaths function so don't need it here (duplicate)
   }
 
   // Removes path specified by A and B coordinates
@@ -173,10 +177,7 @@ export class TopbarComponent implements OnInit, DoCheck {
 
   // Remove all paths
   removeAllPaths():void {
-    console.log(this.data.currPaths)
-    for (let i in range(this.data.currPaths.length)) {
-      console.log(i)
-    }
+    this.data.clearAllPaths();
   }
 
   // Array equality checker (can't simply call [] === [] in typescript)
@@ -219,6 +220,8 @@ export class TopbarComponent implements OnInit, DoCheck {
       this.timeRef = setInterval(() => {
         this.counter = Date.now() - startTime;
         this.counterSeconds = Math.round(this.counter/1000);
+
+        this.stepTestAlgorithm();
       });
 
       // Run the algorithm!
@@ -243,6 +246,7 @@ export class TopbarComponent implements OnInit, DoCheck {
     this.startText = "Start!";
     this.counter = 0;
     this.counterSeconds = 0;
+    this.removeAllPaths(); // REMOVES ALL PATHS
     clearInterval(this.timeRef);
   }
 
@@ -263,6 +267,38 @@ export class TopbarComponent implements OnInit, DoCheck {
     this._snackBar.open("You must initialise at least 3 vertices!", "Close", {
       duration: 5000
     })
+  }
+
+  stepTestAlgorithm(){
+    if(this.prevCounterSeconds !== this.counterSeconds){
+      console.log(this.counterSeconds)
+      if(this.counterSeconds % 13 === 1){
+        this.createPath({A:{x:8,y:2},B:{x:8,y:4}});
+      }else if(this.counterSeconds % 13 === 2){
+        this.createPath({A:{x:12,y:2},B:{x:12,y:4}});
+      }else if(this.counterSeconds % 13 === 3){
+        this.createPath({A:{x:6,y:6},B:{x:14,y:6}});
+      }else if(this.counterSeconds % 13 === 4){
+        this.createPath({A:{x:14,y:6},B:{x:12,y:8}});
+      }else if(this.counterSeconds % 13 === 5){
+        this.createPath({A:{x:12,y:8},B:{x:8,y:8}});
+      }else if(this.counterSeconds % 13 === 6){
+        this.createPath({A:{x:8,y:8},B:{x:6,y:6}});
+      }else if(this.counterSeconds % 13 === 7){
+        this.removePath({A:{x:8,y:2},B:{x:8,y:4}});
+      }else if(this.counterSeconds % 13 === 8){
+        this.removePath({A:{x:12,y:2},B:{x:12,y:4}});
+      }else if(this.counterSeconds % 13 === 9){
+        this.removePath({A:{x:6,y:6},B:{x:14,y:6}});
+      }else if(this.counterSeconds % 13 === 10){
+        this.removePath({A:{x:14,y:6},B:{x:12,y:8}});
+      }else if(this.counterSeconds % 13 === 11){
+        this.removePath({A:{x:12,y:8},B:{x:8,y:8}});
+      }else if(this.counterSeconds % 13 === 12){
+        this.removePath({A:{x:8,y:8},B:{x:6,y:6}});
+      }
+      this.prevCounterSeconds = this.counterSeconds;
+    }
   }
 
 }
