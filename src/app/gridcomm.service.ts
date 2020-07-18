@@ -47,7 +47,7 @@ export class GridcommService { //Use of a service enables multiple-way communica
   changeSelPointMessage(newselpoints: {x: number; y:number}[]): void { //function to completely modify the points 'message' - useful for emptying the array
     this.selPoints = newselpoints;
     this.selPointsMessage.next(this.selPoints); //sets the points 'message' to its new value
-    console.log(this.selPoints); //check console :D
+    // console.log(this.selPoints);
   }
 
   addToSelPointsMessage(inpoint: {x: number; y:number}): boolean{ //function to append to the points 'message' - useful for adding objects to the array
@@ -58,20 +58,19 @@ export class GridcommService { //Use of a service enables multiple-way communica
       successful = true;
     }
     this.selPointsMessage.next(this.selPoints); //sets the points 'message' to its new value
-    console.log(this.selPoints); //check console :D
     return successful;
   }
 
   removeFromSelPointsMessage(inpoint: {x: number; y:number}): void { //function to remove from the points 'message' - useful for removing objects from the array
     this.selPoints = this.removeFromArray(this.selPoints, inpoint);
     this.selPointsMessage.next(this.selPoints); //sets the points 'message' to its new value
-    console.log(this.selPoints); //check console :D
+    // console.log(this.selPoints);
   }
 
   addToPaths(inPath: {A:{x: number; y:number}; B: {x: number; y:number}}): void {
     this.currPaths.push(inPath);
     this.dispPathsMessage.next(inPath);
-    console.log(this.currPaths);
+    // console.log(this.currPaths);
   }
 
   removeFromPaths(inPath: {A:{x: number; y:number}; B: {x: number; y:number}}): void {
@@ -80,13 +79,13 @@ export class GridcommService { //Use of a service enables multiple-way communica
       this.currPaths.splice(idxPath, 1);
     }
     this.removePathsIndexMessage.next(idxPath);
-    console.log(this.currPaths);
+    // console.log(this.currPaths);
   }
 
   clearAllPaths(): void {
     this.currPaths = [];
     this.removePathsIndexMessage.next(-2);
-    console.log(this.currPaths);
+    // console.log(this.currPaths);
   }
 
 
@@ -96,6 +95,12 @@ export class GridcommService { //Use of a service enables multiple-way communica
         array.splice(index, 1); //remove one object at the found index
     }
     return array;
+  }
+
+  shuffleSelectedPoints():void {
+    this.selPoints.sort(() => Math.random() - 0.5);
+    console.log(this.selPoints);
+    this.selPointsMessage.next(this.selPoints);
   }
 
 }

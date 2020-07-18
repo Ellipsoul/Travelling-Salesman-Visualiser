@@ -20,7 +20,6 @@ export class DialogInfoComponent implements OnInit {
 
   incrementPage():void {
     this.infoPageNumber += 1;
-    console.log(this.infoPageNumber)
   }
 
   decrementPage():void {

@@ -58,9 +58,6 @@ export class TopbarComponent implements OnInit, DoCheck {
   startButtonColor:string = "success";    // Button color
   startButtonDisabled:boolean = false;  // Start button disabled or not
 
-  // Test for timer
-  prevCounterSeconds:number = 0;
-
   // Algorithm Select
   algorithmControl =  new FormControl();  // Initialise form control for algorithm selector
   algorithmsMenu: AlgorithmGroup[] = [
@@ -208,7 +205,6 @@ export class TopbarComponent implements OnInit, DoCheck {
       this.notEnoughNodesSelected();
     }
     else {
-      this.createPath({A:{x:1,y:1},B:{x:3,y:3}}); // Temporary test to create a path
       this.timerRunning = !this.timerRunning      // Negate whether timer is running
       this.verticesButtonsDisabled = true;        // Disable vertices control buttons
 
@@ -220,21 +216,46 @@ export class TopbarComponent implements OnInit, DoCheck {
       this.timeRef = setInterval(() => {
         this.counter = Date.now() - startTime;
         this.counterSeconds = Math.round(this.counter/1000);
-
-        this.stepTestAlgorithm();
       });
 
       // Run the algorithm!
       this.runAlgorithm()
-      // TODO: Run cleanup functions once algorithm finishes (call the resetTimer + removeAllPaths)
     }
   }
 
-  // Redirect to all the different algorithms depending on the selected one
-  runAlgorithm(): void {
-
+  // Shuffle selected points array
+  shuffleSelectedPoints():void {
+    console.log(this.selectedPoints)
+    this.data.shuffleSelectedPoints()
+    console.log(this.selectedPoints)
   }
 
+  //--------------------------------------------------------------------------------------------------------------------
+  // Algorithms
+
+  // Redirect to all the different algorithms depending on the selected one
+  runAlgorithm(): void {
+    this.shuffleSelectedPoints()
+
+    switch (this.selectedAlgorithm) {
+      case "depth-first-search":
+        this.depthFirstSearch()
+        break
+      case "nearest-neighbour":
+        this.nearestNeighbour()
+        break
+    }
+  }
+
+  nearestNeighbour():void{
+    console.log("This works!")
+  }
+
+  depthFirstSearch():void {
+  }
+
+
+  //--------------------------------------------------------------------------------------------------------------------
 
   // Reset timer
   resetTimer(): void {
@@ -267,38 +288,6 @@ export class TopbarComponent implements OnInit, DoCheck {
     this._snackBar.open("You must initialise at least 3 vertices!", "Close", {
       duration: 5000
     })
-  }
-
-  stepTestAlgorithm(){
-    if(this.prevCounterSeconds !== this.counterSeconds){
-      console.log(this.counterSeconds)
-      if(this.counterSeconds % 13 === 1){
-        this.createPath({A:{x:8,y:2},B:{x:8,y:4}});
-      }else if(this.counterSeconds % 13 === 2){
-        this.createPath({A:{x:12,y:2},B:{x:12,y:4}});
-      }else if(this.counterSeconds % 13 === 3){
-        this.createPath({A:{x:6,y:6},B:{x:14,y:6}});
-      }else if(this.counterSeconds % 13 === 4){
-        this.createPath({A:{x:14,y:6},B:{x:12,y:8}});
-      }else if(this.counterSeconds % 13 === 5){
-        this.createPath({A:{x:12,y:8},B:{x:8,y:8}});
-      }else if(this.counterSeconds % 13 === 6){
-        this.createPath({A:{x:8,y:8},B:{x:6,y:6}});
-      }else if(this.counterSeconds % 13 === 7){
-        this.removePath({A:{x:8,y:2},B:{x:8,y:4}});
-      }else if(this.counterSeconds % 13 === 8){
-        this.removePath({A:{x:12,y:2},B:{x:12,y:4}});
-      }else if(this.counterSeconds % 13 === 9){
-        this.removePath({A:{x:6,y:6},B:{x:14,y:6}});
-      }else if(this.counterSeconds % 13 === 10){
-        this.removePath({A:{x:14,y:6},B:{x:12,y:8}});
-      }else if(this.counterSeconds % 13 === 11){
-        this.removePath({A:{x:12,y:8},B:{x:8,y:8}});
-      }else if(this.counterSeconds % 13 === 12){
-        this.removePath({A:{x:8,y:8},B:{x:6,y:6}});
-      }
-      this.prevCounterSeconds = this.counterSeconds;
-    }
   }
 
 }
