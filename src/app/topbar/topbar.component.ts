@@ -148,6 +148,7 @@ export class TopbarComponent implements OnInit, DoCheck {
             y: this.getRandomNumberBetweenZ(this.noRows)});
       }
     }
+    console.log(this.selectedPoints)
   }
 
   // Auxiliary function (can be called from html) to clear all selected points
@@ -225,7 +226,7 @@ export class TopbarComponent implements OnInit, DoCheck {
 
   // Shuffle selected points array
   shuffleSelectedPoints():void {
-    console.log(this.selectedPoints)
+
     this.data.shuffleSelectedPoints()
     console.log(this.selectedPoints)
   }
