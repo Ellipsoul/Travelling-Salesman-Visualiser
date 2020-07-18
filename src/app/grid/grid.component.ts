@@ -70,7 +70,11 @@ export class GridComponent implements OnInit, AfterContentInit, DoCheck {
   removePath(index: number): void{
     if(this.pathContainer !== null){
       if(index !== -1 && this.pathContainer.length > 0){
-        this.pathContainer.remove(index);
+        if(index === -2){
+          this.clearPaths();
+        }else{
+          this.pathContainer.remove(index);
+        }
       }
     }
   }
