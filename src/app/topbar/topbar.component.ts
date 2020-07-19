@@ -56,7 +56,8 @@ export class TopbarComponent implements OnInit, DoCheck {
   startText:string = "Start!";            // Text at beginning
   timeRef:any;                            // Reference time from start time
   startButtonColor:string = "success";    // Button color
-  startButtonDisabled:boolean = false;  // Start button disabled or not
+  startButtonDisabled:boolean = false;    // Start button disabled or not
+  abort:boolean = false;                  // Functions listening to abort
 
   // Algorithm Select
   algorithmControl =  new FormControl();  // Initialise form control for algorithm selector
@@ -281,7 +282,7 @@ export class TopbarComponent implements OnInit, DoCheck {
   }
 
   // Heuristic algorithms
-  nearestNeighbour():void {
+  async nearestNeighbour():Promise<void>{
     console.log("Starting Nearest Neighbour!")
     // Initialise array of visited points (first point will be considered visited)
     let pointVisited:boolean[] = [];
@@ -318,8 +319,8 @@ export class TopbarComponent implements OnInit, DoCheck {
       currentIndex = minDistanceIndex;  // Update next point to go to
       console.log(this.selectedPoints[previousIndex])
       console.log(this.selectedPoints[currentIndex])
+      await this.sleep(50);  // Making use of async-await
       // Create the path
-      this.sleep(1000)
       this.createPath({A:{x:this.selectedPoints[previousIndex].x, y:this.selectedPoints[previousIndex].y},
                        B:{x:this.selectedPoints[currentIndex].x,  y:this.selectedPoints[currentIndex].y}});
     }  // End of algorithm iterations
@@ -350,7 +351,7 @@ export class TopbarComponent implements OnInit, DoCheck {
     return distance
   }
 
-  // Sleeping function
+  // Sleeping function (works only with asynchronous functions)
   sleep(ms:number) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
@@ -359,7 +360,6 @@ export class TopbarComponent implements OnInit, DoCheck {
 
   // Reset timer
   resetTimer(): void {
-    //this.removePath({A:{x:1,y:1},B:{x:3,y:3}}); // Temporary for demonstration
     this.verticesButtonsDisabled = false;
     this.timerRunning = false;
     this.startButtonColor = "success";
