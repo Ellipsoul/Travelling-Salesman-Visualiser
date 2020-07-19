@@ -318,7 +318,15 @@ export class TopbarComponent implements OnInit, DoCheck {
       currentIndex = minDistanceIndex;  // Update next point to go to
       console.log(this.selectedPoints[previousIndex])
       console.log(this.selectedPoints[currentIndex])
-    }
+      // Create the path
+      this.sleep(1000)
+      this.createPath({A:{x:this.selectedPoints[previousIndex].x, y:this.selectedPoints[previousIndex].y},
+                       B:{x:this.selectedPoints[currentIndex].x,  y:this.selectedPoints[currentIndex].y}});
+    }  // End of algorithm iterations
+    // Finish off with pathing back to the starting node
+    this.createPath({A:{x:this.selectedPoints[currentIndex].x, y:this.selectedPoints[currentIndex].y},
+                     B:{x:this.selectedPoints[0].x,  y:this.selectedPoints[0].y}
+                    });
   }
 
   arbitraryInsertion():void {
@@ -334,12 +342,18 @@ export class TopbarComponent implements OnInit, DoCheck {
   }
 
   // Algorithm helpers
+
+  // Calculates distance bewtween 2 points
   distanceBetweenPoints(pointA:{x:number, y:number}, pointB:{x:number, y:number}):number {
     let distance = Math.sqrt( Math.pow(Math.abs(pointA.x-pointB.x), 2) +
                               Math.pow(Math.abs(pointA.y-pointB.y), 2))
     return distance
   }
 
+  // Sleeping function
+  sleep(ms:number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
   //--------------------------------------------------------------------------------------------------------------------
 
