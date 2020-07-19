@@ -170,9 +170,10 @@
 
 .node-buttons {
   font-size: 14px;
-  text-align: left;
+  text-align: center;
   min-width: 160px;
   margin-right: 10px;
+
 }
 
 .node-control-buttons {

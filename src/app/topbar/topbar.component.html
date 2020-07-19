@@ -34,7 +34,13 @@
     <!-- Slider tracking number of nodes -->
     <span class="node-slider-and-display">
       <h4 id="number-of-nodes"> {{randomPointAmount}} </h4>
-      <mat-slider min="3" max="50" id="node-slider" (input)="updateRandomAmount($event)"> </mat-slider>
+      <mat-slider
+        min="3"
+        max="50"
+        id="node-slider"
+        (input)="updateRandomAmount($event)"
+        [disabled]="verticesButtonsDisabled">
+      </mat-slider>
     </span>
     <!-- Randomise and clear node buttons -->
     <div class="node-control-buttons">
@@ -71,12 +77,12 @@
     </div>
     <div class="bottom-path-info">
       <div>
-        <h4 class="path-info-text"> Current Distance: </h4> <!-- Function of number of nodes and algorithm -->
-        <h4 class="path-info-text bold-info"> 5m </h4>
+        <h4 class="path-info-text"> Curr. Distance: </h4> <!-- Function of number of nodes and algorithm -->
+        <h4 class="path-info-text bold-info"> {{ currentPathDistance }} </h4>
       </div>
       <div>
-        <h4 class="path-info-text"> Minimum Distance: </h4>
-        <h4 class="path-info-text bold-info"> 4m </h4>
+        <h4 class="path-info-text"> Min. Distance: </h4>
+        <h4 class="path-info-text bold-info"> {{ minPathDistance }} </h4>
       </div>
 
 
@@ -101,7 +107,13 @@
     </div>
     <!-- Slider controlling playback speed-->
     <div class="playback-speed">
-      <mat-slider id="playback-slider"> </mat-slider>
+      <mat-slider
+        id="playback-slider"
+        min="10"
+        max="1000"
+        value="505"
+        (input)="updateSpeed($event)">
+      </mat-slider>
       <div class="speeds">
         <h4 class="speed-text" id="slow"> Slow </h4>
         <h4 class="speed-text" id="fast"> Fast </h4>

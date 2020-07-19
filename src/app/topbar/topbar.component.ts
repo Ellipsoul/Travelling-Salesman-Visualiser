@@ -59,6 +59,10 @@ export class TopbarComponent implements OnInit, DoCheck {
   startButtonDisabled:boolean = false;    // Start button disabled or not
   abort:boolean = false;                  // Functions listening to abort
 
+  // Distance control
+  currentPathDistance:number = 0;         // Current path distance
+  minPathDistance:number = 0;             // Minimum path distance
+
   // Algorithm Select
   algorithmControl =  new FormControl();  // Initialise form control for algorithm selector
   algorithmsMenu: AlgorithmGroup[] = [
@@ -80,7 +84,10 @@ export class TopbarComponent implements OnInit, DoCheck {
       ]
     }
   ]
-  selectedAlgorithm:string;
+  selectedAlgorithm:string;  // Currently selected algorithm
+
+  // Speed Control
+  runSpeed:number = 10000 / 505;
 
   // ------------------------------------------------------------------------------------------------------------------
   // Class functions
@@ -124,7 +131,7 @@ export class TopbarComponent implements OnInit, DoCheck {
   }
 
   // Function to update the number of random points selected
-  updateRandomAmount(event): void {
+  updateRandomAmount(event:any): void {
     this.randomPointAmount = event.value;
     this.possPaths = this.calculatePossiblePaths(this.currPointAmount);  // Recalculate possible paths
   }
@@ -210,7 +217,7 @@ export class TopbarComponent implements OnInit, DoCheck {
       const startTime = Date.now() - this.counter;
       this.timeRef = setInterval(() => {
         this.counter = Date.now() - startTime;
-        this.counterSeconds = Math.round(this.counter/1000);
+        this.counterSeconds = Math.round(this.counter/100)/10;
       });
 
       // Run the algorithm!
@@ -218,10 +225,11 @@ export class TopbarComponent implements OnInit, DoCheck {
     }
   }
 
-  // Shuffle selected points array (calling from the service)
-  shuffleSelectedPoints():void {
-    this.data.shuffleSelectedPoints()
-    // console.log(this.selectedPoints)
+  // Event to update the speed variable
+  updateSpeed(event:any):void {
+    this.runSpeed = 10000 / event.value;
+    // this.runSpeed = Math.abs(event.value - 1010);  //  Linear mapping of runSpeed
+    console.log(this.runSpeed);  // Logarithmic mapping of runSpeed
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -265,16 +273,16 @@ export class TopbarComponent implements OnInit, DoCheck {
         break
     }
 
-    // TODO: Some sort of cleanup after finishing algorithm (pausing timer/making paths opaque)
+    // TODO: Make paths opaque and other cleanup
     clearInterval(this.timeRef)                // Pause the timer when done
     if (!this.abort) {
       // Set all lines to opaque
-      this.startText = "Finished"              // Display that the algorithm has finished
+      this.startText = "Finished!"             // Display that the algorithm has finished
     }
   }
 
   // Exhaustive algorithms
-  async depthFirstSearch():Promise<void> { //recursive implementation
+  async depthFirstSearch():Promise<void> {  // recursive implementation
     console.log("Starting Depth First Search!")
     // Copy of selected points created for safety
     let selectedPointsCopy = this.selectedPoints.slice(0)
@@ -379,11 +387,12 @@ export class TopbarComponent implements OnInit, DoCheck {
       pointVisited.push(false)
     }
     // Declare variables for the iteration
-    let minDistance:number;        // Minimum distance between points
-    let currentDistance:number;    // Current comparison distance
-    let minDistanceIndex:number;   // Index of closest point
-    let currentIndex:number = 0;   // Current index, starting from 0
-    let previousIndex:number;      // Tracking previous index for path creation
+    let minDistance:number;            // Minimum distance between points
+    let currentDistance:number;        // Current comparison distance
+    let minDistanceIndex:number;       // Index of closest point
+    let currentIndex:number = 0;       // Current index, starting from 0
+    let previousIndex:number;          // Tracking previous index for path creation
+    let totalDistance:number = 0;      // Increment the total path distance
 
     // Algorithm main logic
     for (let _=0; _<this.selectedPoints.length-1; _++) {
@@ -403,12 +412,12 @@ export class TopbarComponent implements OnInit, DoCheck {
           }
         }
       }  // Closest remaining unvisited point should be found
-
-      previousIndex = currentIndex;     // Temporarily store last index for path creation
-      currentIndex = minDistanceIndex;  // Update next point to go to
+      totalDistance += minDistance               // Increment total distance tracker
+      previousIndex = currentIndex;              // Temporarily store last index for path creation
+      currentIndex = minDistanceIndex;           // Update next point to go to
       console.log(this.selectedPoints[previousIndex])
       console.log(this.selectedPoints[currentIndex])
-      await this.sleep(50);  // Making use of async-await
+      await this.sleep(this.runSpeed);  // Making use of async-await
       // Create the path
       this.createPath({A:{x:this.selectedPoints[previousIndex].x, y:this.selectedPoints[previousIndex].y},
                        B:{x:this.selectedPoints[currentIndex].x,  y:this.selectedPoints[currentIndex].y}});
@@ -421,6 +430,10 @@ export class TopbarComponent implements OnInit, DoCheck {
     // Finish off with pathing back to the starting node
     this.createPath({A:{x:this.selectedPoints[currentIndex].x, y:this.selectedPoints[currentIndex].y},
                      B:{x:this.selectedPoints[0].x,  y:this.selectedPoints[0].y}});
+    // Find distance from last point to first point and increment. Set the final distance
+    totalDistance += this.distanceBetweenPoints(this.selectedPoints[currentIndex], this.selectedPoints[0])
+    this.currentPathDistance = Math.round((totalDistance + Number.EPSILON) * 100) / 100;
+    this.minPathDistance = this.currentPathDistance;
   }
 
   arbitraryInsertion():void {
@@ -449,11 +462,18 @@ export class TopbarComponent implements OnInit, DoCheck {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
+  // Shuffle selected points array (calling from the service)
+  shuffleSelectedPoints():void {
+    this.data.shuffleSelectedPoints()
+    // console.log(this.selectedPoints)
+  }
+
   //--------------------------------------------------------------------------------------------------------------------
 
   // Reset timer
   resetTimer(): void {
     this.abort = true;                                // Functions listen to "abort"
+
     this.verticesButtonsDisabled = false;             // Re-enable vertices buttons
     this.timerRunning = false;                        // Stop the timer
     this.startButtonColor = "success";                // Reset the timer to show "Start"
@@ -462,8 +482,12 @@ export class TopbarComponent implements OnInit, DoCheck {
     this.counter = 0;                                 // Timer variables
     this.counterSeconds = 0;
     clearInterval(this.timeRef);
-    this.removeAllPaths();                            // Remove all paths
-    setTimeout(() => { this.abort = false }, 50);     // Wait in case of async operations
+
+    this.removeAllPaths();                                             // Remove all paths
+    setTimeout(() => { this.abort = false }, this.runSpeed + 10);      // Wait in case of async operations
+
+    this.currentPathDistance = 0;                     // Set distances back to 0
+    this.minPathDistance = 0;
   }
 
   // Opens the dialog
