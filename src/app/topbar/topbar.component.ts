@@ -56,7 +56,8 @@ export class TopbarComponent implements OnInit, DoCheck {
   startText:string = "Start!";            // Text at beginning
   timeRef:any;                            // Reference time from start time
   startButtonColor:string = "success";    // Button color
-  startButtonDisabled:boolean = false;  // Start button disabled or not
+  startButtonDisabled:boolean = false;    // Start button disabled or not
+  abort:boolean = false;                  // Functions listening to abort
 
   // Algorithm Select
   algorithmControl =  new FormControl();  // Initialise form control for algorithm selector
@@ -76,13 +77,6 @@ export class TopbarComponent implements OnInit, DoCheck {
         {value: "arbitrary-insertion", viewValue: "Arbitrary Insertion"},
         {value: "nearest-insertion", viewValue: "Nearest Insertion"},
         {value: "furthest-insertion", viewValue: "Furthest Insertion"}
-      ]
-    },
-    {
-      name: "Improved Heuristic",
-      algorithm: [
-        {value: "two-opt-inversion", viewValue: "Two Opt Inversion"},
-        {value: "two-opt-reciprocal-exchange", viewValue: "Two Opt Reciprocal Exchange"}
       ]
     }
   ]
@@ -138,7 +132,8 @@ export class TopbarComponent implements OnInit, DoCheck {
   // Auxiliary function (can be called from html) to add a number (no) of random points in the grid
   // Combine with clearAll for generation instead of appending random points
   randomize(no: number): void{
-    this.clearAll();
+    this.clearAll();        // Removing all points
+    this.removeAllPaths();  // Removing all paths
     for(let num = 0; num < no; num++){
       var added = false;
       while(!added){
@@ -154,6 +149,7 @@ export class TopbarComponent implements OnInit, DoCheck {
   // Auxiliary function (can be called from html) to clear all selected points
   clearAll(): void{
     this.data.changeSelPointMessage([]);  // Empties the selectedpoints 'message'; More info: gridcomm.service.ts
+    this.removeAllPaths();                // Removing all paths
   }
 
   // Helper function to generate random number
@@ -162,10 +158,8 @@ export class TopbarComponent implements OnInit, DoCheck {
   }
 
   // Creates path specified by A and B coordinates
-  createPath(inPath: {A:{x: number; y:number}; B: {x: number; y:number}}): void {
-    this.data.addToPaths(inPath);           // Create the path
-    // this.data.currPaths.push(inPath);       // Add path to paths list
-    //JUSTIN: ^^ adding to the path list is already included in the data.addToPaths function so don't need it here (duplicate)
+  createPath(inPath:{A:{x: number; y:number}; B: {x: number; y:number}}): void {
+    this.data.addToPaths(inPath);              // Create the path
   }
 
   // Removes path specified by A and B coordinates
@@ -224,9 +218,8 @@ export class TopbarComponent implements OnInit, DoCheck {
     }
   }
 
-  // Shuffle selected points array
+  // Shuffle selected points array (calling from the service)
   shuffleSelectedPoints():void {
-
     this.data.shuffleSelectedPoints()
     console.log(this.selectedPoints)
   }
@@ -236,40 +229,154 @@ export class TopbarComponent implements OnInit, DoCheck {
 
   // Redirect to all the different algorithms depending on the selected one
   runAlgorithm(): void {
+    // Points must be shuffled when the algorithm runs
     this.shuffleSelectedPoints()
 
+    // Perform the desired algorithm
     switch (this.selectedAlgorithm) {
+      // Exhaustive Algorithms
       case "depth-first-search":
         this.depthFirstSearch()
         break
+
+      case "random-search":
+        this.randomSearch()
+        break
+
+      case "branch-and-bound":
+        this.branchAndBound()
+        break
+
       case "nearest-neighbour":
         this.nearestNeighbour()
         break
+
+      // Heuristic Algorithms
+      case "arbitrary-insertion":
+        this.arbitraryInsertion()
+        break
+
+      case "nearest-insertion":
+        this.nearestInsertion()
+        break
+
+      case "furthest-insertion":
+        this.furtherInsertion()
+        break
     }
+
+    // TODO: Some sort of cleanup after finishing algorithm (pausing timer/making paths opaque)
+    this.startText = "Finished"              // Display that the algorithm has finished
+    clearInterval(this.timeRef)              // Pause the timer when done
   }
 
-  nearestNeighbour():void{
-    console.log("This works!")
-  }
-
+  // Exhaustive algorithms
   depthFirstSearch():void {
+    console.log("Starting Depth First Search!")
   }
 
+  randomSearch():void {
+    console.log("Starting Random Search!")
+  }
+
+  branchAndBound():void {
+    console.log("Starting Branch and Bound!")
+  }
+
+  // Heuristic algorithms
+  async nearestNeighbour():Promise<void>{
+    console.log("Starting Nearest Neighbour!")
+    // Initialise array of visited points (first point will be considered visited)
+    let pointVisited:boolean[] = [];
+    for (let i=0; i<this.selectedPoints.length; i++) {
+      pointVisited.push(false)
+    }
+    // Declare variables for the iteration
+    let minDistance:number;        // Minimum distance between points
+    let currentDistance:number;    // Current comparison distance
+    let minDistanceIndex:number;   // Index of closest point
+    let currentIndex:number = 0;   // Current index, starting from 0
+    let previousIndex:number;      // Tracking previous index for path creation
+
+    // Algorithm main logic
+    for (let _=0; _<this.selectedPoints.length-1; _++) {
+      pointVisited[currentIndex] = true;  // First set the point as visited
+      minDistance = Infinity;             // Initialise minimum distance point
+      minDistanceIndex = -1;              // Initialise minimum distance index
+      // Another pass through the entire array
+      for (let j=0; j<this.selectedPoints.length; j++) {
+        // Only check the point if it has not been visited
+        if (pointVisited[j] === false) {
+          // Calculate distance between points
+          currentDistance = this.distanceBetweenPoints(this.selectedPoints[currentIndex], this.selectedPoints[j])
+          // Update the minimum distance and min distance index
+          if (currentDistance < minDistance) {
+            minDistance = currentDistance;
+            minDistanceIndex = j;
+          }
+        }
+      }  // Closest remaining unvisited point should be found
+
+      previousIndex = currentIndex;     // Temporarily store last index for path creation
+      currentIndex = minDistanceIndex;  // Update next point to go to
+      console.log(this.selectedPoints[previousIndex])
+      console.log(this.selectedPoints[currentIndex])
+      await this.sleep(50);  // Making use of async-await
+      // Create the path
+      this.createPath({A:{x:this.selectedPoints[previousIndex].x, y:this.selectedPoints[previousIndex].y},
+                       B:{x:this.selectedPoints[currentIndex].x,  y:this.selectedPoints[currentIndex].y}});
+      // Listens constantly for the reset button click, and aborts the function if it occurs
+      if (this.abort) {
+        this.removeAllPaths();  // Repeated removeAllPaths in case of asynchronous call
+        return
+      };
+    }  // End of algorithm iterations
+    // Finish off with pathing back to the starting node
+    this.createPath({A:{x:this.selectedPoints[currentIndex].x, y:this.selectedPoints[currentIndex].y},
+                     B:{x:this.selectedPoints[0].x,  y:this.selectedPoints[0].y}});
+  }
+
+  arbitraryInsertion():void {
+    console.log("Starting Arbitrary Insertion!")
+  }
+
+  nearestInsertion():void {
+    console.log("Starting Nearest Insertion!")
+  }
+
+  furtherInsertion():void {
+    console.log("Starting furthest insertion")
+  }
+
+  // Algorithm helpers
+
+  // Calculates distance bewtween 2 points
+  distanceBetweenPoints(pointA:{x:number, y:number}, pointB:{x:number, y:number}):number {
+    let distance = Math.sqrt( Math.pow(Math.abs(pointA.x-pointB.x), 2) +
+                              Math.pow(Math.abs(pointA.y-pointB.y), 2))
+    return distance
+  }
+
+  // Sleeping function (works only with asynchronous functions)
+  sleep(ms:number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
   //--------------------------------------------------------------------------------------------------------------------
 
   // Reset timer
   resetTimer(): void {
-    //this.removePath({A:{x:1,y:1},B:{x:3,y:3}}); // Temporary for demonstration
-    this.verticesButtonsDisabled = false;
-    this.timerRunning = false;
-    this.startButtonColor = "success";
-    this.startButtonDisabled = false;
-    this.startText = "Start!";
-    this.counter = 0;
+    this.abort = true;                                // Functions listen to "abort"
+    this.verticesButtonsDisabled = false;             // Re-enable vertices buttons
+    this.timerRunning = false;                        // Stop the timer
+    this.startButtonColor = "success";                // Reset the timer to show "Start"
+    this.startButtonDisabled = false;                 // Re-enable the start timer
+    this.startText = "Start!";                        // Reset the start timer text
+    this.counter = 0;                                 // Timer variables
     this.counterSeconds = 0;
-    this.removeAllPaths(); // REMOVES ALL PATHS
     clearInterval(this.timeRef);
+    this.removeAllPaths();                            // Remove all paths
+    setTimeout(() => { this.abort = false }, 50);     // Wait in case of async operations
   }
 
   // Opens the dialog
