@@ -158,12 +158,12 @@ export class TopbarComponent implements OnInit, DoCheck {
   }
 
   // Creates path specified by A and B coordinates
-  createPath(inPath:{A:{x: number; y:number}; B: {x: number; y:number}}): void {
+  createPath(inPath:{A:{x: number, y:number}, B: {x: number, y:number}}): void {
     this.data.addToPaths(inPath);              // Create the path
   }
 
   // Removes path specified by A and B coordinates
-  removePath(inPath: {A:{x: number; y:number}; B: {x: number; y:number}}): void {
+  removePath(inPath: {A:{x: number, y:number}, B: {x: number, y:number}}): void {
     this.data.removeFromPaths(inPath);
   }
 
@@ -221,7 +221,7 @@ export class TopbarComponent implements OnInit, DoCheck {
   // Shuffle selected points array (calling from the service)
   shuffleSelectedPoints():void {
     this.data.shuffleSelectedPoints()
-    console.log(this.selectedPoints)
+    // console.log(this.selectedPoints)
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -271,8 +271,82 @@ export class TopbarComponent implements OnInit, DoCheck {
   }
 
   // Exhaustive algorithms
-  depthFirstSearch():void {
+  async depthFirstSearch():Promise<void> { //recursive implementation
     console.log("Starting Depth First Search!")
+    // Copy of selected points created for safety
+    let selectedPointsCopy = this.selectedPoints.slice(0)
+
+    // Best solution created as an object ~ a "hacky" method to allow values to be changed by reference (any changes in the function will be applied to this variable)
+    // minDist contains the shortest path distance, minPath contains corresponding points that makes that path
+    let bestSolution:{minDist:number, minPath:{x:number, y:number}[]} = {minDist:Number.MAX_VALUE,minPath:[]};
+
+    //await for function to finish before moving on
+    await this.permutePoints(selectedPointsCopy.slice(1), [], this.selectedPoints[0], bestSolution); // notice selectedPointsCopy.slice(1) - the first point can be neglected as it will always be the start point ~ only need to permute the remaining n-1 points to find possible paths
+
+    if (this.abort) {
+      this.removeAllPaths();  // Repeated removeAllPaths in case of asynchronous call
+      return;
+    };
+    console.log(bestSolution.minDist)
+    let bestPath = bestSolution.minPath;
+    let pathLength = bestPath.length;
+    for(let b = 0; b < pathLength-1; b++){
+      this.createPath({A:{x:bestPath[b].x, y:bestPath[b].y}, B:{x:bestPath[b+1].x,  y:bestPath[b+1].y}});
+    }
+    this.createPath({A:{x:bestPath[0].x, y:bestPath[0].y}, B:{x:bestPath[pathLength-1].x,  y:bestPath[pathLength-1].y}});
+
+  }
+
+  // depthFirstSearch: Recursive asynchronous helper function to go through all possible combinations of points
+  async permutePoints(leftoverPoints:{x:number, y:number}[], pointSequence:{x:number, y:number}[], previousPoint: {x:number, y:number}, sol:{minDist:number, minPath:{x:number, y:number}[]}): Promise<void>{
+
+    if (this.abort) { // multiple abort checks to catch recursive calls at various depths and abort
+      return;
+    };
+
+    if(leftoverPoints.length === 0){ // BASE CASE: whenever all remaining points are used up OR whenever a permutation is complete
+      // calculate distance formed by path loop
+      let totalDist = this.distanceBetweenPoints(this.selectedPoints[0],pointSequence[0]);
+      for(let p = 0; p < pointSequence.length-1; p++){
+        totalDist += this.distanceBetweenPoints(pointSequence[p],pointSequence[p+1]);
+      }
+      totalDist += this.distanceBetweenPoints(pointSequence[pointSequence.length-1], this.selectedPoints[0]);
+
+      // if distance is shorter than current minimum, then update minPath and minDist
+      if(totalDist <= sol.minDist){
+        let minPath = [this.selectedPoints[0]].concat(pointSequence)
+        sol.minDist = totalDist;
+        sol.minPath = minPath;
+      }
+      return;
+    }
+    for(let i = 0; i < leftoverPoints.length; i++){ // RECURSIVE CASE: for remaining unused points, go through all permutations of this subset (through recursion)
+
+      if (this.abort) { // multiple abort checks to catch recursive calls at various depths and abort
+        return;
+      };
+
+      let currPoint:{x:number, y:number} = leftoverPoints[i]; // keep one point fixed and permute the rest
+
+      await this.sleep(50); // Making use of async-await to create path
+      this.createPath({A:{x:previousPoint.x, y:previousPoint.y}, B:{x:currPoint.x,  y:currPoint.y}});
+
+      let newLeftoverPoints = leftoverPoints.slice(0,i).concat(leftoverPoints.slice(i+1)); // remove the fixed point from leftover points
+
+      pointSequence.push(currPoint); // add the fixed point to the current permutation
+      let newPointSequence = pointSequence.slice(0); // HOWEVER because how javascript works with arrays, we don't want to modify the original array by reference
+      pointSequence.splice(pointSequence.length-1,1); // SO we make a copy of the array and the point is removed
+
+      await this.permutePoints(newLeftoverPoints, newPointSequence, currPoint, sol); // recurse with remaning unused points and current permutation
+
+      if (this.abort) { // multiple abort checks to catch recursive calls at various depths and abort
+        return;
+      };
+
+      await this.sleep(50); // Making use of async-await to remove path
+      this.removePath({A:{x:previousPoint.x, y:previousPoint.y}, B:{x:currPoint.x,  y:currPoint.y}});
+    }
+
   }
 
   randomSearch():void {
