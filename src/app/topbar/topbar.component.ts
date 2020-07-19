@@ -77,13 +77,6 @@ export class TopbarComponent implements OnInit, DoCheck {
         {value: "nearest-insertion", viewValue: "Nearest Insertion"},
         {value: "furthest-insertion", viewValue: "Furthest Insertion"}
       ]
-    },
-    {
-      name: "Improved Heuristic",
-      algorithm: [
-        {value: "two-opt-inversion", viewValue: "Two Opt Inversion"},
-        {value: "two-opt-reciprocal-exchange", viewValue: "Two Opt Reciprocal Exchange"}
-      ]
     }
   ]
   selectedAlgorithm:string;
@@ -162,10 +155,8 @@ export class TopbarComponent implements OnInit, DoCheck {
   }
 
   // Creates path specified by A and B coordinates
-  createPath(inPath: {A:{x: number; y:number}; B: {x: number; y:number}}): void {
-    this.data.addToPaths(inPath);           // Create the path
-    // this.data.currPaths.push(inPath);       // Add path to paths list
-    //JUSTIN: ^^ adding to the path list is already included in the data.addToPaths function so don't need it here (duplicate)
+  createPath(inPath:{A:{x: number; y:number}; B: {x: number; y:number}}): void {
+    this.data.addToPaths(inPath);              // Create the path
   }
 
   // Removes path specified by A and B coordinates
@@ -224,9 +215,8 @@ export class TopbarComponent implements OnInit, DoCheck {
     }
   }
 
-  // Shuffle selected points array
+  // Shuffle selected points array (calling from the service)
   shuffleSelectedPoints():void {
-
     this.data.shuffleSelectedPoints()
     console.log(this.selectedPoints)
   }
@@ -236,23 +226,118 @@ export class TopbarComponent implements OnInit, DoCheck {
 
   // Redirect to all the different algorithms depending on the selected one
   runAlgorithm(): void {
+    // Points must be shuffled when the algorithm runs
     this.shuffleSelectedPoints()
 
+    // Perform the desired algorithm
     switch (this.selectedAlgorithm) {
+      // Exhaustive Algorithms
       case "depth-first-search":
         this.depthFirstSearch()
         break
+
+      case "random-search":
+        this.randomSearch()
+        break
+
+      case "branch-and-bound":
+        this.branchAndBound()
+        break
+
       case "nearest-neighbour":
         this.nearestNeighbour()
         break
+
+      // Heuristic Algorithms
+      case "arbitrary-insertion":
+        this.arbitraryInsertion()
+        break
+
+      case "nearest-insertion":
+        this.nearestInsertion()
+        break
+
+      case "furthest-insertion":
+        this.furtherInsertion()
+        break
+    }
+
+    // TODO: Some sort of cleanup after finishing algorithm (pausing timer/making paths opaque)
+    this.startText = "Finished"
+    clearInterval(this.timeRef)  // Pause the timer when done
+  }
+
+  // Exhaustive algorithms
+  depthFirstSearch():void {
+    console.log("Starting Depth First Search!")
+  }
+
+  randomSearch():void {
+    console.log("Starting Random Search!")
+  }
+
+  branchAndBound():void {
+    console.log("Starting Branch and Bound!")
+  }
+
+  // Heuristic algorithms
+  nearestNeighbour():void {
+    console.log("Starting Nearest Neighbour!")
+    // Initialise array of visited points (first point will be considered visited)
+    let pointVisited:boolean[] = [];
+    for (let i=0; i<this.selectedPoints.length; i++) {
+      pointVisited.push(false)
+    }
+    // Declare variables for the iteration
+    let minDistance:number;        // Minimum distance between points
+    let currentDistance:number;    // Current comparison distance
+    let minDistanceIndex:number;   // Index of closest point
+    let currentIndex:number = 0;   // Current index, starting from 0
+    let previousIndex:number;      // Tracking previous index for path creation
+
+    // Algorithm main logic
+    for (let _=0; _<this.selectedPoints.length-1; _++) {
+      pointVisited[currentIndex] = true;  // First set the point as visited
+      minDistance = Infinity;             // Initialise minimum distance point
+      minDistanceIndex = -1;              // Initialise minimum distance index
+      // Another pass through the entire array
+      for (let j=0; j<this.selectedPoints.length; j++) {
+        // Only check the point if it has not been visited
+        if (pointVisited[j] === false) {
+          // Calculate distance between points
+          currentDistance = this.distanceBetweenPoints(this.selectedPoints[currentIndex], this.selectedPoints[j])
+          // Update the minimum distance and min distance index
+          if (currentDistance < minDistance) {
+            minDistance = currentDistance;
+            minDistanceIndex = j;
+          }
+        }
+      }  // Closest remaining unvisited point should be found
+
+      previousIndex = currentIndex;     // Temporarily store last index for path creation
+      currentIndex = minDistanceIndex;  // Update next point to go to
+      console.log(this.selectedPoints[previousIndex])
+      console.log(this.selectedPoints[currentIndex])
     }
   }
 
-  nearestNeighbour():void{
-    console.log("This works!")
+  arbitraryInsertion():void {
+    console.log("Starting Arbitrary Insertion!")
   }
 
-  depthFirstSearch():void {
+  nearestInsertion():void {
+    console.log("Starting Nearest Insertion!")
+  }
+
+  furtherInsertion():void {
+    console.log("Starting furthest insertion")
+  }
+
+  // Algorithm helpers
+  distanceBetweenPoints(pointA:{x:number, y:number}, pointB:{x:number, y:number}):number {
+    let distance = Math.sqrt( Math.pow(Math.abs(pointA.x-pointB.x), 2) +
+                              Math.pow(Math.abs(pointA.y-pointB.y), 2))
+    return distance
   }
 
 
