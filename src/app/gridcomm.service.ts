@@ -39,6 +39,22 @@ export class GridcommService { //Use of a service enables multiple-way communica
 
   currentRemovePathsIndexMessage = this.removePathsIndexMessage.asObservable(); //set the 'message' to be observable for use in other components
 
+  //========================================================
+  //========================================================
+  pathType: number = 0;
+
+  private pathTypeMessage = new BehaviorSubject<number>(this.pathType); //create the 'message' to be used in the communication service
+
+  changePathTypeMessage = this.pathTypeMessage.asObservable(); //set the 'message' to be observable for use in other components
+
+  //========================================================
+  //========================================================
+  individualPathType: {A:{x: number, y: number}, B: {x: number, y: number}, Type: number};
+
+  private indivTypeMessage = new BehaviorSubject<{A:{x: number, y: number}, B: {x: number, y: number}, Type: number}>(this.individualPathType); //create the 'message' to be used in the communication service
+
+  changeIndPathTypeMessage = this.indivTypeMessage.asObservable(); //set the 'message' to be observable for use in other components
+
 
   constructor( ){
 
@@ -88,6 +104,13 @@ export class GridcommService { //Use of a service enables multiple-way communica
     // console.log(this.currPaths);
   }
 
+  setAllPathsType(type: number):void {
+    this.pathTypeMessage.next(type);
+  }
+
+  setIndividualPathType(inpath: {A: {x:number, y:number}, B: {x:number, y:number}}, type: number):void {
+    this.indivTypeMessage.next({A: inpath.A, B: inpath.B, Type: type});
+  }
 
   removeFromArray(array: any[], value: any): any[]{ //helper function to remove object from array based on coordinate equality
     var index = array.findIndex(i => i.x === value.x && i.y === value.y);

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { GridcommService } from '../../gridcomm.service';
 
 @Component({
   selector: 'app-path',
@@ -19,10 +20,16 @@ export class PathComponent implements OnInit {
   pathTop: number = 12.5; // Div offset from top
   rotation: number = 0; // Div rotation from top left
 
-  constructor() {}
+  constructor(private data: GridcommService) {}
 
   ngOnInit(): void {
-    // this.data..subscribe(selPoints => this.isSelected = (selPoints.findIndex(i => i.x === this.x && i.y === this.y)) > -1);
+    this.data.changeIndPathTypeMessage.subscribe(message => {
+      if(message != null){
+          if(message.A.x === this.pointA.x && message.A.y === this.pointA.y && message.B.x === this.pointB.x && message.B.y === this.pointB.y){
+            this.type = message.Type;
+          }
+        }
+    });
   }
 
   setPath(inPath: {
