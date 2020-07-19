@@ -67,13 +67,13 @@ export class GridcommService { //Use of a service enables multiple-way communica
     // console.log(this.selPoints);
   }
 
-  addToPaths(inPath: {A:{x: number; y:number}; B: {x: number; y:number}}): void {
+  addToPaths(inPath: {A:{x: number, y:number}, B: {x: number, y:number}}): void {
     this.currPaths.push(inPath);
     this.dispPathsMessage.next(inPath);
     // console.log(this.currPaths);
   }
 
-  removeFromPaths(inPath: {A:{x: number; y:number}; B: {x: number; y:number}}): void {
+  removeFromPaths(inPath: {A:{x: number, y:number}, B: {x: number, y:number}}): void {
     var idxPath = this.currPaths.findIndex(i => i.A.x === inPath.A.x && i.A.y === inPath.A.y && i.B.x === inPath.B.x && i.B.y === inPath.B.y); //find the path
     if(idxPath !== -1){ //if the path was found then remove it from the currPaths array
       this.currPaths.splice(idxPath, 1);

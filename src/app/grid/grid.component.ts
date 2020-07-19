@@ -60,7 +60,7 @@ export class GridComponent implements OnInit, AfterContentInit, DoCheck {
     }
   }
 
-  generatePath(inPath: {A:{x: number; y:number}; B: {x: number; y:number}}): void{
+  generatePath(inPath: {A:{x: number, y:number}, B: {x: number, y:number}}): void{
     if(this.pathContainer !== null){
       const newPath = this.pathContainer.createComponent(this.resolver.resolveComponentFactory(PathComponent));
       (<PathComponent>newPath.instance).setPath(inPath);
