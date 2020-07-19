@@ -132,7 +132,8 @@ export class TopbarComponent implements OnInit, DoCheck {
   // Auxiliary function (can be called from html) to add a number (no) of random points in the grid
   // Combine with clearAll for generation instead of appending random points
   randomize(no: number): void{
-    this.clearAll();
+    this.clearAll();        // Removing all points
+    this.removeAllPaths();  // Removing all paths
     for(let num = 0; num < no; num++){
       var added = false;
       while(!added){
@@ -148,6 +149,7 @@ export class TopbarComponent implements OnInit, DoCheck {
   // Auxiliary function (can be called from html) to clear all selected points
   clearAll(): void{
     this.data.changeSelPointMessage([]);  // Empties the selectedpoints 'message'; More info: gridcomm.service.ts
+    this.removeAllPaths();                // Removing all paths
   }
 
   // Helper function to generate random number
@@ -264,8 +266,8 @@ export class TopbarComponent implements OnInit, DoCheck {
     }
 
     // TODO: Some sort of cleanup after finishing algorithm (pausing timer/making paths opaque)
-    this.startText = "Finished"
-    clearInterval(this.timeRef)  // Pause the timer when done
+    this.startText = "Finished"              // Display that the algorithm has finished
+    clearInterval(this.timeRef)              // Pause the timer when done
   }
 
   // Exhaustive algorithms
@@ -323,11 +325,15 @@ export class TopbarComponent implements OnInit, DoCheck {
       // Create the path
       this.createPath({A:{x:this.selectedPoints[previousIndex].x, y:this.selectedPoints[previousIndex].y},
                        B:{x:this.selectedPoints[currentIndex].x,  y:this.selectedPoints[currentIndex].y}});
+      // Listens constantly for the reset button click, and aborts the function if it occurs
+      if (this.abort) {
+        this.removeAllPaths();  // Repeated removeAllPaths in case of asynchronous call
+        return
+      };
     }  // End of algorithm iterations
     // Finish off with pathing back to the starting node
     this.createPath({A:{x:this.selectedPoints[currentIndex].x, y:this.selectedPoints[currentIndex].y},
-                     B:{x:this.selectedPoints[0].x,  y:this.selectedPoints[0].y}
-                    });
+                     B:{x:this.selectedPoints[0].x,  y:this.selectedPoints[0].y}});
   }
 
   arbitraryInsertion():void {
@@ -360,15 +366,17 @@ export class TopbarComponent implements OnInit, DoCheck {
 
   // Reset timer
   resetTimer(): void {
-    this.verticesButtonsDisabled = false;
-    this.timerRunning = false;
-    this.startButtonColor = "success";
-    this.startButtonDisabled = false;
-    this.startText = "Start!";
-    this.counter = 0;
+    this.abort = true;                                // Functions listen to "abort"
+    this.verticesButtonsDisabled = false;             // Re-enable vertices buttons
+    this.timerRunning = false;                        // Stop the timer
+    this.startButtonColor = "success";                // Reset the timer to show "Start"
+    this.startButtonDisabled = false;                 // Re-enable the start timer
+    this.startText = "Start!";                        // Reset the start timer text
+    this.counter = 0;                                 // Timer variables
     this.counterSeconds = 0;
-    this.removeAllPaths(); // REMOVES ALL PATHS
     clearInterval(this.timeRef);
+    this.removeAllPaths();                            // Remove all paths
+    setTimeout(() => { this.abort = false }, 50);     // Wait in case of async operations
   }
 
   // Opens the dialog
