@@ -21,7 +21,9 @@ export class PathComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // this.data..subscribe(selPoints => this.isSelected = (selPoints.findIndex(i => i.x === this.x && i.y === this.y)) > -1);
+  }
 
   setPath(inPath: {
     A: { x: number; y: number };

@@ -228,7 +228,7 @@ export class TopbarComponent implements OnInit, DoCheck {
   // Algorithms
 
   // Redirect to all the different algorithms depending on the selected one
-  runAlgorithm(): void {
+  async runAlgorithm():Promise<void> {
     // Points must be shuffled when the algorithm runs
     this.shuffleSelectedPoints()
 
@@ -236,38 +236,41 @@ export class TopbarComponent implements OnInit, DoCheck {
     switch (this.selectedAlgorithm) {
       // Exhaustive Algorithms
       case "depth-first-search":
-        this.depthFirstSearch()
+        await this.depthFirstSearch()
         break
 
       case "random-search":
-        this.randomSearch()
+        await this.randomSearch()
         break
 
       case "branch-and-bound":
-        this.branchAndBound()
+        await this.branchAndBound()
         break
 
       case "nearest-neighbour":
-        this.nearestNeighbour()
+        await this.nearestNeighbour()
         break
 
       // Heuristic Algorithms
       case "arbitrary-insertion":
-        this.arbitraryInsertion()
+        await this.arbitraryInsertion()
         break
 
       case "nearest-insertion":
-        this.nearestInsertion()
+        await this.nearestInsertion()
         break
 
       case "furthest-insertion":
-        this.furtherInsertion()
+        await this.furtherInsertion()
         break
     }
 
     // TODO: Some sort of cleanup after finishing algorithm (pausing timer/making paths opaque)
-    this.startText = "Finished"              // Display that the algorithm has finished
-    clearInterval(this.timeRef)              // Pause the timer when done
+    clearInterval(this.timeRef)                // Pause the timer when done
+    if (!this.abort) {
+      // Set all lines to opaque
+      this.startText = "Finished"              // Display that the algorithm has finished
+    }
   }
 
   // Exhaustive algorithms
