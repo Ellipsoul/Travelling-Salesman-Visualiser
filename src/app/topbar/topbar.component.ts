@@ -318,6 +318,16 @@ export class TopbarComponent implements OnInit, DoCheck {
         sol.minDist = totalDist;
         sol.minPath = minPath;
       }
+      await this.sleep(50); // Making use of async-await to create path
+      this.createPath({A:{x:this.selectedPoints[0].x, y:this.selectedPoints[0].y}, B:{x:pointSequence[pointSequence.length-1].x,  y:pointSequence[pointSequence.length-1].y}});
+      if (this.abort) { // multiple abort checks to catch recursive calls at various depths and abort
+        return;
+      };
+      await this.sleep(50); // Making use of async-await to create path
+      this.removePath({A:{x:this.selectedPoints[0].x, y:this.selectedPoints[0].y}, B:{x:pointSequence[pointSequence.length-1].x,  y:pointSequence[pointSequence.length-1].y}});
+      if (this.abort) { // multiple abort checks to catch recursive calls at various depths and abort
+        return;
+      };
       return;
     }
     for(let i = 0; i < leftoverPoints.length; i++){ // RECURSIVE CASE: for remaining unused points, go through all permutations of this subset (through recursion)
