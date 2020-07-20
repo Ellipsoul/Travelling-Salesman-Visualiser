@@ -6,10 +6,10 @@
   border-top: 6px solid rgba(0,0,0,1.0);
 }
 
-/* Implement this later
 .type2 {
+  border-top: 6px solid rgba(241, 243, 104);
 }
-*/
+
 
 .path {
   position: absolute;

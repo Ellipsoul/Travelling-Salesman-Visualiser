@@ -54,28 +54,40 @@ import { GridcommService } from '../../gridcomm.service';
 export class PointComponent implements OnInit, AfterContentInit, DoCheck {
   isSelected = false;
   isHovered = false;
-
+  disabled = false;
   //stores this point's coordinates
   x: number;
   y: number;
 
 
-  constructor(private data: GridcommService) { }
+  constructor(private data: GridcommService) {
+
+  }
 
   selectToggle() { //called in html when point is clicked
     // this.isSelected = !this.isSelected;
-    if(this.isSelected){
-      this.data.removeFromSelPointsMessage({x: this.x, y: this.y}) //remove this point from the selectedpoints 'message'
-    }else{
-      this.data.addToSelPointsMessage({x: this.x, y: this.y}) //add this point to the selectedpoints 'message'
+    if(!this.disabled){
+      if(this.isSelected){
+        this.data.removeFromSelPointsMessage({x: this.x, y: this.y}) //remove this point from the selectedpoints 'message'
+      }else{
+        this.data.addToSelPointsMessage({x: this.x, y: this.y}) //add this point to the selectedpoints 'message'
+      }
     }
   }
 
   hoverIn() { //called in html when mouse moves into the component
-    this.isHovered = true;
+    if(!this.disabled){
+      this.isHovered = true;
+    }
   }
 
   hoverOut() { //called in html when mouse leaves the component
+    if(!this.disabled){
+      this.isHovered = false;
+    }
+  }
+
+  disable(): void{
     this.isHovered = false;
   }
 
@@ -84,6 +96,12 @@ export class PointComponent implements OnInit, AfterContentInit, DoCheck {
     //An extra anonymous function is used:
     //this.isSelected = (selPoints.findIndex(i => i.x === this.x && i.y === this.y)) > -1
     //Whenever the 'message' is updated --> update this coordinate's selected state
+    this.data.currentdisablePointsMessage.subscribe(disabled => {
+      this.disabled = disabled;
+      if(this.disable){
+        this.disable();
+      }
+    });
   }
 
   ngAfterContentInit(): void {
