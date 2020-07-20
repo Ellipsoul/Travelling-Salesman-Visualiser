@@ -38,7 +38,7 @@ export class GridComponent implements OnInit, AfterContentInit, DoCheck {
 
     //asynchronous update (addition and removal) of path components in pathContainer
     this.data.currentRemovePathsIndexMessage.subscribe(pathIndexToRemove => this.removePath(pathIndexToRemove));
-    this.data.currentDispPathsMessage.subscribe(pathToAdd => this.generatePath(pathToAdd));
+    this.data.currentDispPathsMessage.subscribe(pathToAdd => {if(pathToAdd != null){this.generatePath(pathToAdd)}});
   }
 
   ngAfterContentInit(): void { //after content is initialized (runs after ngOnInit)

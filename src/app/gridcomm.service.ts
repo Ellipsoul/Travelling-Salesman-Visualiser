@@ -25,7 +25,7 @@ export class GridcommService { //Use of a service enables multiple-way communica
 
   //========================================================
   //========================================================
-  dispPaths: {A:{x: number; y: number}; B: {x: number; y: number}};
+  dispPaths: {A:{x: number; y: number}; B: {x: number; y: number}} = null;
 
   private dispPathsMessage = new BehaviorSubject<{A:{x: number; y:number}; B: {x: number; y:number}}>(this.dispPaths); //create the 'message' to be used in the communication service
 
@@ -67,7 +67,6 @@ export class GridcommService { //Use of a service enables multiple-way communica
   }
 
   addToSelPointsMessage(inpoint: {x: number; y:number}): boolean{ //function to append to the points 'message' - useful for adding objects to the array
-
     var successful = false;
     if(this.selPoints.findIndex(i => i.x === inpoint.x && i.y === inpoint.y) === -1){
       this.selPoints.push(inpoint); //only add if the object doesn't exist
@@ -84,8 +83,11 @@ export class GridcommService { //Use of a service enables multiple-way communica
   }
 
   addToPaths(inPath: {A:{x: number, y:number}, B: {x: number, y:number}}): void {
-    this.currPaths.push(inPath);
-    this.dispPathsMessage.next(inPath);
+    var idxPath = this.currPaths.findIndex(i => i.A.x === inPath.A.x && i.A.y === inPath.A.y && i.B.x === inPath.B.x && i.B.y === inPath.B.y); //find the path
+    if(idxPath === -1){ //if the path was not found then add it to the currPaths array and set new message
+      this.currPaths.push(inPath);
+      this.dispPathsMessage.next(inPath);
+    }
     // console.log(this.currPaths);
   }
 

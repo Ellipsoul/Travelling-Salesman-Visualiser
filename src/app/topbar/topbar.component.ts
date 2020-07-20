@@ -298,14 +298,18 @@ export class TopbarComponent implements OnInit, DoCheck {
       this.removeAllPaths();  // Repeated removeAllPaths in case of asynchronous call
       return;
     };
-    console.log(bestSolution.minDist)
-    let bestPath = bestSolution.minPath;
+
+    // console.log(bestSolution.minDist)
+    let bestPath = bestSolution.minPath; //array of coordinates that makes best path
     let pathLength = bestPath.length;
-    for(let b = 0; b < pathLength-1; b++){
+
+    for(let b = 0; b < pathLength-1; b++){ //draw out best path for for final printing
       this.createPath({A:{x:bestPath[b].x, y:bestPath[b].y}, B:{x:bestPath[b+1].x,  y:bestPath[b+1].y}});
     }
     this.createPath({A:{x:bestPath[0].x, y:bestPath[0].y}, B:{x:bestPath[pathLength-1].x,  y:bestPath[pathLength-1].y}});
 
+    this.currentPathDistance = Math.round((bestSolution.minDist + Number.EPSILON) * 100) / 100;
+    this.minPathDistance = this.currentPathDistance;
   }
 
   // depthFirstSearch: Recursive asynchronous helper function to go through all possible combinations of points
@@ -317,28 +321,35 @@ export class TopbarComponent implements OnInit, DoCheck {
 
     if(leftoverPoints.length === 0){ // BASE CASE: whenever all remaining points are used up OR whenever a permutation is complete
       // calculate distance formed by path loop
+
+      await this.sleep(this.runSpeed); // Making use of async-await to create path
+      this.createPath({A:{x:this.selectedPoints[0].x, y:this.selectedPoints[0].y}, B:{x:pointSequence[pointSequence.length-1].x,  y:pointSequence[pointSequence.length-1].y}});
+      if (this.abort) { // multiple abort checks to catch recursive calls at various depths and abort
+        return;
+      };
+
       let totalDist = this.distanceBetweenPoints(this.selectedPoints[0],pointSequence[0]);
       for(let p = 0; p < pointSequence.length-1; p++){
         totalDist += this.distanceBetweenPoints(pointSequence[p],pointSequence[p+1]);
       }
       totalDist += this.distanceBetweenPoints(pointSequence[pointSequence.length-1], this.selectedPoints[0]);
 
+      this.currentPathDistance = Math.round((totalDist + Number.EPSILON) * 100) / 100;
+
       // if distance is shorter than current minimum, then update minPath and minDist
       if(totalDist <= sol.minDist){
         let minPath = [this.selectedPoints[0]].concat(pointSequence)
         sol.minDist = totalDist;
         sol.minPath = minPath;
+        this.minPathDistance = Math.round((sol.minDist + Number.EPSILON) * 100) / 100;
       }
-      await this.sleep(50); // Making use of async-await to create path
-      this.createPath({A:{x:this.selectedPoints[0].x, y:this.selectedPoints[0].y}, B:{x:pointSequence[pointSequence.length-1].x,  y:pointSequence[pointSequence.length-1].y}});
-      if (this.abort) { // multiple abort checks to catch recursive calls at various depths and abort
-        return;
-      };
-      await this.sleep(50); // Making use of async-await to create path
+
+      await this.sleep(this.runSpeed); // Making use of async-await to remove path
       this.removePath({A:{x:this.selectedPoints[0].x, y:this.selectedPoints[0].y}, B:{x:pointSequence[pointSequence.length-1].x,  y:pointSequence[pointSequence.length-1].y}});
       if (this.abort) { // multiple abort checks to catch recursive calls at various depths and abort
         return;
       };
+
       return;
     }
     for(let i = 0; i < leftoverPoints.length; i++){ // RECURSIVE CASE: for remaining unused points, go through all permutations of this subset (through recursion)
@@ -349,7 +360,7 @@ export class TopbarComponent implements OnInit, DoCheck {
 
       let currPoint:{x:number, y:number} = leftoverPoints[i]; // keep one point fixed and permute the rest
 
-      await this.sleep(50); // Making use of async-await to create path
+      await this.sleep(this.runSpeed); // Making use of async-await to create path
       this.createPath({A:{x:previousPoint.x, y:previousPoint.y}, B:{x:currPoint.x,  y:currPoint.y}});
 
       let newLeftoverPoints = leftoverPoints.slice(0,i).concat(leftoverPoints.slice(i+1)); // remove the fixed point from leftover points
@@ -364,7 +375,7 @@ export class TopbarComponent implements OnInit, DoCheck {
         return;
       };
 
-      await this.sleep(50); // Making use of async-await to remove path
+      await this.sleep(this.runSpeed); // Making use of async-await to remove path
       this.removePath({A:{x:previousPoint.x, y:previousPoint.y}, B:{x:currPoint.x,  y:currPoint.y}});
     }
 
