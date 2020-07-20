@@ -531,6 +531,11 @@ export class TopbarComponent implements OnInit, DoCheck {
         minDistanceFromPoint = Infinity // Reset minimum distance from curent point
         if (partOfCycle[i]) {  // Only check visited nodes
           for (let j=0; j<this.selectedPoints.length; j++) {
+            // Listens constantly for the reset button click, and aborts the function if it occurs
+            if (this.abort) {
+              this.removeAllPaths();  // Repeated removeAllPaths in case of asynchronous call
+              return
+            };
             if (!partOfCycle[j]) {  // Only compare with unvisited nodes
               if (this.distanceMatrix[i][j] < minDistanceFromPoint) {  // Closer node found
                 minDistanceFromPoint = this.distanceMatrix[i][j];      // Update currently closest node
@@ -551,13 +556,13 @@ export class TopbarComponent implements OnInit, DoCheck {
         await this.sleep(this.runSpeed);  // Making use of async-await
         this.createPath({A:{x:this.selectedPoints[0].x, y:this.selectedPoints[0].y},
                          B:{x:this.selectedPoints[minDistanceAllPointsIndex].x,
-                            y:this.selectedPoints[minDistanceAllPointsIndex].y}})
+                            y:this.selectedPoints[minDistanceAllPointsIndex].y}})  // Create the first path
+        this.data.setIndividualPathType(this.data.currPaths[0], 2);                // Set path colour to yellow
         firstPath = this.data.currPaths[0];  // Store the first path for the end
       }
       else {  // Main case with paths to check and insert
         minExtraDistance = Infinity;
         for (let k=0; k<this.data.currPaths.length; k++) {
-          //pointA:{x:number, y:number}, pointB:{x:number, y:number}
           extraDistance = this.distanceBetweenPoints(this.data.currPaths[k].A,
                                                      this.selectedPoints[minDistanceAllPointsIndex]) +
                           this.distanceBetweenPoints(this.data.currPaths[k].B,
@@ -568,8 +573,15 @@ export class TopbarComponent implements OnInit, DoCheck {
             minExtraDistancePath = this.data.currPaths[k];
           }
         }    // End of looping through paths, minimum cost path insertion found
-        await this.sleep(this.runSpeed);        // Making use of async-await
-        this.removePath(minExtraDistancePath);  // Removing previous paths
+        await this.sleep(this.runSpeed);          // Making use of async-await
+        this.removePath(minExtraDistancePath);    // Removing previous path
+        if (this.data.currPaths.length === 1) {
+          this.data.setIndividualPathType(this.data.currPaths[0], 0)  // Base case with one path
+        }
+        else if (this.data.currPaths.length > 1) {                    // Normal case with 2 paths
+          this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-1], 0);
+          this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-2], 0);
+        }
         await this.sleep(this.runSpeed);        // Making use of async-await
         this.createPath({A:{x:this.selectedPoints[minDistanceAllPointsIndex].x,
                             y:this.selectedPoints[minDistanceAllPointsIndex].y},
@@ -577,10 +589,15 @@ export class TopbarComponent implements OnInit, DoCheck {
         this.createPath({A:{x:this.selectedPoints[minDistanceAllPointsIndex].x,
                             y:this.selectedPoints[minDistanceAllPointsIndex].y},
                         B:{x:minExtraDistancePath.B.x, y:minExtraDistancePath.B.y}});
+        await this.sleep(0.1);
+        this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-1], 2);
+        await this.sleep(0.1);
+        this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-2], 2);
       }
-    }        // End of main algorithm for loop
-    this.createPath(firstPath);
-  }          // End of entire nearest insertion algorithm function
+    }  // End of main algorithm for loop
+    await this.sleep(this.runSpeed);        // Making use of async-await
+    this.createPath(firstPath);             // Add back the first path to finish off
+  }  // End of entire nearest insertion algorithm function
 
   // Furthest Insertion
   async furtherInsertion():Promise<void> {
@@ -650,7 +667,7 @@ export class TopbarComponent implements OnInit, DoCheck {
   // Reset timer
   resetTimer(): void {
     if (this.timerRunning) {
-      this.abort = true;                                // Functions listen to "abort"
+      this.abort = true;                              // Functions listen to "abort"
     }
 
     this.verticesButtonsDisabled = false;             // Re-enable vertices buttons
