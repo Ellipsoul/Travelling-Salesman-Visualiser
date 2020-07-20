@@ -62,6 +62,7 @@ export class TopbarComponent implements OnInit, DoCheck {
   // Distance control
   currentPathDistance:number = 0;         // Current path distance
   minPathDistance:number = 0;             // Minimum path distance
+  distanceMatrix:number[][] = [];         // Matrix of distances between points
 
   // Algorithm Select
   algorithmControl =  new FormControl();  // Initialise form control for algorithm selector
@@ -507,6 +508,10 @@ export class TopbarComponent implements OnInit, DoCheck {
     for (let i=0; i<this.selectedPoints.length-1; i++) {
       partOfCycle.push(false);
     }
+    // Calculate distances matrix
+    this.calculateDistanceMatrix()
+    console.log(this.distanceMatrix);
+
     // Declare required variables for algorithm
     let nextPointToAdd:any;
     let distanceFromPoint:number;
@@ -514,37 +519,15 @@ export class TopbarComponent implements OnInit, DoCheck {
     let minDistanceFromPointIndex:number;
     let minDistanceAllPoints:number;
     let minDistanceAllPointsIndex:number;
+    let edges:number[];
 
     // Start of main algorithm logic
-    for (let _=0; _<this.selectedPoints.length-1; _++) {
+    for (let _=0; _<this.selectedPoints.length; _++) {
       minDistanceAllPoints = Infinity;  // Reset distance from all points
       // Base case with the first point and drawing first path
-      if (this.data.currPaths.length === 0) {
-        minDistanceFromPoint = Infinity;
-        // Find minimum distance of all remaining points'
-        for (let i=0; i<this.selectedPoints.length; i++) {
-          // Only check if point is not already part of cycle
-          if (partOfCycle[i] === false) {
-            distanceFromPoint = this.distanceBetweenPoints(this.selectedPoints[0], this.selectedPoints[i])
-            if (distanceFromPoint < minDistanceFromPoint) {
-              minDistanceFromPoint = distanceFromPoint;
-              minDistanceFromPointIndex = i;
-            }
-          }
-        }  // Minimum distance from initial point found
-        partOfCycle[minDistanceFromPointIndex] = true;      // Mark this second point as visited
-        await this.sleep(this.runSpeed);                    // Making use of async-await
-        // Set the first path
-        this.createPath({A:{x:this.selectedPoints[0].x, y:this.selectedPoints[0].y},
-                         B:{x:this.selectedPoints[minDistanceFromPointIndex].x, y:this.selectedPoints[minDistanceFromPointIndex].y}});
-        this.data.setIndividualPathType(this.data.currPaths[0], 2);  // Set the path to yellow
-      }  // End of first point base case
-      // Iterative case with path selection
-      else {
-        console.log("Out of the base case!")
-      }
-    }
-  }
+
+    }    // End of main algorithm for loop
+  }      // End of nearest insertion algorithm function
 
   // Furthest Insertion
   async furtherInsertion():Promise<void> {
@@ -580,6 +563,28 @@ export class TopbarComponent implements OnInit, DoCheck {
   shuffleSelectedPoints():void {
     this.data.shuffleSelectedPoints()
     // console.log(this.selectedPoints)
+  }
+
+  // Calculates the matrix of distances between selected points
+  calculateDistanceMatrix():void {
+    let row:number[];
+    let distance:number;
+    for (let i=0; i<this.selectedPoints.length; i++) {
+      row = [];
+      for (let j=0; j<this.selectedPoints.length; j++) {
+        if (i===j) {
+          row.push(0)
+          console.log("pushed")
+        }
+        else {
+          distance = this.distanceBetweenPoints(this.selectedPoints[i], this.selectedPoints[j])
+          row.push(distance)
+          console.log("pushed2")
+        }
+      }
+      console.log(row);
+      this.distanceMatrix.push(row);
+    }
   }
 
   //--------------------------------------------------------------------------------------------------------------------
