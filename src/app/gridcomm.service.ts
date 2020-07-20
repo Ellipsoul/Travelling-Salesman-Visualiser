@@ -17,6 +17,13 @@ export class GridcommService { //Use of a service enables multiple-way communica
 
   //========================================================
   //========================================================
+  disablePoints: boolean = false;
+
+  private disablePointsMessage = new BehaviorSubject<boolean>(this.disablePoints); //create the 'message' to be used in the communication service
+
+  currentdisablePointsMessage = this.disablePointsMessage.asObservable(); //set the 'message' to be observable for use in other components
+  //========================================================
+  //========================================================
   currPaths: {A:{x: number; y: number}; B: {x: number; y: number}}[] = [];
 
   // private currPathsMessage = new BehaviorSubject<{A:{x: number; y:number}; B: {x: number; y:number}}[]>(this.currPaths); //create the 'message' to be used in the communication service
@@ -41,19 +48,19 @@ export class GridcommService { //Use of a service enables multiple-way communica
 
   //========================================================
   //========================================================
-  pathType: number = 0;
+  allPathType: {Type:number, Tick:boolean} = {Type:0, Tick:false};
 
-  private pathTypeMessage = new BehaviorSubject<number>(this.pathType); //create the 'message' to be used in the communication service
+  private allPathTypeMessage = new BehaviorSubject<{Type:number, Tick:boolean}>(this.allPathType); //create the 'message' to be used in the communication service
 
-  changePathTypeMessage = this.pathTypeMessage.asObservable(); //set the 'message' to be observable for use in other components
+  changeAllPathTypeMessage = this.allPathTypeMessage.asObservable(); //set the 'message' to be observable for use in other components
 
   //========================================================
   //========================================================
-  individualPathType: {A:{x: number, y: number}, B: {x: number, y: number}, Type: number};
+  individualPathType: {A:{x: number, y: number}, B: {x: number, y: number}, Type: number} = {A:null,B:null,Type:0};
 
-  private indivTypeMessage = new BehaviorSubject<{A:{x: number, y: number}, B: {x: number, y: number}, Type: number}>(this.individualPathType); //create the 'message' to be used in the communication service
+  private indivPathTypeMessage = new BehaviorSubject<{A:{x: number, y: number}, B: {x: number, y: number}, Type: number}>(this.individualPathType); //create the 'message' to be used in the communication service
 
-  changeIndPathTypeMessage = this.indivTypeMessage.asObservable(); //set the 'message' to be observable for use in other components
+  changeIndPathTypeMessage = this.indivPathTypeMessage.asObservable(); //set the 'message' to be observable for use in other components
 
 
   constructor( ){
@@ -82,6 +89,11 @@ export class GridcommService { //Use of a service enables multiple-way communica
     // console.log(this.selPoints);
   }
 
+  disableAllPoints(disable: boolean): void{
+    this.disablePoints = disable;
+    this.disablePointsMessage.next(this.disablePoints)
+  }
+
   addToPaths(inPath: {A:{x: number, y:number}, B: {x: number, y:number}}): void {
     var idxPath = this.currPaths.findIndex(i => i.A.x === inPath.A.x && i.A.y === inPath.A.y && i.B.x === inPath.B.x && i.B.y === inPath.B.y); //find the path
     if(idxPath === -1){ //if the path was not found then add it to the currPaths array and set new message
@@ -106,12 +118,14 @@ export class GridcommService { //Use of a service enables multiple-way communica
     // console.log(this.currPaths);
   }
 
-  setAllPathsType(type: number):void {
-    this.pathTypeMessage.next(type);
+  setAllExistingPathsType(type: number):void {
+    this.allPathType = {Type:type, Tick:!this.allPathType.Tick};
+    this.allPathTypeMessage.next(this.allPathType);
   }
 
   setIndividualPathType(inpath: {A: {x:number, y:number}, B: {x:number, y:number}}, type: number):void {
-    this.indivTypeMessage.next({A: inpath.A, B: inpath.B, Type: type});
+    this.individualPathType = {A: inpath.A, B: inpath.B, Type: type};
+    this.indivPathTypeMessage.next({A: inpath.A, B: inpath.B, Type: type});
   }
 
   removeFromArray(array: any[], value: any): any[]{ //helper function to remove object from array based on coordinate equality

@@ -239,7 +239,8 @@ export class TopbarComponent implements OnInit, DoCheck {
   async runAlgorithm():Promise<void> {
     // Points must be shuffled when the algorithm runs
     this.shuffleSelectedPoints()
-
+    // Disable all points from being clicked
+    this.data.disableAllPoints(true);
     // Perform the desired algorithm
     switch (this.selectedAlgorithm) {
       // Exhaustive Algorithms
@@ -272,6 +273,28 @@ export class TopbarComponent implements OnInit, DoCheck {
         await this.furtherInsertion()
         break
     }
+
+    // ==========================================================================================
+    // =================================== SETTING PATH TYPES ===================================
+    // NOTE - MUST USE await this.sleep(1) ~~~ OTHERWISE paths can't keep up with the changes - which was why it didn't work yesterday
+
+    // METHOD 1 - SETTING THE TYPE OF EVERY PATH INDIVIDUALLY (fine for setting several paths)
+    // NOTE - 1ms seems to work fine and not cause errors + doesn't cause noticeable delay
+
+    // for(let p = 0; p < this.data.currPaths.length; p++){
+    //   await this.sleep(1);
+    //   this.data.setIndividualPathType(this.data.currPaths[p], 1);
+    // }
+
+    // METHOD 2 - SETTING THE TYPE OF ALL EXISTING PATHS
+    // CAUTION - sets all EXISTING paths to this type ~ HOWEVER: future paths will be created with the default type-0 (open to discussion ~ is this wanted behaviour?)
+    // WHEN SETTING TYPES, all paths only detect CHANGES in the allPathType
+    // SO if you want to set all paths to type-1 again, need an update with another data.setAllExistingPathsType(1)
+
+    await this.sleep(1);
+    this.data.setAllExistingPathsType(1);
+    // =================================== SETTING PATH TYPES ===================================
+    // ==========================================================================================
 
     // TODO: Make paths opaque and other cleanup
     clearInterval(this.timeRef)                // Pause the timer when done
@@ -320,20 +343,24 @@ export class TopbarComponent implements OnInit, DoCheck {
     };
 
     if(leftoverPoints.length === 0){ // BASE CASE: whenever all remaining points are used up OR whenever a permutation is complete
-      // calculate distance formed by path loop
+      // create path to complete loop
+      let newPath = {A:{x:this.selectedPoints[0].x, y:this.selectedPoints[0].y}, B:{x:pointSequence[pointSequence.length-1].x,  y:pointSequence[pointSequence.length-1].y}};
 
       await this.sleep(this.runSpeed); // Making use of async-await to create path
-      this.createPath({A:{x:this.selectedPoints[0].x, y:this.selectedPoints[0].y}, B:{x:pointSequence[pointSequence.length-1].x,  y:pointSequence[pointSequence.length-1].y}});
+      this.data.setAllExistingPathsType(0);
+      this.createPath(newPath);
       if (this.abort) { // multiple abort checks to catch recursive calls at various depths and abort
         return;
       };
+      this.data.setIndividualPathType(newPath,2);
 
+      // calculate distance formed by path loop
       let totalDist = this.distanceBetweenPoints(this.selectedPoints[0],pointSequence[0]);
       for(let p = 0; p < pointSequence.length-1; p++){
         totalDist += this.distanceBetweenPoints(pointSequence[p],pointSequence[p+1]);
       }
       totalDist += this.distanceBetweenPoints(pointSequence[pointSequence.length-1], this.selectedPoints[0]);
-
+      // set current distance
       this.currentPathDistance = Math.round((totalDist + Number.EPSILON) * 100) / 100;
 
       // if distance is shorter than current minimum, then update minPath and minDist
@@ -345,7 +372,7 @@ export class TopbarComponent implements OnInit, DoCheck {
       }
 
       await this.sleep(this.runSpeed); // Making use of async-await to remove path
-      this.removePath({A:{x:this.selectedPoints[0].x, y:this.selectedPoints[0].y}, B:{x:pointSequence[pointSequence.length-1].x,  y:pointSequence[pointSequence.length-1].y}});
+      this.removePath(newPath);
       if (this.abort) { // multiple abort checks to catch recursive calls at various depths and abort
         return;
       };
@@ -357,26 +384,31 @@ export class TopbarComponent implements OnInit, DoCheck {
       if (this.abort) { // multiple abort checks to catch recursive calls at various depths and abort
         return;
       };
-
-      let currPoint:{x:number, y:number} = leftoverPoints[i]; // keep one point fixed and permute the rest
+      // keep one point fixed and permute the rest
+      let currPoint:{x:number, y:number} = leftoverPoints[i];
 
       await this.sleep(this.runSpeed); // Making use of async-await to create path
-      this.createPath({A:{x:previousPoint.x, y:previousPoint.y}, B:{x:currPoint.x,  y:currPoint.y}});
-
-      let newLeftoverPoints = leftoverPoints.slice(0,i).concat(leftoverPoints.slice(i+1)); // remove the fixed point from leftover points
-
-      pointSequence.push(currPoint); // add the fixed point to the current permutation
-      let newPointSequence = pointSequence.slice(0); // HOWEVER because how javascript works with arrays, we don't want to modify the original array by reference
-      pointSequence.splice(pointSequence.length-1,1); // SO we make a copy of the array and the point is removed
-
-      await this.permutePoints(newLeftoverPoints, newPointSequence, currPoint, sol); // recurse with remaning unused points and current permutation
+      let newPath = {A:{x:previousPoint.x, y:previousPoint.y}, B:{x:currPoint.x,  y:currPoint.y}};
+      this.data.setAllExistingPathsType(0);
+      this.createPath(newPath);
+      this.data.setIndividualPathType(newPath,2);
+      // remove the fixed point from leftover points
+      let newLeftoverPoints = leftoverPoints.slice(0,i).concat(leftoverPoints.slice(i+1));
+      // add the fixed point to the current permutation
+      // HOWEVER because how javascript works with arrays, we don't want to modify the original array by reference
+      // SO we make a copy of the array and the point is removed
+      pointSequence.push(currPoint);
+      let newPointSequence = pointSequence.slice(0);
+      pointSequence.splice(pointSequence.length-1,1);
+      // recurse with remaning unused points and current permutation
+      await this.permutePoints(newLeftoverPoints, newPointSequence, currPoint, sol);
 
       if (this.abort) { // multiple abort checks to catch recursive calls at various depths and abort
         return;
       };
 
       await this.sleep(this.runSpeed); // Making use of async-await to remove path
-      this.removePath({A:{x:previousPoint.x, y:previousPoint.y}, B:{x:currPoint.x,  y:currPoint.y}});
+      this.removePath(newPath);
     }
 
   }
@@ -499,6 +531,8 @@ export class TopbarComponent implements OnInit, DoCheck {
 
     this.currentPathDistance = 0;                     // Set distances back to 0
     this.minPathDistance = 0;
+
+    this.data.disableAllPoints(false);
   }
 
   // Opens the dialog
