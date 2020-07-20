@@ -274,29 +274,27 @@ export class TopbarComponent implements OnInit, DoCheck {
         break
     }
 
-    // ==========================================================================================
-    // =================================== SETTING PATH TYPES ===================================
+    // =================================================================================================================
+    // Setting Path Types
+
     // NOTE - MUST USE await this.sleep(1) ~~~ OTHERWISE paths can't keep up with the changes - which was why it didn't work yesterday
 
-    // METHOD 1 - SETTING THE TYPE OF EVERY PATH INDIVIDUALLY (fine for setting several paths)
+    // Setting a single path type:
     // NOTE - 1ms seems to work fine and not cause errors + doesn't cause noticeable delay
-
     // for(let p = 0; p < this.data.currPaths.length; p++){
     //   await this.sleep(1);
     //   this.data.setIndividualPathType(this.data.currPaths[p], 1);
     // }
 
-    // METHOD 2 - SETTING THE TYPE OF ALL EXISTING PATHS
+    // Setting type of all existing paths
     // CAUTION - sets all EXISTING paths to this type ~ HOWEVER: future paths will be created with the default type-0 (open to discussion ~ is this wanted behaviour?)
     // WHEN SETTING TYPES, all paths only detect CHANGES in the allPathType
     // SO if you want to set all paths to type-1 again, need an update with another data.setAllExistingPathsType(1)
 
     await this.sleep(1);
     this.data.setAllExistingPathsType(1);
-    // =================================== SETTING PATH TYPES ===================================
-    // ==========================================================================================
+    // =================================================================================================================
 
-    // TODO: Make paths opaque and other cleanup
     clearInterval(this.timeRef)                // Pause the timer when done
     this.timerRunning = false;                 // Stop "timerRunning"
     if (!this.abort) {
@@ -464,9 +462,14 @@ export class TopbarComponent implements OnInit, DoCheck {
       console.log(this.selectedPoints[previousIndex])
       console.log(this.selectedPoints[currentIndex])
       await this.sleep(this.runSpeed);  // Making use of async-await
-      // Create the path
+      // Change previous path colour to grey
+      if (this.data.currPaths.length != 0) {
+        this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-1], 0)
+      }
+      // Create the path as yellow
       this.createPath({A:{x:this.selectedPoints[previousIndex].x, y:this.selectedPoints[previousIndex].y},
                        B:{x:this.selectedPoints[currentIndex].x,  y:this.selectedPoints[currentIndex].y}});
+      this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-1], 2)
       // Listens constantly for the reset button click, and aborts the function if it occurs
       if (this.abort) {
         this.removeAllPaths();  // Repeated removeAllPaths in case of asynchronous call
