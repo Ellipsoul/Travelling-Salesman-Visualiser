@@ -593,6 +593,16 @@ export class TopbarComponent implements OnInit, DoCheck {
     }  // End of main algorithm for loop
     await this.sleep(this.runSpeed);        // Making use of async-await
     this.createPath(firstPath);             // Add back the first path to finish off
+
+    // Calculate the total path distance
+    let pathsDistance:number = 0;
+
+    for (let i=0; i<this.data.currPaths.length; i++) {
+      pathsDistance += this.calculatePathLength(this.data.currPaths[i]);
+    }
+    this.currentPathDistance = Math.round((pathsDistance + Number.EPSILON) * 100) / 100;
+    this.minPathDistance = this.currentPathDistance;
+
   }  // End of entire nearest insertion algorithm function
 
   // Furthest Insertion
