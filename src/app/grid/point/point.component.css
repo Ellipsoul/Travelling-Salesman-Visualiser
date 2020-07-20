@@ -5,6 +5,7 @@
   height:35%;
   border-radius:50%;
   cursor: pointer;
+  z-index: 2;
   /* border: 1px black; */
   /* border-style: solid; */
 }
@@ -18,6 +19,7 @@
   flex-wrap: nowrap;
   justify-content: center;
   align-items: center;
+  background-color: transparent;
   /* background: greenyellow; */
   /* border: 1px dashed black; */
   /* border-radius: 25%; */
