@@ -298,9 +298,12 @@ export class TopbarComponent implements OnInit, DoCheck {
 
     // TODO: Make paths opaque and other cleanup
     clearInterval(this.timeRef)                // Pause the timer when done
+    this.timerRunning = false;                 // Stop "timerRunning"
     if (!this.abort) {
       // Set all lines to opaque
       this.startText = "Finished!"             // Display that the algorithm has finished
+    } else {
+      this.abort = false;                      // Setting abort back to false if aborted
     }
   }
 
@@ -318,7 +321,7 @@ export class TopbarComponent implements OnInit, DoCheck {
     await this.permutePoints(selectedPointsCopy.slice(1), [], this.selectedPoints[0], bestSolution); // notice selectedPointsCopy.slice(1) - the first point can be neglected as it will always be the start point ~ only need to permute the remaining n-1 points to find possible paths
 
     if (this.abort) {
-      this.removeAllPaths();  // Repeated removeAllPaths in case of asynchronous call
+      this.removeAllPaths();             // Repeated removeAllPaths in case of asynchronous call
       return;
     };
 
@@ -515,7 +518,9 @@ export class TopbarComponent implements OnInit, DoCheck {
 
   // Reset timer
   resetTimer(): void {
-    this.abort = true;                                // Functions listen to "abort"
+    if (this.timerRunning) {
+      this.abort = true;                                // Functions listen to "abort"
+    }
 
     this.verticesButtonsDisabled = false;             // Re-enable vertices buttons
     this.timerRunning = false;                        // Stop the timer
@@ -526,8 +531,7 @@ export class TopbarComponent implements OnInit, DoCheck {
     this.counterSeconds = 0;
     clearInterval(this.timeRef);
 
-    this.removeAllPaths();                                             // Remove all paths
-    setTimeout(() => { this.abort = false }, this.runSpeed + 10);      // Wait in case of async operations
+    this.removeAllPaths();                            // Remove all paths
 
     this.currentPathDistance = 0;                     // Set distances back to 0
     this.minPathDistance = 0;
