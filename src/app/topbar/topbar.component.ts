@@ -518,6 +518,10 @@ export class TopbarComponent implements OnInit, DoCheck {
     let minDistanceAllPoints:number;
     let minDistanceAllPointsIndex:number;
 
+    let extraDistance:number;
+    let minExtraDistance:number;
+    let minExtraDistancePath:{A:{x:number, y:number}, B:{x:number, y:number}};
+
     // Start of main algorithm logic, need to draw n-1 paths
     for (let _=0; _<this.selectedPoints.length-1; _++) {
       minDistanceAllPoints = Infinity;  // Reset minimum distance from all points
@@ -543,12 +547,34 @@ export class TopbarComponent implements OnInit, DoCheck {
       console.log(minDistanceAllPointsIndex);
       // Find insertion that will minimise the addition of distance
       if (this.data.currPaths.length === 0) {  // Base case with the first point
+        await this.sleep(this.runSpeed);  // Making use of async-await
         this.createPath({A:{x:this.selectedPoints[0].x, y:this.selectedPoints[0].y},
                          B:{x:this.selectedPoints[minDistanceAllPointsIndex].x,
                             y:this.selectedPoints[minDistanceAllPointsIndex].y}})
       }
-      else {  // Main case with paths to check and remove
-
+      else {  // Main case with paths to check and insert
+        minExtraDistance = Infinity;
+        for (let k=0; k<this.data.currPaths.length; k++) {
+          //pointA:{x:number, y:number}, pointB:{x:number, y:number}
+          extraDistance = this.distanceBetweenPoints(this.data.currPaths[k].A,
+                                                     this.selectedPoints[minDistanceAllPointsIndex]) +
+                          this.distanceBetweenPoints(this.data.currPaths[k].B,
+                                                     this.selectedPoints[minDistanceAllPointsIndex]) -
+                          this.calculatePathLength(this.data.currPaths[k]);
+          if (extraDistance < minExtraDistance) {  // Lower cost path insertion found
+            minExtraDistance = extraDistance;
+            minExtraDistancePath = this.data.currPaths[k];
+          }
+        }    // End of looping through paths, minimum cost path insertion found
+        await this.sleep(this.runSpeed);        // Making use of async-await
+        this.removePath(minExtraDistancePath);  // Removing previous paths
+        await this.sleep(this.runSpeed);        // Making use of async-await
+        this.createPath({A:{x:this.selectedPoints[minDistanceAllPointsIndex].x,
+                            y:this.selectedPoints[minDistanceAllPointsIndex].y},
+                        B:{x:minExtraDistancePath.A.x, y:minExtraDistancePath.A.y}});  // Inserting 2 paths
+        this.createPath({A:{x:this.selectedPoints[minDistanceAllPointsIndex].x,
+                            y:this.selectedPoints[minDistanceAllPointsIndex].y},
+                        B:{x:minExtraDistancePath.B.x, y:minExtraDistancePath.B.y}});
       }
     }        // End of main algorithm for loop
   }          // End of entire nearest insertion algorithm function
@@ -578,6 +604,13 @@ export class TopbarComponent implements OnInit, DoCheck {
     return distance
   }
 
+  // Calculate the length of a path (using Justin's memey syntax)
+  calculatePathLength(inPath:{A:{x: number, y:number}, B: {x: number, y:number}}):number {
+    let pathLength = Math.sqrt( Math.pow(Math.abs(inPath.A.x-inPath.B.x), 2) +
+                                Math.pow(Math.abs(inPath.A.y-inPath.B.y), 2));
+    return pathLength
+  }
+
   // Sleeping function (works only with asynchronous functions)
   sleep(ms:number) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -591,6 +624,7 @@ export class TopbarComponent implements OnInit, DoCheck {
 
   // Calculates the matrix of distances between selected points
   calculateDistanceMatrix():void {
+    this.distanceMatrix = [];  // Reset the distance matrix!
     let row:number[];
     let distance:number;
     for (let i=0; i<this.selectedPoints.length; i++) {
