@@ -14,7 +14,7 @@ export class PathComponent implements OnInit, DoCheck {
   allTypeChangetick: boolean = false;
   prevAllTypeChangetick: boolean = false;
 
-  type: number = 0; //setting colour: 0 - light grey; 1 - solid black; 2 - yellow?
+  type: number = 2; //setting colour: 0 - light grey; 1 - solid black; 2 - yellow?
   pointSpacing: number = 34;
 
   pathWidth: number = 50; // Div width

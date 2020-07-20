@@ -589,10 +589,6 @@ export class TopbarComponent implements OnInit, DoCheck {
         this.createPath({A:{x:this.selectedPoints[minDistanceAllPointsIndex].x,
                             y:this.selectedPoints[minDistanceAllPointsIndex].y},
                         B:{x:minExtraDistancePath.B.x, y:minExtraDistancePath.B.y}});
-        await this.sleep(0.1);
-        this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-1], 2);
-        await this.sleep(0.1);
-        this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-2], 2);
       }
     }  // End of main algorithm for loop
     await this.sleep(this.runSpeed);        // Making use of async-await
