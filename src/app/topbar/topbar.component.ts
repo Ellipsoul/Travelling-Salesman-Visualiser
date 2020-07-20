@@ -503,12 +503,47 @@ export class TopbarComponent implements OnInit, DoCheck {
   async nearestInsertion():Promise<void> {
     console.log("Starting Nearest Insertion!")
     // Initialise array of points included/excluded from cycle
-    let partOfCycle:boolean[] = [];
-    for (let i=0; i<this.selectedPoints.length; i++) {
+    let partOfCycle:boolean[] = [true];
+    for (let i=0; i<this.selectedPoints.length-1; i++) {
       partOfCycle.push(false);
     }
-    console.log(this.data.currPaths);
-    console.log(this.data.currPaths.length);
+    // Declare required variables for algorithm
+    let nextPointToAdd:any;
+    let distanceFromPoint:number;
+    let minDistanceFromPoint:number;
+    let minDistanceFromPointIndex:number;
+    let minDistanceAllPoints:number;
+    let minDistanceAllPointsIndex:number;
+
+    // Start of main algorithm logic
+    for (let _=0; _<this.selectedPoints.length-1; _++) {
+      minDistanceAllPoints = Infinity;  // Reset distance from all points
+      // Base case with the first point and drawing first path
+      if (this.data.currPaths.length === 0) {
+        minDistanceFromPoint = Infinity;
+        // Find minimum distance of all remaining points'
+        for (let i=0; i<this.selectedPoints.length; i++) {
+          // Only check if point is not already part of cycle
+          if (partOfCycle[i] === false) {
+            distanceFromPoint = this.distanceBetweenPoints(this.selectedPoints[0], this.selectedPoints[i])
+            if (distanceFromPoint < minDistanceFromPoint) {
+              minDistanceFromPoint = distanceFromPoint;
+              minDistanceFromPointIndex = i;
+            }
+          }
+        }  // Minimum distance from initial point found
+        partOfCycle[minDistanceFromPointIndex] = true;      // Mark this second point as visited
+        await this.sleep(this.runSpeed);                    // Making use of async-await
+        // Set the first path
+        this.createPath({A:{x:this.selectedPoints[0].x, y:this.selectedPoints[0].y},
+                         B:{x:this.selectedPoints[minDistanceFromPointIndex].x, y:this.selectedPoints[minDistanceFromPointIndex].y}});
+        this.data.setIndividualPathType(this.data.currPaths[0], 2);  // Set the path to yellow
+      }  // End of first point base case
+      // Iterative case with path selection
+      else {
+        console.log("Out of the base case!")
+      }
+    }
   }
 
   // Furthest Insertion
