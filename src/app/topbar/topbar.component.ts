@@ -484,7 +484,6 @@ export class TopbarComponent implements OnInit, DoCheck {
       // Create the path as yellow
       this.createPath({A:{x:this.selectedPoints[previousIndex].x, y:this.selectedPoints[previousIndex].y},
                        B:{x:this.selectedPoints[currentIndex].x,  y:this.selectedPoints[currentIndex].y}});
-      this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-1], 2)
       // Listens constantly for the reset button click, and aborts the function if it occurs
       if (this.abort) {
         this.removeAllPaths();  // Repeated removeAllPaths in case of asynchronous call
