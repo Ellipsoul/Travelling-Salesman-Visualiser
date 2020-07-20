@@ -521,6 +521,7 @@ export class TopbarComponent implements OnInit, DoCheck {
     let extraDistance:number;
     let minExtraDistance:number;
     let minExtraDistancePath:{A:{x:number, y:number}, B:{x:number, y:number}};
+    let firstPath:{A:{x:number, y:number}, B:{x:number, y:number}};
 
     // Start of main algorithm logic, need to draw n-1 paths
     for (let _=0; _<this.selectedPoints.length-1; _++) {
@@ -551,6 +552,7 @@ export class TopbarComponent implements OnInit, DoCheck {
         this.createPath({A:{x:this.selectedPoints[0].x, y:this.selectedPoints[0].y},
                          B:{x:this.selectedPoints[minDistanceAllPointsIndex].x,
                             y:this.selectedPoints[minDistanceAllPointsIndex].y}})
+        firstPath = this.data.currPaths[0];  // Store the first path for the end
       }
       else {  // Main case with paths to check and insert
         minExtraDistance = Infinity;
@@ -577,6 +579,7 @@ export class TopbarComponent implements OnInit, DoCheck {
                         B:{x:minExtraDistancePath.B.x, y:minExtraDistancePath.B.y}});
       }
     }        // End of main algorithm for loop
+    this.createPath(firstPath);
   }          // End of entire nearest insertion algorithm function
 
   // Furthest Insertion
