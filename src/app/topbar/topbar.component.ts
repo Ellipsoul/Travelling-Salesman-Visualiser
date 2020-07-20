@@ -67,7 +67,7 @@ export class TopbarComponent implements OnInit, DoCheck {
   algorithmControl =  new FormControl();  // Initialise form control for algorithm selector
   algorithmsMenu: AlgorithmGroup[] = [
     {
-      name: "Exhaustive Algorithms",
+      name: "Brute Force Algorithms",
       algorithm: [
         {value: "depth-first-search", viewValue: "Depth First Search"},
         {value: "random-search", viewValue: "Random"},
@@ -78,9 +78,10 @@ export class TopbarComponent implements OnInit, DoCheck {
       name: "Heuristic Algorithms",
       algorithm: [
         {value: "nearest-neighbour", viewValue: "Nearest Neighbour"},
-        {value: "arbitrary-insertion", viewValue: "Arbitrary Insertion"},
         {value: "nearest-insertion", viewValue: "Nearest Insertion"},
-        {value: "furthest-insertion", viewValue: "Furthest Insertion"}
+        {value: "furthest-insertion", viewValue: "Furthest Insertion"},
+        {value: "arbitrary-insertion", viewValue: "Arbitrary Insertion"},
+        {value: "convex-hull", viewValue: "Convex Hull"}
       ]
     }
   ]
@@ -272,6 +273,10 @@ export class TopbarComponent implements OnInit, DoCheck {
       case "furthest-insertion":
         await this.furtherInsertion()
         break
+
+      case "convex-hull":
+        await this.convexHull()
+        break
     }
 
     // =================================================================================================================
@@ -306,7 +311,10 @@ export class TopbarComponent implements OnInit, DoCheck {
     }
   }
 
+  //--------------------------------------------------------------------------------------------------------------------
   // Exhaustive algorithms
+
+  // Depth First Search
   async depthFirstSearch():Promise<void> {  // recursive implementation
     console.log("Starting Depth First Search!")
     // Copy of selected points created for safety
@@ -337,7 +345,7 @@ export class TopbarComponent implements OnInit, DoCheck {
     this.minPathDistance = this.currentPathDistance;
   }
 
-  // depthFirstSearch: Recursive asynchronous helper function to go through all possible combinations of points
+  // depthFirstSearch Helper: Recursive asynchronous function to go through all possible combinations of points
   async permutePoints(leftoverPoints:{x:number, y:number}[], pointSequence:{x:number, y:number}[], previousPoint: {x:number, y:number}, sol:{minDist:number, minPath:{x:number, y:number}[]}): Promise<void>{
 
     if (this.abort) { // multiple abort checks to catch recursive calls at various depths and abort
@@ -415,15 +423,20 @@ export class TopbarComponent implements OnInit, DoCheck {
 
   }
 
-  randomSearch():void {
+  // Random Search
+  async randomSearch():Promise<void> {
     console.log("Starting Random Search!")
   }
 
-  branchAndBound():void {
+  // Branch and Bound Algorithm
+  async branchAndBound():Promise<void> {
     console.log("Starting Branch and Bound!")
   }
 
+  //--------------------------------------------------------------------------------------------------------------------
   // Heuristic algorithms
+
+  // Nearest Neighbour
   async nearestNeighbour():Promise<void>{
     console.log("Starting Nearest Neighbour!")
     // Initialise array of visited points (first point will be considered visited)
@@ -486,19 +499,35 @@ export class TopbarComponent implements OnInit, DoCheck {
     this.minPathDistance = this.currentPathDistance;
   }
 
-  arbitraryInsertion():void {
+  // Nearest Insertion
+  async nearestInsertion():Promise<void> {
+    console.log("Starting Nearest Insertion!")
+    // Initialise array of points included/excluded from cycle
+    let partOfCycle:boolean[] = [];
+    for (let i=0; i<this.selectedPoints.length; i++) {
+      partOfCycle.push(false);
+    }
+    console.log(this.data.currPaths);
+    console.log(this.data.currPaths.length);
+  }
+
+  // Furthest Insertion
+  async furtherInsertion():Promise<void> {
+    console.log("Starting Furthest Insertion!")
+  }
+
+  // Arbitrary Insertion
+  async arbitraryInsertion():Promise<void> {
     console.log("Starting Arbitrary Insertion!")
   }
 
-  nearestInsertion():void {
-    console.log("Starting Nearest Insertion!")
+  // Convex Hull
+  async convexHull():Promise<void> {
+    console.log("Starting Convex Hull!")
   }
 
-  furtherInsertion():void {
-    console.log("Starting furthest insertion")
-  }
-
-  // Algorithm helpers
+  //--------------------------------------------------------------------------------------------------------------------
+  // General algorithm helpers
 
   // Calculates distance bewtween 2 points
   distanceBetweenPoints(pointA:{x:number, y:number}, pointB:{x:number, y:number}):number {
