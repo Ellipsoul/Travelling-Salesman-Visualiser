@@ -513,21 +513,45 @@ export class TopbarComponent implements OnInit, DoCheck {
     console.log(this.distanceMatrix);
 
     // Declare required variables for algorithm
-    let nextPointToAdd:any;
-    let distanceFromPoint:number;
     let minDistanceFromPoint:number;
     let minDistanceFromPointIndex:number;
     let minDistanceAllPoints:number;
     let minDistanceAllPointsIndex:number;
-    let edges:number[];
 
-    // Start of main algorithm logic
-    for (let _=0; _<this.selectedPoints.length; _++) {
-      minDistanceAllPoints = Infinity;  // Reset distance from all points
-      // Base case with the first point and drawing first path
+    // Start of main algorithm logic, need to draw n-1 paths
+    for (let _=0; _<this.selectedPoints.length-1; _++) {
+      minDistanceAllPoints = Infinity;  // Reset minimum distance from all points
+      // Find minimum distance to unvisited point from a visited point
+      for (let i=0; i<this.selectedPoints.length; i++) {
+        minDistanceFromPoint = Infinity // Reset minimum distance from curent point
+        if (partOfCycle[i]) {  // Only check visited nodes
+          for (let j=0; j<this.selectedPoints.length; j++) {
+            if (!partOfCycle[j]) {  // Only compare with unvisited nodes
+              if (this.distanceMatrix[i][j] < minDistanceFromPoint) {  // Closer node found
+                minDistanceFromPoint = this.distanceMatrix[i][j];      // Update currently closest node
+                minDistanceFromPointIndex = j;
+              }
+            }
+          }  // End of comparing all unvisited points with visited points
+          if (minDistanceFromPoint < minDistanceAllPoints) {
+            minDistanceAllPoints = minDistanceFromPoint;               // Update closest node from a point
+            minDistanceAllPointsIndex = minDistanceFromPointIndex;
+          }
+        }
+      }      // End of iterating through all visited points, closest node and index should be found
+      partOfCycle[minDistanceAllPointsIndex] = true;  // Set that node to be part of the cycle
+      console.log(minDistanceAllPointsIndex);
+      // Find insertion that will minimise the addition of distance
+      if (this.data.currPaths.length === 0) {  // Base case with the first point
+        this.createPath({A:{x:this.selectedPoints[0].x, y:this.selectedPoints[0].y},
+                         B:{x:this.selectedPoints[minDistanceAllPointsIndex].x,
+                            y:this.selectedPoints[minDistanceAllPointsIndex].y}})
+      }
+      else {  // Main case with paths to check and remove
 
-    }    // End of main algorithm for loop
-  }      // End of nearest insertion algorithm function
+      }
+    }        // End of main algorithm for loop
+  }          // End of entire nearest insertion algorithm function
 
   // Furthest Insertion
   async furtherInsertion():Promise<void> {
@@ -574,15 +598,12 @@ export class TopbarComponent implements OnInit, DoCheck {
       for (let j=0; j<this.selectedPoints.length; j++) {
         if (i===j) {
           row.push(0)
-          console.log("pushed")
         }
         else {
           distance = this.distanceBetweenPoints(this.selectedPoints[i], this.selectedPoints[j])
           row.push(distance)
-          console.log("pushed2")
         }
       }
-      console.log(row);
       this.distanceMatrix.push(row);
     }
   }
