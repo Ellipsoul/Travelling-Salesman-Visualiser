@@ -300,6 +300,7 @@ export class TopbarComponent implements OnInit, DoCheck {
     if (!this.abort) {
       // Set all lines to opaque
       this.startText = "Finished!"             // Display that the algorithm has finished
+      this.algorithmFinished();
     } else {
       this.abort = false;                      // Setting abort back to false if aborted
     }
@@ -550,15 +551,22 @@ export class TopbarComponent implements OnInit, DoCheck {
   // Opens the snackbar warning of no algorithm selected
   noAlgorithmSelected():void {
     this._snackBar.open("Please select an algorithm!", "Close", {
-      duration: 5000,
+      duration: 3000
     });
   }
 
   // Opens a snackbar warning user that not enough nodes were selected
   notEnoughNodesSelected():void {
     this._snackBar.open("You must initialise at least 3 vertices!", "Close", {
-      duration: 5000
-    })
+      duration: 3000
+    });
+  }
+
+  // Opens a snackbar informing the user that the algorithm has finished!
+  algorithmFinished():void{
+    this._snackBar.open("Algorithm finished!", "Close", {
+      duration: 3000
+    });
   }
 
 }
