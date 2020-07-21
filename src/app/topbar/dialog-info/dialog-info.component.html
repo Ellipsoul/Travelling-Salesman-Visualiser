@@ -4,17 +4,21 @@
 <h2 mat-dialog-title class="dialog-title" [style.display]="infoPageNumber==1 ? 'block':'none'">
   The Travelling Salesman Problem
 </h2>
+<h2 mat-dialog-title class="dialog-title" [style.display]="infoPageNumber==2 ? 'block':'none'">
+  Using this Application
+</h2>
 
 <div class="dialog-content">
   <mat-dialog-content class="dialog-text">
 
     <div [style.display]="infoPageNumber==0 ? 'inline':'none'">
-      <h2> Test </h2>
+      <h2> Thank you for checking out our application! </h2>
       We are currently at page {{infoPageNumber}} <br>
       We could put an introduction here!
     </div>
 
     <div [style.display]="infoPageNumber==1 ? 'inline':'none'">
+      <h2> What is the Travelling Salesman Problem? </h2>
       We are currently at page {{infoPageNumber}} <br>
       We could put a guide to how to use the visualiser!
     </div>
