@@ -80,7 +80,7 @@ export class TopbarComponent implements OnInit, DoCheck {
       algorithm: [
         {value: "nearest-neighbour", viewValue: "Nearest Neighbour"},
         {value: "nearest-insertion", viewValue: "Nearest Insertion"},
-        {value: "furthest-insertion", viewValue: "Furthest Insertion"},
+        {value: "farthest-insertion", viewValue: "Farthest Insertion"},
         {value: "arbitrary-insertion", viewValue: "Arbitrary Insertion"},
         {value: "convex-hull", viewValue: "Convex Hull"}
       ]
@@ -271,8 +271,8 @@ export class TopbarComponent implements OnInit, DoCheck {
         await this.nearestInsertion()
         break
 
-      case "furthest-insertion":
-        await this.furtherInsertion()
+      case "farthest-insertion":
+        await this.fartherInsertion()
         break
 
       case "convex-hull":
@@ -527,7 +527,7 @@ export class TopbarComponent implements OnInit, DoCheck {
       minDistanceAllPoints = Infinity;  // Reset minimum distance from all points
       // Find minimum distance to unvisited point from a visited point
       for (let i=0; i<this.selectedPoints.length; i++) {
-        minDistanceFromPoint = Infinity // Reset minimum distance from curent point
+        minDistanceFromPoint = Infinity // Reset minimum distance from current point
         if (partOfCycle[i]) {  // Only check visited nodes
           for (let j=0; j<this.selectedPoints.length; j++) {
             // Listens constantly for the reset button click, and aborts the function if it occurs
@@ -556,7 +556,6 @@ export class TopbarComponent implements OnInit, DoCheck {
         this.createPath({A:{x:this.selectedPoints[0].x, y:this.selectedPoints[0].y},
                          B:{x:this.selectedPoints[minDistanceAllPointsIndex].x,
                             y:this.selectedPoints[minDistanceAllPointsIndex].y}})  // Create the first path
-        this.data.setIndividualPathType(this.data.currPaths[0], 2);                // Set path colour to yellow
         firstPath = this.data.currPaths[0];  // Store the first path for the end
       }
       else {  // Main case with paths to check and insert
@@ -601,13 +600,110 @@ export class TopbarComponent implements OnInit, DoCheck {
     }
     this.currentPathDistance = Math.round((pathsDistance + Number.EPSILON) * 100) / 100;
     this.minPathDistance = this.currentPathDistance;
-
   }  // End of entire nearest insertion algorithm function
 
   // Furthest Insertion
-  async furtherInsertion():Promise<void> {
-    console.log("Starting Furthest Insertion!")
-  }
+  async fartherInsertion():Promise<void> {
+    console.log("Starting Farthest Insertion!")
+    // Initialise array of points included/excluded from cycle
+    let partOfCycle:boolean[] = [true];
+    for (let i=0; i<this.selectedPoints.length-1; i++) {
+      partOfCycle.push(false);
+    }
+    // Calculate distances matrix
+    this.calculateDistanceMatrix()
+    console.log(this.distanceMatrix);
+
+    // Declare required variables for algorithm
+    let maxDistanceFromPoint:number;
+    let maxDistanceFromPointIndex:number;
+    let maxDistanceAllPoints:number;
+    let maxDistanceAllPointsIndex:number;
+
+    let extraDistance:number;
+    let minExtraDistance:number;
+    let minExtraDistancePath:{A:{x:number, y:number}, B:{x:number, y:number}};
+    let firstPath:{A:{x:number, y:number}, B:{x:number, y:number}};
+
+    // Start of main algorithm logic, need to draw n-1 paths
+    for (let _=0; _<this.selectedPoints.length-1; _++) {
+      maxDistanceAllPoints = 0;  // Reset maximum distance from all points
+      // Find maximum distance to unvisited point from a visited point
+      for (let i=0; i<this.selectedPoints.length; i++) {
+        maxDistanceFromPoint = 0; // Reset maximum distance from current point
+        if (partOfCycle[i]) {     // Only check visited nodes
+          for (let j=0; j<this.selectedPoints.length; j++) {
+            // Listens constantly for the reset button click, and aborts the function if it occurs
+            if (this.abort) {
+              this.removeAllPaths();  // Repeated removeAllPaths in case of asynchronous call
+              return
+            };
+            if (!partOfCycle[j]) {    // Only compare with unvisited nodes
+              if (this.distanceMatrix[i][j] > maxDistanceFromPoint) {  // Farther node found
+                maxDistanceFromPoint = this.distanceMatrix[i][j];      // Update currently farthest node
+                maxDistanceFromPointIndex = j;
+              }
+            }
+          }  // End of comparing all unvisited points with visited points
+          if (maxDistanceFromPoint > maxDistanceAllPoints) {
+            maxDistanceAllPoints = maxDistanceFromPoint;               // Update farthest node from a point
+            maxDistanceAllPointsIndex = maxDistanceFromPointIndex;
+          }
+        }
+      }      // End of iterating through all visited points, closest node and index should be found
+      partOfCycle[maxDistanceAllPointsIndex] = true;  // Set that node to be part of the cycle
+      console.log(maxDistanceAllPointsIndex);
+      // Find insertion that will minimise the addition of distance
+      if (this.data.currPaths.length === 0) {  // Base case with the first point
+        await this.sleep(this.runSpeed);  // Making use of async-await
+        this.createPath({A:{x:this.selectedPoints[0].x, y:this.selectedPoints[0].y},
+                         B:{x:this.selectedPoints[maxDistanceAllPointsIndex].x,
+                            y:this.selectedPoints[maxDistanceAllPointsIndex].y}})  // Create the first path
+        firstPath = this.data.currPaths[0];  // Store the first path for the end
+      }
+      else {  // Main case with paths to check and insert
+        minExtraDistance = Infinity;
+        for (let k=0; k<this.data.currPaths.length; k++) {
+          extraDistance = this.distanceBetweenPoints(this.data.currPaths[k].A,
+                                                     this.selectedPoints[maxDistanceAllPointsIndex]) +
+                          this.distanceBetweenPoints(this.data.currPaths[k].B,
+                                                     this.selectedPoints[maxDistanceAllPointsIndex]) -
+                          this.calculatePathLength(this.data.currPaths[k]);
+          if (extraDistance < minExtraDistance) {  // Lower cost path insertion found
+            minExtraDistance = extraDistance;
+            minExtraDistancePath = this.data.currPaths[k];
+          }
+        }    // End of looping through paths, minimum cost path insertion found
+        await this.sleep(this.runSpeed);          // Making use of async-await
+        this.removePath(minExtraDistancePath);    // Removing previous path
+        if (this.data.currPaths.length === 1) {
+          this.data.setIndividualPathType(this.data.currPaths[0], 0)  // Base case with one path
+        }
+        else if (this.data.currPaths.length > 1) {                    // Normal case with 2 paths
+          this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-1], 0);
+          this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-2], 0);
+        }
+        await this.sleep(this.runSpeed);        // Making use of async-await
+        this.createPath({A:{x:this.selectedPoints[maxDistanceAllPointsIndex].x,
+                            y:this.selectedPoints[maxDistanceAllPointsIndex].y},
+                        B:{x:minExtraDistancePath.A.x, y:minExtraDistancePath.A.y}});  // Inserting 2 paths
+        this.createPath({A:{x:this.selectedPoints[maxDistanceAllPointsIndex].x,
+                            y:this.selectedPoints[maxDistanceAllPointsIndex].y},
+                        B:{x:minExtraDistancePath.B.x, y:minExtraDistancePath.B.y}});
+      }
+    }  // End of main algorithm for loop
+    await this.sleep(this.runSpeed);        // Making use of async-await
+    this.createPath(firstPath);             // Add back the first path to finish off
+
+    // Calculate the total path distance
+    let pathsDistance:number = 0;
+
+    for (let i=0; i<this.data.currPaths.length; i++) {
+      pathsDistance += this.calculatePathLength(this.data.currPaths[i]);
+    }
+    this.currentPathDistance = Math.round((pathsDistance + Number.EPSILON) * 100) / 100;
+    this.minPathDistance = this.currentPathDistance;
+  } // End of entire farthest insertion algorithm function
 
   // Arbitrary Insertion
   async arbitraryInsertion():Promise<void> {
