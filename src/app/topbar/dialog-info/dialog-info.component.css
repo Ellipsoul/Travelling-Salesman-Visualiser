@@ -1,6 +1,17 @@
 .dialog-title {
   text-align: center;
-  font-size: 25px;
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  font-size: 30px;
+  letter-spacing: -0.2px;
+  word-spacing: 0px;
+  color: #000000;
+  font-weight: bold;
+  text-decoration: none;
+  font-style: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 35px;
+  border: 1px solid goldenrod;
 }
 
 .dialog-content {
