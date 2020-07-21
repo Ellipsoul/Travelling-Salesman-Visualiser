@@ -628,7 +628,7 @@ export class TopbarComponent implements OnInit, DoCheck {
     let firstPath:{A:{x:number, y:number}, B:{x:number, y:number}};
 
     // Start of main algorithm logic, need to draw n-1 paths
-    for (let _=0; _<this.selectedPoints.length-1; _++) {
+    for (let n=0; n<this.selectedPoints.length-1; n++) {
       maxDistanceAllPoints = 0;  // Reset maximum distance from all points
       // Find maximum distance to unvisited point from a visited point
       for (let i=0; i<this.selectedPoints.length; i++) {
@@ -653,17 +653,22 @@ export class TopbarComponent implements OnInit, DoCheck {
           }
         }
       }      // End of iterating through all visited points, closest node and index should be found
-      partOfCycle[maxDistanceAllPointsIndex] = true;  // Set that node to be part of the cycle
-      console.log(maxDistanceAllPointsIndex);
       // Find insertion that will minimise the addition of distance
-      if (this.data.currPaths.length === 0) {  // Base case with the first point
+      if (n === 0) {  // Base case with the first point
+
+        let slicedFirstRowOfMatrix:number[] = this.distanceMatrix[0].slice(1, this.distanceMatrix[0].length);
+        let minValue:number = Math.min(...slicedFirstRowOfMatrix);
+        let pointIndexToAdd = slicedFirstRowOfMatrix.indexOf(minValue) + 1;
+        partOfCycle[pointIndexToAdd] = true;  // Adding to the visited nodes
+
         await this.sleep(this.runSpeed);  // Making use of async-await
         this.createPath({A:{x:this.selectedPoints[0].x, y:this.selectedPoints[0].y},
-                         B:{x:this.selectedPoints[maxDistanceAllPointsIndex].x,
-                            y:this.selectedPoints[maxDistanceAllPointsIndex].y}})  // Create the first path
+                         B:{x:this.selectedPoints[pointIndexToAdd].x,
+                            y:this.selectedPoints[pointIndexToAdd].y}})  // Create the first path
         firstPath = this.data.currPaths[0];  // Store the first path for the end
       }
       else {  // Main case with paths to check and insert
+        partOfCycle[maxDistanceAllPointsIndex] = true;   // Add the node to the cycle
         minExtraDistance = Infinity;
         for (let k=0; k<this.data.currPaths.length; k++) {
           extraDistance = this.distanceBetweenPoints(this.data.currPaths[k].A,
