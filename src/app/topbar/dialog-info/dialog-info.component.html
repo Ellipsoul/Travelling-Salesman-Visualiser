@@ -1,26 +1,82 @@
-<h2 mat-dialog-title id="dialog-title"> Welcome to the Travelling Salesman Problem Visualiser!</h2>
+<h2 mat-dialog-title class="dialog-title" [style.display]="infoPageNumber==0 ? 'block':'none'">
+  Welcome to the <br> Travelling Salesman Problem Visualiser!
+</h2>
+<h2 mat-dialog-title class="dialog-title" [style.display]="infoPageNumber==1 ? 'block':'none'">
+  What is the Travelling Salesman Problem?
+</h2>
+<h2 mat-dialog-title class="dialog-title" [style.display]="infoPageNumber==2 ? 'block':'none'">
+  Using this Application
+</h2>
+<h2 mat-dialog-title class="dialog-title" [style.display]="infoPageNumber==3 ? 'block':'none'">
+  Summary of Brute Force Algorithms
+</h2>
+<h2 mat-dialog-title class="dialog-title" [style.display]="infoPageNumber==4 ? 'block':'none'">
+  Summary of Heuristic Algorithms
+</h2>
+<h2 mat-dialog-title class="dialog-title" [style.display]="infoPageNumber==5 ? 'block':'none'">
+  Thank You!
+</h2>
 
 <div class="dialog-content">
   <mat-dialog-content class="dialog-text">
 
     <div [style.display]="infoPageNumber==0 ? 'inline':'none'">
-      We are currently at page {{infoPageNumber}} <br>
-      We could put an introduction here!
+      <h2 id="thank-you"> Thank you for visiting our application! </h2>
+      <h3 id="tutorial"> This short tutorial will: </h3>
+      <ul>
+        <li> Introduce the Travelling Salesman Problem </li>
+        <li> Provide instructions on how to use this app </li>
+        <li> Explain each algorithm's implementation </li>
+      </ul>
+    <h2 id="fun"> <b> Have Fun! </b></h2>
+    <img src="assets/img/TSP_logo.png" id="logo-large">
     </div>
 
     <div [style.display]="infoPageNumber==1 ? 'inline':'none'">
-      We are currently at page {{infoPageNumber}} <br>
-      We could put a guide to how to use the visualiser!
+      <p id="tsp-explanation"> The travelling salesman problem is a very simple problem to explain, but an <i> extremely </i> difficult problem to solve efficiently. In computer science, this problem is classified as an <i> NP-Hard</i> problem, meaning that it cannot be solved in polynomial time or better, and a potentially optimal route cannot be verified as optimal in polynomial time.</p>
+      <ul>
+        <li class="tsp-explanation-list"> A traveller has several cities (<b>nodes</b>/<b>vertices</b>) he/she would like to visit.</li>
+        <li class="tsp-explanation-list"> The traveller must visit all nodes exactly once and return to the original node (this is known as a <b>Hamiltonian Cycle</b>), and the goal is to find the path that <i>minimises</i> the traveller's total distance travelled.</li>
+        <li class="tsp-explanation-list"> That's it! From vehicle routing to planning and logistics, the applications for this problem are endless! </li>
+      </ul>
+      <img src="assets/img/TSP_Path.png" id="tsp-example-img">
     </div>
 
     <div [style.display]="infoPageNumber==2 ? 'inline':'none'">
-      We are currently at page {{infoPageNumber}} <br>
-      We could include algorithm information here!
+      <p id="unlike-p"> Unlike this problem, using this app is very easy! </p>
+      <ol>
+        <li class="app-guide-li">
+          Select an algorithm
+          <img src="assets/img/select_algorithm.png" id="select-algorithm-img">
+        </li>
+        <li class="app-guide-li">
+          Create some points
+          <ul>
+            <li class="app-guide-li"> Use the point randomiser to generate a random distribution, or initialise your own by manually selecting points in the grid </li>
+            <img src="assets/img/select_points.png" id="select-points-img">
+          </ul>
+        </li>
+        <li class="app-guide-li">
+            Press Start!
+            <ul>
+              <li class="app-guide-li"> Adjust the playspeed to your liking </li>
+              <li class="app-guide-li"> Observe the path distance of the current and most optimal iteration </li>
+            </ul>
+        </li>
+        <img src="assets/img/press_start.png" id="press-start-img">
+      </ol>
     </div>
 
     <div [style.display]="infoPageNumber==3 ? 'inline':'none'">
-      We are currently at page {{infoPageNumber}} <br>
-      We can add as many pages as we want! (notice how the next and prev buttons change dynamically)
+      <p> Brute Force Algorithms here </p>
+    </div>
+
+    <div [style.display]="infoPageNumber==4 ? 'inline':'none'">
+      <p> Heuristic Algorithms here </p>
+    </div>
+
+    <div [style.display]="infoPageNumber==5 ? 'inline':'none'">
+      <p> Thanks! We hope you enjoyed... </p>
     </div>
 
   </mat-dialog-content>
@@ -41,7 +97,7 @@
     <button
       mat-stroked-button
       color="primary"
-      [disabled]="infoPageNumber==3"
+      [disabled]="infoPageNumber==5"
       (mousedown)="incrementPage()"
       id="next-button"
     >

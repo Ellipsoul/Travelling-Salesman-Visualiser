@@ -71,7 +71,7 @@ export class TopbarComponent implements OnInit, DoCheck {
       name: "Brute Force Algorithms",
       algorithm: [
         {value: "depth-first-search", viewValue: "Depth First Search"},
-        {value: "random-search", viewValue: "Random"},
+        {value: "random-search", viewValue: "Random Search"},
         {value: "branch-and-bound", viewValue: "Branch and Bound"}
       ]
     },

@@ -12,7 +12,7 @@ export class DialogInfoComponent implements OnInit {
 
   ngOnInit():void {
     // Sets the size of the window, tweak this so that it works well with all window sizes
-    this.dialogRef.updateSize('50%', '80%');
+    this.dialogRef.updateSize('60%', '84%');
   }
 
   // Which page to display
