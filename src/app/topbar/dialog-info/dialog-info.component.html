@@ -2,7 +2,7 @@
   Welcome to the <br> Travelling Salesman Problem Visualiser!
 </h2>
 <h2 mat-dialog-title class="dialog-title" [style.display]="infoPageNumber==1 ? 'block':'none'">
-  The Travelling Salesman Problem
+  What is the Travelling Salesman Problem?
 </h2>
 <h2 mat-dialog-title class="dialog-title" [style.display]="infoPageNumber==2 ? 'block':'none'">
   Using this Application
@@ -14,18 +14,22 @@
     <div [style.display]="infoPageNumber==0 ? 'inline':'none'">
       <h2 id="thank-you"> Thank you for visiting our application! </h2>
       <h3 id="tutorial"> This short tutorial will: </h3>
-      <ol>
+      <ul>
         <li> Introduce the Travelling Salesman Problem </li>
         <li> Provide instructions on how to use this app </li>
         <li> Explain each algorithm's implementation </li>
-      </ol>
-
+      </ul>
+    <h2 id="fun"> <b> Have Fun! </b></h2>
+    <img src="assets/img/TSP_logo.png" id="logo-large">
     </div>
 
     <div [style.display]="infoPageNumber==1 ? 'inline':'none'">
-      <h2> What is the Travelling Salesman Problem? </h2>
-      We are currently at page {{infoPageNumber}} <br>
-      We could put a guide to how to use the visualiser!
+      <p id="tsp-explanation"> The travelling salesman problem is a very simple problem to explain, but an <i> extremely </i> difficult problem to solve efficiently. In computer science, this problem is classified as an <i> NP-Hard</i> problem, meaning that it cannot be solved in polynomial time or better, and a potentially optimal route cannot be verified as optimal in polynomial time.</p>
+      <ul>
+        <li class="tsp-explanation-list"> A traveller has several cities (<b>nodes</b>/<b>vertices</b>) he/she would like to visit.</li>
+        <li class="tsp-explanation-list"> The traveller must visit all nodes exactly once and return to the original node (this is known as a <b>Hamiltonian Cycle</b>), and the goal is to find the path that <i>minimises</i> the traveller's total distance travelled.</li>
+        <li class="tsp-explanation-list"> That's it! From vehicle routing to planning and logistics, the applications for this problem are endless! </li>
+      </ul>
       <img src="assets/img/TSP_Path.png" id="tsp-example-img">
     </div>
 

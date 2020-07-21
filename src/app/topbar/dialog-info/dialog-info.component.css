@@ -11,6 +11,7 @@
   font-variant: normal;
   text-transform: none;
   line-height: 42px;
+  margin-top: 10px;
 }
 
 h2 {
@@ -73,9 +74,38 @@ li {
 }
 
 #tutorial {
-  line-height: 10px;
+  margin-bottom: 10px;
 }
 
+#logo-large {
+  width: 200px;
+  height: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#fun {
+  margin-bottom: 5px;
+}
+
+#tsp-example-img {
+  margin-left:auto;
+  margin-right: auto;
+  display: block;
+  height: 240px;
+  width: auto;
+}
+
+#tsp-explanation {
+  margin-top: 20px;
+}
+
+.tsp-explanation-list {
+  line-height: 25px;
+}
+
+/* General dialog styling */
 .dialog-content {
   width: 100%;
 }
@@ -83,6 +113,7 @@ li {
 .dialog-text {
   margin-top: 15px;
   margin-bottom: 15px;
+  height: fit-content;
 }
 
 .dialog-buttons {
@@ -110,10 +141,4 @@ li {
   background-color: #000;
   width: 1000px;
   height: 1000px;
-}
-
-#tsp-example-img {
-  float:right;
-  height: 20vw;
-  width: auto;
 }
