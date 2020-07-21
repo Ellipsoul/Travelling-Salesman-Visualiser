@@ -99,10 +99,37 @@ li {
 
 #tsp-explanation {
   margin-top: 20px;
+  line-height: 21px;
 }
 
 .tsp-explanation-list {
   line-height: 25px;
+}
+
+#unlike-p {
+  margin-top: 5px;
+}
+
+.app-guide-li {
+  line-height: 27px;
+}
+
+#select-algorithm-img {
+  width: 200px;
+  height: auto;
+  margin: 15px;
+}
+
+#select-points-img {
+  width: 200px;
+  height: auto;
+  margin: 10px;
+}
+
+#press-start-img {
+  width: 200px;
+  height: auto;
+  margin: 5px;
 }
 
 /* General dialog styling */

@@ -7,6 +7,15 @@
 <h2 mat-dialog-title class="dialog-title" [style.display]="infoPageNumber==2 ? 'block':'none'">
   Using this Application
 </h2>
+<h2 mat-dialog-title class="dialog-title" [style.display]="infoPageNumber==3 ? 'block':'none'">
+  Summary of Brute Force Algorithms
+</h2>
+<h2 mat-dialog-title class="dialog-title" [style.display]="infoPageNumber==4 ? 'block':'none'">
+  Summary of Heuristic Algorithms
+</h2>
+<h2 mat-dialog-title class="dialog-title" [style.display]="infoPageNumber==5 ? 'block':'none'">
+  Thank You!
+</h2>
 
 <div class="dialog-content">
   <mat-dialog-content class="dialog-text">
@@ -34,13 +43,40 @@
     </div>
 
     <div [style.display]="infoPageNumber==2 ? 'inline':'none'">
-      We are currently at page {{infoPageNumber}} <br>
-      We could include algorithm information here!
+      <p id="unlike-p"> Unlike this problem, using this app is very easy! </p>
+      <ol>
+        <li class="app-guide-li">
+          Select an algorithm
+          <img src="assets/img/select_algorithm.png" id="select-algorithm-img">
+        </li>
+        <li class="app-guide-li">
+          Create some points
+          <ul>
+            <li class="app-guide-li"> Use the point randomiser to generate a random distribution, or initialise your own by manually selecting points in the grid </li>
+            <img src="assets/img/select_points.png" id="select-points-img">
+          </ul>
+        </li>
+        <li class="app-guide-li">
+            Press Start!
+            <ul>
+              <li class="app-guide-li"> Adjust the playspeed to your liking </li>
+              <li class="app-guide-li"> Observe the path distance of the current and most optimal iteration </li>
+            </ul>
+        </li>
+        <img src="assets/img/press_start.png" id="press-start-img">
+      </ol>
     </div>
 
     <div [style.display]="infoPageNumber==3 ? 'inline':'none'">
-      We are currently at page {{infoPageNumber}} <br>
-      We can add as many pages as we want! (notice how the next and prev buttons change dynamically)
+      <p> Brute Force Algorithms here </p>
+    </div>
+
+    <div [style.display]="infoPageNumber==4 ? 'inline':'none'">
+      <p> Heuristic Algorithms here </p>
+    </div>
+
+    <div [style.display]="infoPageNumber==5 ? 'inline':'none'">
+      <p> Thanks! We hope you enjoyed... </p>
     </div>
 
   </mat-dialog-content>
@@ -61,7 +97,7 @@
     <button
       mat-stroked-button
       color="primary"
-      [disabled]="infoPageNumber==3"
+      [disabled]="infoPageNumber==5"
       (mousedown)="incrementPage()"
       id="next-button"
     >
