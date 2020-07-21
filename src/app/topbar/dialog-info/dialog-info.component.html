@@ -12,15 +12,21 @@
   <mat-dialog-content class="dialog-text">
 
     <div [style.display]="infoPageNumber==0 ? 'inline':'none'">
-      <h2> Thank you for checking out our application! </h2>
-      We are currently at page {{infoPageNumber}} <br>
-      We could put an introduction here!
+      <h2 id="thank-you"> Thank you for visiting our application! </h2>
+      <h3 id="tutorial"> This short tutorial will: </h3>
+      <ol>
+        <li> Introduce the Travelling Salesman Problem </li>
+        <li> Provide instructions on how to use this app </li>
+        <li> Explain each algorithm's implementation </li>
+      </ol>
+
     </div>
 
     <div [style.display]="infoPageNumber==1 ? 'inline':'none'">
       <h2> What is the Travelling Salesman Problem? </h2>
       We are currently at page {{infoPageNumber}} <br>
       We could put a guide to how to use the visualiser!
+      <img src="assets/img/TSP_Path.png" id="tsp-example-img">
     </div>
 
     <div [style.display]="infoPageNumber==2 ? 'inline':'none'">
