@@ -1,69 +1,48 @@
-# Travelling Salesman Visualiser
+# Travelling Salesman Problem Visualiser
 
-## Instructions for Development and Deployment
+Welcome to the Travelling Salesman Problem Visualiser! I built this app with my friend [Justin Liu](https://github.com/juicetinliu) purely out of curiosity for computer science and software engineering. We hope you have fun with our creation!
 
-##### Running the project locally (for Justin):
-+ No committing/special building is required
-+ To start the app locally run: 
-``` bash 
-ng serve
-```
-+ If the app is successfully built a success message will show, and you will be able to view the app in the browser:
-``` html
-http://localhost:4200/
-```
-+ You will be able to edit the code and the results will be reflected live in the browser, with error messages produced if the project fails to compile
+## What is the Travelling Salesman Problem?
 
-##### Project Workflow
+The travelling salesman problem is a very simple problem to explain, but an *extremely* difficult problem to solve efficiently. In computer science, this problem is classified as an *NP-Hard* problem, meaning that it cannot be solved in polynomial time or better, and a potentially optimal route cannot be verified as optimal in polynomial time or better.
 
-+ Discuss clearly which member will edit which part of the app
-+ Create a branch with an intuitive name and work only within that branch. NEVER work in the `master` branch or push code directly to master
-+ Develop the app locally using `ng serve` to view live changes
-+ Use this to ensure that the app compiles before committing and pushing any code to the origin
-+ When ready, push the code to `master` and make a pull request on [GitHub.com](https://github.com/) (do NOT attempt to merge any branches with `master` within a GUI like SourceTree itself)
-+ The other person will review the code and approve it, and the branch will be merged and can be deleted
-+ Aron wil deploy the app to GitHub Pages after final testing
- 
+A traveller has several cities (nodes/vertices) he/she would like to visit.
+The traveller must visit all nodes exactly once and return to the original node (this is known as a Hamiltonian Cycle), and the goal is to find the path that minimises the traveller's total distance travelled.
 
-+ We are deploying the app using a package called `angular-cli-ghpages`, references:
-    + [Angular Deployment](https://angular.io/guide/deployment)
-    + [angular-cli-ghpages](https://github.com/angular-schule/angular-cli-ghpages)
- 
-##### Deploy Project to GitHub Pages (Aron only)
+## Summary of Algorithms
 
-+ Leave the branch tracker tracking `gh-pages`
-+ For safety only ever attempt to deploy in the master branch. Ensure the code is pushed to the origin as well
-+ To deploy the app in production to GitHub Pages:
-``` bash
-ng deploy --base-href=/Travelling-Salesman-Visualiser/
-```
-+ It seems like no commit is necessary to deploy the Angular app, possible to deploy any tracked or untracked state of the app
-+ To be safe NEVER deploy a detached uncommitted version of the app, ONLY deploy a master branch production build that is already pushed to the origin
+### Brute Force Algorithms
 
----
+Brute Force Algorithms attempt to find the exact solution by checking all possible paths. These algorithms typically becomes impractical quite quickly as the number of cities increases.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.0.1.
+##### Depth First Search
+- This algorithm traverses each possible cycle in a *depth first search* manner, continuing until all possible paths are checked.
+- The length of each cycle is calculated, and the cycle of mininum length is saved.
+  
+##### Branch and Bound
+- Traverses in the same manner as *depth first search* but with a small optimisation
+- If the current distance of a sub-path already exceeds the previous minimum of a full cycle, the remaining branches in this subtree are skipped as they cannot contain a full cycle with a shorter distance than the previous minimum distance cycle.
 
-## Development server
+##### Random Search
+- As the name suggests, this algorithm simply initialises Hamiltonian cycles randomly amongst the points, and calculates the path's corresponding distance.
+- This algorithm will run endlessly until stopped!
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+### Heuristic Algorithms
 
-## Code scaffolding
+Heuristic algorithms do not guarantee an optimal cycle, but aim to find a close approximation to the theoretical optimal route in significantly less time. These algorithms can be completed in *polynomial time*.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+##### Nearest Neighbour
+- The *greedy* approach. 
+- The algorithm initialises a random starting node, and at each timestep searches for the closest node to the previous node that is not already part of the cycle and connects a path between the two nodes, until a complete cycle is formed.
 
-## Build
+##### Nearest Insertion, Farthest Insertion and Arbitrary Insertion
+- These algorithms all begin in the same fashion: a random starting node is selected and connected to its nearest neighbouring node to form the first path.
+- Now, the algorithms search for a new node to add to the cycle. For *nearest insertion*, the *closest* node to any in-cycle node is selected. For *farthest insertion*, the *farthest* node is selected, and for *arbitrary insertion* a *random* node is selected.
+- The selected node is *inserted* between two other connected nodes where the *path distance increase* from the insertion is *minimised*. This repeats until all nodes have been inserted into the cycle.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+##### Convex Hull
+- First, the algorithm forms a subtour in the shape of a *convex hull*, the smallest convex polygon which encloses all points.
+- For every node not in the sub-tour, find the *minimum cost insertion* possible with the node.
+- Comparing these point insertions, find the one that minimises a cost function and make the insertion. Repeat this until the full cycle is formed.
 
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+## Thank You for Using our Application!
