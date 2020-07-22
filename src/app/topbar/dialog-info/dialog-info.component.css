@@ -132,6 +132,82 @@ li {
   margin: 5px;
 }
 
+.algorithm-explanations {
+  line-height: 28px;
+}
+
+.algorithm-explanations2 {
+  font-size: 18px;
+  line-height: 22px;
+}
+
+#logo-large-end {
+  width: 250px;
+  height: auto;
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#github-mark {
+  width: 50px;
+  height: auto;
+  display: inline-block;
+}
+
+#github-mark:hover {
+  opacity: 60%;
+  cursor: pointer;
+}
+
+#logo-large-end:hover {
+  opacity: 60%;
+  cursor: pointer;
+}
+
+.column {
+  float: left;
+  width: 300px;
+  padding: 5px;
+}
+
+#name-aron {
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  font-size: 24px;
+  letter-spacing: -0.2px;
+  word-spacing: 0px;
+  color: #000000;
+  font-weight: normal;
+  text-decoration: none;
+  font-style: normal;
+  font-variant: normal;
+  text-transform: none;
+
+  display: inline-block;
+  margin-left: 20px;
+  vertical-align: bottom;
+  margin-right: 30px;
+  line-height: 1;
+}
+
+#name-justin {
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  font-size: 24px;
+  letter-spacing: -0.2px;
+  word-spacing: 0px;
+  color: #000000;
+  font-weight: normal;
+  text-decoration: none;
+  font-style: normal;
+  font-variant: normal;
+  text-transform: none;
+
+  display: inline-block;
+  margin-left: 20px;
+  vertical-align: bottom;
+  line-height: 1;
+}
+
 /* General dialog styling */
 .dialog-content {
   width: 100%;
