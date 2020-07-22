@@ -92,10 +92,11 @@
           </ul>
         </li>
       </ul>
+      <div style="height: 21px;"></div>
     </div>
 
     <div [style.display]="infoPageNumber==4 ? 'inline':'none'">
-      <h3> Heuristic algorithms do not guarantee an optimal cycle, but aim to find a close approximation to the theoretical optimal route in significantly less time. These algorithms can be completed in <i> polynomial time</i>. </h3>
+      <h3 id="heuristic-intro"> Heuristic algorithms do not guarantee an optimal cycle, but aim to find a close approximation to the theoretical optimal route in significantly less time. These algorithms can be completed in <i> polynomial time</i>. </h3>
       <ul>
         <li>
           <b>Nearest Neighbour</b>
@@ -114,14 +115,17 @@
         <li>
           <b>Convex Hull</b>
           <ul>
-            <li class="algorithm-explanations"> We may need to re-arrange this a litte.. </li>
+            <li class="algorithm-explanations2"> First, the algorithm forms a subtour in the shape of a <i>convex hull</i>, the smallest convex polygon which encloses all points. </li>
+            <li class="algorithm-explanations2"> For every node not in the sub-tour, find the <i>minimum cost insertion</i> possible with the node.</li>
+            <li class="algorithm-explanations2"> Comparing these point insertions, find the one that minimises a cost function and make the insertion. Repeat this until the full cycle is formed. </li>
           </ul>
         </li>
       </ul>
+      <div style="height: 1px;"></div>
     </div>
 
     <div [style.display]="infoPageNumber==5 ? 'inline':'none'">
-      <h2> We hope you enjoyed our app! </h2>
+      <h2 id="enjoyed"> We hope you enjoyed our app! </h2>
       <h3> This project was completed purely out of computer science and software engineering curiosity. </h3>
       <h3> Click the image below to view the application source code! </h3>
       <div style="text-align: center;">
@@ -144,7 +148,6 @@
           <p id="name-justin"> Justin Liu </p>
         </span>
       </div>
-
     </div>
 
   </mat-dialog-content>

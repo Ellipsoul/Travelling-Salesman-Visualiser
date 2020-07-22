@@ -78,7 +78,7 @@ li {
 }
 
 #logo-large {
-  width: 200px;
+  width: 207px;
   height: auto;
   display: block;
   margin-left: auto;
@@ -107,7 +107,8 @@ li {
 }
 
 #unlike-p {
-  margin-top: 5px;
+  margin-top: 10px;
+  margin-bottom: 6px;
 }
 
 .app-guide-li {
@@ -132,13 +133,22 @@ li {
   margin: 5px;
 }
 
+#heuristic-intro {
+  font-size: 20px;
+  line-height: 23px;
+}
+
 .algorithm-explanations {
   line-height: 28px;
 }
 
 .algorithm-explanations2 {
   font-size: 18px;
-  line-height: 22px;
+  line-height: 21px;
+}
+
+#enjoyed {
+  line-height: 36px;
 }
 
 #logo-large-end {
