@@ -99,7 +99,7 @@ export class TopbarComponent implements OnInit, DoCheck {
   ngOnInit(): void {
     this.data.currentSelPointsMessage.subscribe(message => this.selectedPoints = message);
     this.possPaths = this.calculatePossiblePaths(this.currPointAmount);
-    // this.openDialog(); TODO: Uncomment this once done with project
+    this.openDialog();
   }
 
   // Runs whenever a change is detected in ANY component in the app (could be mouse changes or any data changes)
@@ -427,6 +427,7 @@ export class TopbarComponent implements OnInit, DoCheck {
   // Random Search
   async randomSearch():Promise<void> {
     console.log("Starting Random Search!")
+    this.randomSearchMessage();
     // Random Search should loop infinitely
     let pointsLength:number = this.selectedPoints.length;
     let currentPathLength:number = 0;
@@ -437,13 +438,13 @@ export class TopbarComponent implements OnInit, DoCheck {
         this.removeAllPaths();  // Repeated removeAllPaths in case of asynchronous call
         return
       };
-      await this.sleep(1000);
+      await this.sleep(500);
       this.shuffleSelectedPoints();
       for (let i=0; i<this.selectedPoints.length; i++) {
         this.createPath({A: {x:this.selectedPoints[i%pointsLength].x, y:this.selectedPoints[i%pointsLength].y},
                          B: {x:this.selectedPoints[(i+1)%pointsLength].x,y:this.selectedPoints[(i+1)%pointsLength].y}});
       }
-      await this.sleep(1000);
+      await this.sleep(500);
       this.data.setAllExistingPathsType(0);
       for (let i=0; i<this.data.currPaths.length; i++) {
         currentPathLength += this.calculatePathLength(this.data.currPaths[i]);
@@ -453,7 +454,7 @@ export class TopbarComponent implements OnInit, DoCheck {
         minPathLength = currentPathLength;
         this.minPathDistance = Math.round((minPathLength + Number.EPSILON) * 100) / 100;
       }
-      await this.sleep(1000);
+      await this.sleep(500);
       this.removeAllPaths();
     }
   }
@@ -935,6 +936,13 @@ export class TopbarComponent implements OnInit, DoCheck {
   algorithmFinished():void{
     this._snackBar.open("Algorithm finished!", "Close", {
       duration: 3000
+    });
+  }
+
+  // Informs user that random search will run until stopped
+  randomSearchMessage():void {
+    this._snackBar.open("The random search will run forever until stopped!", "Got it", {
+      duration: 5000
     });
   }
 
