@@ -427,6 +427,35 @@ export class TopbarComponent implements OnInit, DoCheck {
   // Random Search
   async randomSearch():Promise<void> {
     console.log("Starting Random Search!")
+    // Random Search should loop infinitely
+    let pointsLength:number = this.selectedPoints.length;
+    let currentPathLength:number = 0;
+    let minPathLength:number = Infinity;
+    while (true) {
+      currentPathLength = 0;    // Calculate length of path
+      if (this.abort) {
+        this.removeAllPaths();  // Repeated removeAllPaths in case of asynchronous call
+        return
+      };
+      await this.sleep(1000);
+      this.shuffleSelectedPoints();
+      for (let i=0; i<this.selectedPoints.length; i++) {
+        this.createPath({A: {x:this.selectedPoints[i%pointsLength].x, y:this.selectedPoints[i%pointsLength].y},
+                         B: {x:this.selectedPoints[(i+1)%pointsLength].x,y:this.selectedPoints[(i+1)%pointsLength].y}});
+      }
+      await this.sleep(1000);
+      this.data.setAllExistingPathsType(0);
+      for (let i=0; i<this.data.currPaths.length; i++) {
+        currentPathLength += this.calculatePathLength(this.data.currPaths[i]);
+      }
+      this.currentPathDistance = Math.round((currentPathLength + Number.EPSILON) * 100) / 100;
+      if (currentPathLength < minPathLength) {
+        minPathLength = currentPathLength;
+        this.minPathDistance = Math.round((minPathLength + Number.EPSILON) * 100) / 100;
+      }
+      await this.sleep(1000);
+      this.removeAllPaths();
+    }
   }
 
   // Branch and Bound Algorithm
