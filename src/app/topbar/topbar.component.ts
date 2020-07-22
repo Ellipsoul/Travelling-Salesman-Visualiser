@@ -63,6 +63,7 @@ export class TopbarComponent implements OnInit, DoCheck {
   currentPathDistance:number = 0;         // Current path distance
   minPathDistance:number = 0;             // Minimum path distance
   distanceMatrix:number[][] = [];         // Matrix of distances between points
+  costMatrix:number[][] = [];             // Matrix of costs between points (branch and bound)
 
   // Algorithm Select
   algorithmControl =  new FormControl();  // Initialise form control for algorithm selector
@@ -462,6 +463,43 @@ export class TopbarComponent implements OnInit, DoCheck {
   // Branch and Bound Algorithm
   async branchAndBound():Promise<void> {
     console.log("Starting Branch and Bound!")
+    this.calculateCostMatrix()
+    // console.log(this.costMatrix);
+    await this.reduceCostMatrix();
+    console.log(this.costMatrix)
+  }
+
+  async reduceCostMatrix():Promise<void>{
+    var rowMins = [];
+    var columnMins = [];
+    for (let r=0; r<this.selectedPoints.length; r++) {
+      rowMins[r] = Math.min(...this.costMatrix[r]);
+    }
+    console.log(rowMins)
+    for (let r=0; r<this.selectedPoints.length; r++) {
+      for (let v=0; v<this.selectedPoints.length; v++){
+        if(this.costMatrix[r][v] < Number.MAX_VALUE){
+          this.costMatrix[r][v] -= rowMins[r];
+        }
+      }
+    }
+    for (let c=0; c<this.selectedPoints.length; c++) {
+      var colMin = Math.min(Number.MAX_VALUE,this.costMatrix[0][c]);
+      for (let r=1; r<this.selectedPoints.length; r++) {
+        colMin = Math.min(colMin,this.costMatrix[r][c]);
+      }
+      columnMins[c] = colMin;
+    }
+    console.log(columnMins)
+    for (let c=0; c<this.selectedPoints.length; c++) {
+      for (let v=0; v<this.selectedPoints.length; v++){
+        if(this.costMatrix[v][c] < Number.MAX_VALUE){
+          this.costMatrix[v][c] -= columnMins[c];
+        }
+      }
+    }
+
+
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -885,6 +923,25 @@ export class TopbarComponent implements OnInit, DoCheck {
         }
       }
       this.distanceMatrix.push(row);
+    }
+  }
+
+  calculateCostMatrix():void {
+    this.costMatrix = [];  // Reset the distance matrix!
+    let row:number[];
+    let distance:number;
+    for (let i=0; i<this.selectedPoints.length; i++) {
+      row = [];
+      for (let j=0; j<this.selectedPoints.length; j++) {
+        if (i===j) {
+          row.push(Number.MAX_VALUE)
+        }
+        else {
+          distance = this.distanceBetweenPoints(this.selectedPoints[i], this.selectedPoints[j])
+          row.push(distance)
+        }
+      }
+      this.costMatrix.push(row);
     }
   }
 
