@@ -33,7 +33,7 @@
     </div>
 
     <div [style.display]="infoPageNumber==1 ? 'inline':'none'">
-      <p id="tsp-explanation"> The travelling salesman problem is a very simple problem to explain, but an <i> extremely </i> difficult problem to solve efficiently. In computer science, this problem is classified as an <i> NP-Hard</i> problem, meaning that it cannot be solved in polynomial time or better, and a potentially optimal route cannot be verified as optimal in polynomial time.</p>
+      <p id="tsp-explanation"> The travelling salesman problem is a very simple problem to explain, but an <i> extremely </i> difficult problem to solve efficiently. In computer science, this problem is classified as an <i> NP-Hard</i> problem, meaning that it cannot be solved in polynomial time or better, and a potentially optimal route cannot be verified as optimal in polynomial time or better.</p>
       <ul>
         <li class="tsp-explanation-list"> A traveller has several cities (<b>nodes</b>/<b>vertices</b>) he/she would like to visit.</li>
         <li class="tsp-explanation-list"> The traveller must visit all nodes exactly once and return to the original node (this is known as a <b>Hamiltonian Cycle</b>), and the goal is to find the path that <i>minimises</i> the traveller's total distance travelled.</li>
@@ -68,15 +68,86 @@
     </div>
 
     <div [style.display]="infoPageNumber==3 ? 'inline':'none'">
-      <p> Brute Force Algorithms here </p>
+      <h3> Brute Force Algorithms attempt to find the exact solution by checking all possible paths. These algorithms typically becomes impractical quite quickly as the number of cities increases. </h3>
+      <ul>
+        <li>
+          <b>Depth First Search</b>
+          <ul>
+            <li class="algorithm-explanations"> This algorithm traverses each possible cycle in a <i>depth first search </i> manner, continuing until all possible paths are checked.  </li>
+            <li class="algorithm-explanations"> The length of each cycle is calculated, and the cycle of mininum length is saved. </li>
+          </ul>
+        </li>
+        <li>
+          <b>Branch and Bound</b>
+          <ul>
+            <li class="algorithm-explanations"> Traverses in the same manner as <i>depth first search</i> but with a small optimisation:</li>
+            <li class="algorithm-explanations"> If the current distance of a sub-path already exceeds the previous minimum of a full cycle, the remaining branches in this subtree are skipped as they cannot contain a full cycle with a shorter distance than the previous minimum distance cycle.</li>
+          </ul>
+        </li>
+        <li>
+          <b>Random Search</b>
+          <ul>
+            <li class="algorithm-explanations"> As the name suggests, this algorithm simply initialises Hamiltonian cycles randomly amongst the points, and calculates the path's corresponding distance. </li>
+            <li class="algorithm-explanations"> This algorithm will run endlessly until stopped! </li>
+          </ul>
+        </li>
+      </ul>
+      <div style="height: 21px;"></div>
     </div>
 
     <div [style.display]="infoPageNumber==4 ? 'inline':'none'">
-      <p> Heuristic Algorithms here </p>
+      <h3 id="heuristic-intro"> Heuristic algorithms do not guarantee an optimal cycle, but aim to find a close approximation to the theoretical optimal route in significantly less time. These algorithms can be completed in <i> polynomial time</i>. </h3>
+      <ul>
+        <li>
+          <b>Nearest Neighbour</b>
+          <ul>
+            <li class="algorithm-explanations2"> The <i>greedy</i> approach. The algorithm initialises a random starting node, and at each timestep searches for the closest node to the previous node that is not already part of the cycle and connects a path between the two nodes, until a complete cycle is formed. </li>
+          </ul>
+        </li>
+        <li>
+          <b>Nearest Insertion, Farthest Insertion and Arbitrary Insertion</b>
+          <ul>
+            <li class="algorithm-explanations2"> These algorithms all begin in the same fashion: a random starting node is selected and connected to its nearest neighbouring node to form the first path. </li>
+            <li class="algorithm-explanations2"> Now, the algorithms search for a new node to add to the cycle. For <i>nearest insertion</i>, the <i>closest</i> node to any in-cycle node is selected. For <i>farthest insertion</i>, the <i>farthest</i> node is selected, and for <i>arbitrary insertion</i> a <i>random</i> node is selected.</li>
+            <li class="algorithm-explanations2"> The selected node is <i>inserted</i> between two other connected nodes where the <i>path distance increase</i> from the insertion is <i>minimised</i>. This repeats until all nodes have been inserted into the cycle. </li>
+          </ul>
+        </li>
+        <li>
+          <b>Convex Hull</b>
+          <ul>
+            <li class="algorithm-explanations2"> First, the algorithm forms a subtour in the shape of a <i>convex hull</i>, the smallest convex polygon which encloses all points. </li>
+            <li class="algorithm-explanations2"> For every node not in the sub-tour, find the <i>minimum cost insertion</i> possible with the node.</li>
+            <li class="algorithm-explanations2"> Comparing these point insertions, find the one that minimises a cost function and make the insertion. Repeat this until the full cycle is formed. </li>
+          </ul>
+        </li>
+      </ul>
+      <div style="height: 1px;"></div>
     </div>
 
     <div [style.display]="infoPageNumber==5 ? 'inline':'none'">
-      <p> Thanks! We hope you enjoyed... </p>
+      <h2 id="enjoyed"> We hope you enjoyed our app! </h2>
+      <h3> This project was completed purely out of computer science and software engineering curiosity. </h3>
+      <h3> Click the image below to view the application source code! </h3>
+      <div style="text-align: center;">
+        <a href="https://github.com/Ellipsoul/Travelling-Salesman-Visualiser" target="_blank" style="text-align:center">
+          <img src="assets/img/TSP_logo.png" id="logo-large-end">
+        </a>
+      </div>
+      <h3>Created By:</h3>
+      <div>
+        <span class="column">
+          <a href="https://github.com/Ellipsoul" target="_blank">
+            <img src="assets/img/github_mark.png" id="github-mark">
+          </a>
+          <p id="name-aron"> Aron Teh </p>
+        </span>
+        <span class="column">
+          <a href="https://github.com/juicetinliu" target="_blank">
+            <img src="assets/img/github_mark.png" id="github-mark">
+          </a>
+          <p id="name-justin"> Justin Liu </p>
+        </span>
+      </div>
     </div>
 
   </mat-dialog-content>
