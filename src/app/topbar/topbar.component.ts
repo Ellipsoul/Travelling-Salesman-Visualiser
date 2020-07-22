@@ -358,13 +358,13 @@ export class TopbarComponent implements OnInit, DoCheck {
       let newPath = {A:{x:this.selectedPoints[0].x, y:this.selectedPoints[0].y}, B:{x:pointSequence[pointSequence.length-1].x,  y:pointSequence[pointSequence.length-1].y}};
 
       await this.sleep(this.runSpeed); // Making use of async-await to create path
-      this.data.setAllExistingPathsType(0);
+      if (this.data.currPaths.length != 0) {
+        this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-1], 0)
+      }
       this.createPath(newPath);
       if (this.abort) { // multiple abort checks to catch recursive calls at various depths and abort
         return;
       };
-      this.data.setIndividualPathType(newPath,2);
-
       // calculate distance formed by path loop
       let totalDist = this.distanceBetweenPoints(this.selectedPoints[0],pointSequence[0]);
       for(let p = 0; p < pointSequence.length-1; p++){
@@ -400,9 +400,10 @@ export class TopbarComponent implements OnInit, DoCheck {
 
       await this.sleep(this.runSpeed); // Making use of async-await to create path
       let newPath = {A:{x:previousPoint.x, y:previousPoint.y}, B:{x:currPoint.x,  y:currPoint.y}};
-      this.data.setAllExistingPathsType(0);
+      if (this.data.currPaths.length != 0) {
+        this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-1], 0)
+      }
       this.createPath(newPath);
-      this.data.setIndividualPathType(newPath,2);
       // remove the fixed point from leftover points
       let newLeftoverPoints = leftoverPoints.slice(0,i).concat(leftoverPoints.slice(i+1));
       // add the fixed point to the current permutation
@@ -423,7 +424,6 @@ export class TopbarComponent implements OnInit, DoCheck {
     }
 
   }
-
   // Random Search
   async randomSearch():Promise<void> {
     console.log("Starting Random Search!")
