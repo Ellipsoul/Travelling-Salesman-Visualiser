@@ -362,9 +362,7 @@ export class TopbarComponent implements OnInit, DoCheck {
         this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-1], 0)
       }
       this.createPath(newPath);
-      if (this.abort) { // multiple abort checks to catch recursive calls at various depths and abort
-        return;
-      };
+
       // calculate distance formed by path loop
       let totalDist = this.distanceBetweenPoints(this.selectedPoints[0],pointSequence[0]);
       for(let p = 0; p < pointSequence.length-1; p++){
@@ -384,17 +382,10 @@ export class TopbarComponent implements OnInit, DoCheck {
 
       await this.sleep(this.runSpeed); // Making use of async-await to remove path
       this.removePath(newPath);
-      if (this.abort) { // multiple abort checks to catch recursive calls at various depths and abort
-        return;
-      };
 
       return;
     }
     for(let i = 0; i < leftoverPoints.length; i++){ // RECURSIVE CASE: for remaining unused points, go through all permutations of this subset (through recursion)
-
-      if (this.abort) { // multiple abort checks to catch recursive calls at various depths and abort
-        return;
-      };
       // keep one point fixed and permute the rest
       let currPoint:{x:number, y:number} = leftoverPoints[i];
 
@@ -482,6 +473,7 @@ export class TopbarComponent implements OnInit, DoCheck {
     for (let i = 0; i < this.selectedPoints.length; i++){
       currBound += await this.firstMin(i) + await this.secondMin(i);
     }
+    currBound = (currBound === 1)? currBound/2 + 1 : currBound/2;
 
     console.log(currBound)
     pointVisited[0] = true;
@@ -546,10 +538,6 @@ export class TopbarComponent implements OnInit, DoCheck {
       if (this.data.currPaths.length != 0) {
         this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-1], 0)
       }
-      this.createPath(newPath);
-      if (this.abort) { // multiple abort checks to catch recursive calls at various depths and abort
-        return;
-      };
       // calculate distance formed by path loop
       let totalDist = currDist + this.distanceBetweenPoints(previousPoint, this.selectedPoints[0]);
       // set current distance
@@ -565,17 +553,10 @@ export class TopbarComponent implements OnInit, DoCheck {
 
       await this.sleep(this.runSpeed); // Making use of async-await to remove path
       this.removePath(newPath);
-      if (this.abort) { // multiple abort checks to catch recursive calls at various depths and abort
-        return;
-      };
 
       return;
     }
     for(let i = 0; i < leftoverPoints.length; i++){ // RECURSIVE CASE: for remaining unused points, go through all permutations of this subset (through recursion)
-
-      if (this.abort) { // multiple abort checks to catch recursive calls at various depths and abort
-        return;
-      };
       // keep one point fixed and permute the rest
       let currPoint:{x:number, y:number} = leftoverPoints[i];
       let copy = currBound;
@@ -585,9 +566,9 @@ export class TopbarComponent implements OnInit, DoCheck {
       // different computation of currBound for
       // level 2 from the other levels
       if (pointSequence.length === 1){
-        currBound -= ((await this.firstMin(this.selectedPoints.indexOf(previousPoint)) + await this.firstMin(i))/2);
+        currBound -= ((await this.firstMin(this.selectedPoints.indexOf(previousPoint)) + await this.firstMin(this.selectedPoints.indexOf(currPoint)))/2);
       }else {
-        currBound -= ((await this.secondMin(this.selectedPoints.indexOf(previousPoint)) + await this.firstMin(i))/2);
+        currBound -= ((await this.secondMin(this.selectedPoints.indexOf(previousPoint)) + await this.firstMin(this.selectedPoints.indexOf(currPoint)))/2);
       }
 
       await this.sleep(this.runSpeed); // Making use of async-await to create path
