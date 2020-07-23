@@ -6,37 +6,9 @@
   margin-top: -5px;
   overflow-x: auto;
   position: relative;
-
-  /* background-color: lightcoral; */
-  /* border: 1px solid black; */
-  /* justify-content: center; */
-  /* align-items: center; */
-    /* width: 100%; */
 }
 
 .row {
   display: flex;
   flex-direction: row;
 }
-
-/* .random {
-  align-self: center;
-  width:100px;
-  height:50px;
-  background: plum;
-}
-
-.random:hover{
-  background: purple;
-}
-
-.clear {
-  align-self: center;
-  width:100px;
-  height:50px;
-  background: lightsalmon;
-}
-
-.clear:hover{
-  background: red;
-} */

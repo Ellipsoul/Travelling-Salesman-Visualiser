@@ -13,35 +13,31 @@ import { GridcommService } from '../gridcomm.service';
 })
 
 export class GridComponent implements OnInit, AfterContentInit, DoCheck {
-  @ViewChild(PointrowDirective, {static: true}) pointHost: PointrowDirective; //reference to container to host the new components -- see pointrow.directive.ts
+  // Reference to container to host the new components -- see pointrow.directive.ts
+  @ViewChild(PointrowDirective, {static: true}) pointHost: PointrowDirective;
 
-  @ViewChild(PathDirective, {static: true}) pathHost: PathDirective; //reference to container to host the new components -- see path.directive.ts
+  // Reference to container to host the new components -- see path.directive.ts
+  @ViewChild(PathDirective, {static: true}) pathHost: PathDirective;
 
-  noRows = Math.floor(window.innerHeight/46); // Dynamically allocate number of rows of points
-  noCols = Math.floor(window.innerWidth/35);  // Dynamically allocate number of columns of points
+  noRows = Math.floor(window.innerHeight/46);  // Dynamically allocate number of rows of points
+  noCols = Math.floor(window.innerWidth/35);   // Dynamically allocate number of columns of points
 
   pathContainer: ViewContainerRef = null;
 
-  dispPaths: {A:{x: number; y: number}; B: {x: number; y: number}}[] = []; //all displayed paths
+  dispPaths: {A:{x: number; y: number}; B: {x: number; y: number}}[] = [];  // All displayed paths
 
   constructor(private data: GridcommService, private resolver: ComponentFactoryResolver) {}
 
-  ngOnInit(): void { //on component initialization
+  ngOnInit(): void {  // On component initialization
 
-    // const offsetHeight = 350;
-    // const offsetWidth = 300;
+    this.makeGrid(this.noRows, this.noCols);  // Create grid with rows and columns
 
-    // this.noRows = (window.innerHeight - offsetHeight)/30;
-    // this.noCols = (window.innerWidth - offsetWidth)/30;
-
-    this.makeGrid(this.noRows, this.noCols); //create grid with rows and columns
-
-    //asynchronous update (addition and removal) of path components in pathContainer
+    // Asynchronous update (addition and removal) of path components in pathContainer
     this.data.currentRemovePathsIndexMessage.subscribe(pathIndexToRemove => this.removePath(pathIndexToRemove));
     this.data.currentDispPathsMessage.subscribe(pathToAdd => {if(pathToAdd != null){this.generatePath(pathToAdd)}});
   }
 
-  ngAfterContentInit(): void { //after content is initialized (runs after ngOnInit)
+  ngAfterContentInit(): void {  // After content is initialized (runs after ngOnInit)
     this.pathContainer = this.pathHost.viewContainerRef;
     this.clearPaths();
   }
@@ -49,14 +45,17 @@ export class GridComponent implements OnInit, AfterContentInit, DoCheck {
   ngDoCheck(): void {
   }
 
-  makeGrid(rows: number, cols: number): void{ //create grid with rows and columns
-    const viewContainerRef = this.pointHost.viewContainerRef; //reference to container (replaces <ng-template app-pointrowhost><ng-template>)
+  makeGrid(rows: number, cols: number): void{  // Create grid with rows and columns
+    // Reference to container (replaces <ng-template app-pointrowhost><ng-template>)
+    const viewContainerRef = this.pointHost.viewContainerRef;
     viewContainerRef.clear(); //clear it for good practice
 
     for(let i = 0; i < rows; i++){
-      const newRow = viewContainerRef.createComponent(this.resolver.resolveComponentFactory(PointrowComponent)); //componentFactory resolves a new PointrowComponent; the container creates it within itself
+      // ComponentFactory resolves a new PointrowComponent; the container creates it within itself
+      const newRow = viewContainerRef.createComponent(this.resolver.resolveComponentFactory(PointrowComponent));
 
-      (<PointrowComponent>newRow.instance).makePoints(cols, i); //reference to the created pointrow component - make its child points
+      // Reference to the created pointrow component - make its child points
+      (<PointrowComponent>newRow.instance).makePoints(cols, i);
     }
   }
 
@@ -67,12 +66,12 @@ export class GridComponent implements OnInit, AfterContentInit, DoCheck {
     }
   }
 
-  removePath(index: number): void{
-    if(this.pathContainer !== null){
-      if(index !== -1 && this.pathContainer.length > 0){
-        if(index === -2){
+  removePath(index: number):void {
+    if (this.pathContainer !== null) {
+      if (index !== -1 && this.pathContainer.length > 0) {
+        if (index === -2){
           this.clearPaths();
-        }else{
+        } else{
           this.pathContainer.remove(index);
         }
       }

@@ -3,12 +3,12 @@ import { Directive, ViewContainerRef } from '@angular/core';
 @Directive({
   selector: '[app-pointrowhost]',
 })
+
+// Acts as a container for the pointrows - use in html as <ng-template app-pointrowhost></ng-template>
 export class PointrowDirective {
-  constructor(public viewContainerRef: ViewContainerRef) { } //acts as a container for the pointrows - use in html as <ng-template app-pointrowhost></ng-template>
+  constructor(public viewContainerRef: ViewContainerRef) { }
 
 }
-
-
 
 /*
 Copyright Google LLC. All Rights Reserved.

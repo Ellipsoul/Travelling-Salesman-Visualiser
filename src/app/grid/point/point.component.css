@@ -7,27 +7,20 @@
 }
 
 .point {
-  /* width:10px;
-  height:10px; */
   width:35%;
   height:35%;
   border-radius:50%;
   z-index: 2;
-  /* border: 1px black; */
-  /* border-style: solid; */
 }
 
 :host {
-  width:34px; /*OLD(1.9vw) TESTING*/
-  min-width: 34px; /*OLD(25px) TESTING*/
-  min-height: 34px; /*OLD(25px) TESTING*/
-  height:34px; /*OLD(1.9vw) TESTING*/
+  width: 34px;
+  min-width: 34px;
+  min-height: 34px;
+  height: 34px;
   display: flex;
   flex-wrap: nowrap;
   justify-content: center;
   align-items: center;
   background-color: transparent;
-  /* background: greenyellow; */
-  /* border: 1px dashed black; */
-  /* border-radius: 25%; */
 }

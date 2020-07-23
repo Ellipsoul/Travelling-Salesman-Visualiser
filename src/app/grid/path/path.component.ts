@@ -14,7 +14,7 @@ export class PathComponent implements OnInit, DoCheck {
   allTypeChangetick: boolean = false;
   prevAllTypeChangetick: boolean = false;
 
-  type: number = 2; //setting colour: 0 - light grey; 1 - solid black; 2 - yellow?
+  type: number = 2;  // Setting colour: 0 - light grey; 1 - solid black; 2 - yellow
   pointSpacing: number = 34;
 
   pathWidth: number = 50; // Div width
@@ -34,8 +34,6 @@ export class PathComponent implements OnInit, DoCheck {
           }
         }
     });
-    // this.allTypeChange = this.data.allPathType;
-    // this.prevAllTypeChange = this.data.allPathType;
     this.data.changeAllPathTypeMessage.subscribe(message => {this.allTypeChange = message.Type; this.allTypeChangetick = message.Tick});
     this.prevAllTypeChangetick = this.allTypeChangetick;
 
