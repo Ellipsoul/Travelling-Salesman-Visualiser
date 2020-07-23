@@ -986,6 +986,80 @@ export class TopbarComponent implements OnInit, DoCheck {
   // Convex Hull
   async convexHull():Promise<void> {
     console.log("Starting Convex Hull!")
+    //First create convex hull - find bottom-most point (largest y value) on grid to be the first point
+    let currentPoint = {x:0, y:-1};
+    let firstIndex:number;
+    let visited:boolean[] = [false];
+    for (let i = 0; i < this.selectedPoints.length; i++) {
+      visited.push(false);
+    }
+
+    // Calculate distances matrix
+    this.calculateDistanceMatrix()
+    console.log(this.distanceMatrix);
+
+    for(let i = 0; i < this.selectedPoints.length; i++){
+      if(this.selectedPoints[i].y > currentPoint.y){
+        currentPoint = this.selectedPoints[i];
+        firstIndex = i;
+      }
+    }
+    visited[firstIndex] = true;
+
+    let previousPoint = {x:currentPoint.x + 1, y:currentPoint.y};
+    let currentPointIndex = firstIndex;
+
+    let bestSolution:{minDist:number, minPath:{x:number, y:number}[]} = {minDist:Number.MAX_VALUE, minPath:[currentPoint]};
+    //Next create bounding polygon by finding next point with angle that is most counter-clockwise from current point and repeating until first point is reached
+    let finishedBounding = false;
+    do{
+      let minPointIndex;
+      let minPointAngle = Math.PI;
+      let previousPointAngle = Math.atan2(currentPoint.y-previousPoint.y, currentPoint.x-previousPoint.x);
+      for(let i = 0; i < this.selectedPoints.length; i++){
+        if(i !== currentPointIndex){
+          let newPath = {A:{x:this.selectedPoints[i].x, y:this.selectedPoints[i].y}, B:{x:currentPoint.x,  y:currentPoint.y}};
+
+          await this.sleep(this.runSpeed); // Making use of async-await to create path
+          if (this.data.currPaths.length != 0) {
+            this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-1], 0)
+          }
+          this.createPath(newPath);
+
+          let thisPointAngle = Math.atan2(this.selectedPoints[i].y - currentPoint.y, this.selectedPoints[i].x - currentPoint.x) - previousPointAngle;
+          if(thisPointAngle < 0){ thisPointAngle += 2 * Math.PI;} //normalize to 0 - 2*PI
+          if(thisPointAngle < minPointAngle){
+            minPointIndex = i;
+            minPointAngle = thisPointAngle;
+          }
+          await this.sleep(this.runSpeed); // Making use of async-await to remove path
+          this.removePath(newPath);
+        }
+      }
+      previousPoint = currentPoint;
+      currentPoint = this.selectedPoints[minPointIndex];
+      currentPointIndex = minPointIndex;
+      visited[minPointIndex] = true;
+      if(currentPoint.x === bestSolution.minPath[0].x && currentPoint.y === bestSolution.minPath[0].y){
+        finishedBounding = true;
+        let newPath = {A:{x:currentPoint.x, y:currentPoint.y}, B:{x:previousPoint.x,  y:previousPoint.y}};
+
+        await this.sleep(this.runSpeed); // Making use of async-await to create path
+        this.createPath(newPath);
+        this.data.setAllExistingPathsType(0);
+      }else{
+        bestSolution.minPath.push(currentPoint)
+        let newPath = {A:{x:currentPoint.x, y:currentPoint.y}, B:{x:previousPoint.x,  y:previousPoint.y}};
+
+        await this.sleep(this.runSpeed); // Making use of async-await to create path
+        if (this.data.currPaths.length != 0) {
+          this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-1], 0)
+        }
+        this.createPath(newPath);
+      }
+    }while(!finishedBounding);
+
+    //With bounding complete, now insert points
   }
 
   //--------------------------------------------------------------------------------------------------------------------
