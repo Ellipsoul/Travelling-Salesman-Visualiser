@@ -35,8 +35,8 @@ export class TopbarComponent implements OnInit, DoCheck {
   selectedPoints: {x: number, y:number}[] = [];     // Array of coordinate objects to store only selected points
   prevSelectedPoints: {x: number, y:number}[] = []; // Array with previous selected points for change detection
   // Points management
-  noRows = Math.floor(window.innerHeight/46); // Dynamically allocate number of rows of points
-  noCols = Math.floor(window.innerWidth/35);  // Dynamically allocate number of columns of points
+  noRows = Math.floor(window.innerHeight/46);  // Dynamically allocate number of rows of points
+  noCols = Math.floor(window.innerWidth/35);   // Dynamically allocate number of columns of points
 
   // Vertices buttons manager
   verticesButtonsDisabled:boolean = false;
@@ -88,7 +88,7 @@ export class TopbarComponent implements OnInit, DoCheck {
   // Speed Control
   runSpeed:number = 10000 / 505;
 
-  // ------------------------------------------------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------------------------------------------
   // Class functions
 
   // Subscribe to selectedpoints 'message' - accesses the selectedpoints array held in the service;
@@ -97,6 +97,10 @@ export class TopbarComponent implements OnInit, DoCheck {
     this.data.currentSelPointsMessage.subscribe(message => this.selectedPoints = message);
     this.possPaths = this.calculatePossiblePaths(this.currPointAmount);
     this.openDialog();
+
+    if (this.noRows * this.noCols < 100) {
+      alert("Your device may be too small for an optimal experience on this app. For basic functionality, please avoid initialising too many points")
+    }
   }
 
   // Runs whenever a change is detected in ANY component in the app (could be mouse changes or any data changes)
