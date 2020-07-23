@@ -8,23 +8,26 @@ import { PointDirective } from '../point/point.directive';
   styleUrls: ['./pointrow.component.css']
 })
 export class PointrowComponent implements OnInit {
-  @ViewChild(PointDirective, {static: true}) pointHost: PointDirective; //reference to container to host the new components -- see point.directive.ts
+  // Reference to container to host the new components -- see point.directive.ts
+  @ViewChild(PointDirective, {static: true}) pointHost: PointDirective;
 
-  constructor(private resolver: ComponentFactoryResolver) {
-  }
+  constructor(private resolver: ComponentFactoryResolver) { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void { }
 
-  makePoints(numPoints: number, rowNumber: number): void{ //create child points in this row
+  // Create child points in this row
+  makePoints(numPoints: number, rowNumber: number): void{
 
-    const viewContainerRef = this.pointHost.viewContainerRef; //reference to container (replaces <ng-template app-pointhost><ng-template>)
-    viewContainerRef.clear(); //clear it for good practice
+    // Reference to container (replaces <ng-template app-pointhost><ng-template>)
+    const viewContainerRef = this.pointHost.viewContainerRef;
+    viewContainerRef.clear();  // Clear it for good practice
 
     for(let i = 0; i < numPoints; i ++){
-      const newPoint = viewContainerRef.createComponent(this.resolver.resolveComponentFactory(PointComponent)); //componentFactory resolves a new PointComponent; the container creates it within itself
+      // componentFactory resolves a new PointComponent; the container creates it within itself
+      const newPoint = viewContainerRef.createComponent(this.resolver.resolveComponentFactory(PointComponent));
 
-      (<PointComponent>newPoint.instance).setCoords(i, rowNumber); //reference to the created point component - set the coordinates in its own class data
+      // Reference to the created point component - set the coordinates in its own class data
+      (<PointComponent>newPoint.instance).setCoords(i, rowNumber);
     }
   }
 

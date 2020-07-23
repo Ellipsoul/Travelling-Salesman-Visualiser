@@ -9,6 +9,3 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'travelling-salesman-visualiser';
 }
-
-// export class ButtonToggleAppearanceExample {}
-// export class GridListOverviewExample {}
