@@ -538,6 +538,8 @@ export class TopbarComponent implements OnInit, DoCheck {
       if (this.data.currPaths.length != 0) {
         this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-1], 0)
       }
+      this.createPath(newPath);
+
       // calculate distance formed by path loop
       let totalDist = currDist + this.distanceBetweenPoints(previousPoint, this.selectedPoints[0]);
       // set current distance
