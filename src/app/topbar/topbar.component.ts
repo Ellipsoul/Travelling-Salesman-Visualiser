@@ -433,11 +433,19 @@ export class TopbarComponent implements OnInit, DoCheck {
         this.createPath({A: {x:this.selectedPoints[i%pointsLength].x, y:this.selectedPoints[i%pointsLength].y},
                          B: {x:this.selectedPoints[(i+1)%pointsLength].x,y:this.selectedPoints[(i+1)%pointsLength].y}});
       }
+      if (this.abort) {
+        this.removeAllPaths();  // Repeated removeAllPaths in case of asynchronous call
+        return
+      };
       await this.sleep(500);
       this.data.setAllExistingPathsType(0);
       for (let i=0; i<this.data.currPaths.length; i++) {
         currentPathLength += this.calculatePathLength(this.data.currPaths[i]);
       }
+      if (this.abort) {
+        this.removeAllPaths();  // Repeated removeAllPaths in case of asynchronous call
+        return
+      };
       this.currentPathDistance = Math.round((currentPathLength + Number.EPSILON) * 100) / 100;
       if (currentPathLength < minPathLength) {
         minPathLength = currentPathLength;
