@@ -1,3 +1,10 @@
-  <div [ngClass]="{'interactable': !disabled, 'hide': disabled && !isSelected, 'point': true}" (mousedown)="selectToggle()" (mouseenter)="hoverIn()" (mouseleave)="hoverOut()" [@selector]="isSelected ? (isHovered ? 'hoverednselected' : 'selected') : (isHovered ? 'hoverednunselected' : 'unselected')"></div>
+  <div
+    [ngClass]="{'interactable': !disabled, 'hide': disabled && !isSelected, 'point': true}"
+    (mousedown)="selectToggle()"
+    (mouseenter)="hoverIn()"
+    (mouseleave)="hoverOut()"
+    [@selector]="isSelected ? (isHovered ? 'hoverednselected' : 'selected') : (isHovered ? 'hoverednunselected' : 'unselected')">
+  </div>
+
 <!-- [@selector]="isSelected ? (isHovered ? 'hoverednselected' : 'selected') : (isHovered ? 'hoverednunselected' : 'unselected')" -->
 <!-- ^^ Decides the animation state based on booleans 'isSelected' and 'isHovered' -->
