@@ -7,6 +7,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DialogInfoComponent } from './dialog-info/dialog-info.component';
 import { unescapeIdentifier } from '@angular/compiler';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { mixinInitialized } from '@angular/material/core';
 
 // Define interface for single algorithm
 interface Algorithms {
@@ -355,22 +356,20 @@ export class TopbarComponent implements OnInit, DoCheck {
 
     if(leftoverPoints.length === 0){ // BASE CASE: whenever all remaining points are used up OR whenever a permutation is complete
       // create path to complete loop
-      let newPath = {A:{x:this.selectedPoints[0].x, y:this.selectedPoints[0].y}, B:{x:pointSequence[pointSequence.length-1].x,  y:pointSequence[pointSequence.length-1].y}};
+      let newPath = {A:{x:this.selectedPoints[0].x, y:this.selectedPoints[0].y}, B:{x:previousPoint.x,  y:previousPoint.y}};
 
       await this.sleep(this.runSpeed); // Making use of async-await to create path
-      this.data.setAllExistingPathsType(0);
+      if (this.data.currPaths.length != 0) {
+        this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-1], 0)
+      }
       this.createPath(newPath);
-      if (this.abort) { // multiple abort checks to catch recursive calls at various depths and abort
-        return;
-      };
-      this.data.setIndividualPathType(newPath,2);
 
       // calculate distance formed by path loop
       let totalDist = this.distanceBetweenPoints(this.selectedPoints[0],pointSequence[0]);
       for(let p = 0; p < pointSequence.length-1; p++){
         totalDist += this.distanceBetweenPoints(pointSequence[p],pointSequence[p+1]);
       }
-      totalDist += this.distanceBetweenPoints(pointSequence[pointSequence.length-1], this.selectedPoints[0]);
+      totalDist += this.distanceBetweenPoints(previousPoint, this.selectedPoints[0]);
       // set current distance
       this.currentPathDistance = Math.round((totalDist + Number.EPSILON) * 100) / 100;
 
@@ -384,25 +383,19 @@ export class TopbarComponent implements OnInit, DoCheck {
 
       await this.sleep(this.runSpeed); // Making use of async-await to remove path
       this.removePath(newPath);
-      if (this.abort) { // multiple abort checks to catch recursive calls at various depths and abort
-        return;
-      };
 
       return;
     }
     for(let i = 0; i < leftoverPoints.length; i++){ // RECURSIVE CASE: for remaining unused points, go through all permutations of this subset (through recursion)
-
-      if (this.abort) { // multiple abort checks to catch recursive calls at various depths and abort
-        return;
-      };
       // keep one point fixed and permute the rest
       let currPoint:{x:number, y:number} = leftoverPoints[i];
 
       await this.sleep(this.runSpeed); // Making use of async-await to create path
       let newPath = {A:{x:previousPoint.x, y:previousPoint.y}, B:{x:currPoint.x,  y:currPoint.y}};
-      this.data.setAllExistingPathsType(0);
+      if (this.data.currPaths.length != 0) {
+        this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-1], 0)
+      }
       this.createPath(newPath);
-      this.data.setIndividualPathType(newPath,2);
       // remove the fixed point from leftover points
       let newLeftoverPoints = leftoverPoints.slice(0,i).concat(leftoverPoints.slice(i+1));
       // add the fixed point to the current permutation
@@ -421,7 +414,6 @@ export class TopbarComponent implements OnInit, DoCheck {
       await this.sleep(this.runSpeed); // Making use of async-await to remove path
       this.removePath(newPath);
     }
-
   }
 
   // Random Search
@@ -460,9 +452,166 @@ export class TopbarComponent implements OnInit, DoCheck {
   }
 
   // Branch and Bound Algorithm
+  // Based on this algorithm https://www.geeksforgeeks.org/traveling-salesman-problem-using-branch-and-bound-2/
   async branchAndBound():Promise<void> {
     console.log("Starting Branch and Bound!")
+
+    let selectedPointsCopy = this.selectedPoints.slice(0);
+
+    this.calculateDistanceMatrix();
+    console.log(this.distanceMatrix);
+
+    // Initialise array of visited points
+    let pointVisited:boolean[] = [];
+    for (let i=0; i<this.selectedPoints.length; i++) {
+      pointVisited.push(false)
+    }
+    let bestSolution:{minDist:number, minPath:{x:number, y:number}[]} = {minDist:Number.MAX_VALUE, minPath:[this.selectedPoints[0]]};
+
+    let currBound = 0;
+
+    // Compute initial bound
+    for (let i = 0; i < this.selectedPoints.length; i++){
+      currBound += await this.firstMin(i) + await this.secondMin(i);
+    }
+    currBound = (currBound === 1)? currBound/2 + 1 : currBound/2;
+
+    console.log(currBound)
+    pointVisited[0] = true;
+    await this.permutePointsBnB(selectedPointsCopy.slice(1), [this.selectedPoints[0]], currBound, 0, this.selectedPoints[0], bestSolution);
+
+    if (this.abort) {
+      this.removeAllPaths(); // Repeated removeAllPaths in case of asynchronous call
+      return;
+    };
+
+    // console.log(bestSolution.minDist)
+    let bestPath = bestSolution.minPath; //array of coordinates that makes best path
+    let pathLength = bestPath.length;
+
+    for(let b = 0; b < pathLength-1; b++){ //draw out best path for for final printing
+      this.createPath({A:{x:bestPath[b].x, y:bestPath[b].y}, B:{x:bestPath[b+1].x,  y:bestPath[b+1].y}});
+    }
+    this.createPath({A:{x:bestPath[0].x, y:bestPath[0].y}, B:{x:bestPath[pathLength-1].x,  y:bestPath[pathLength-1].y}});
+
+    this.currentPathDistance = Math.round((bestSolution.minDist + Number.EPSILON) * 100) / 100;
+    this.minPathDistance = this.currentPathDistance;
   }
+
+  async firstMin(i: number): Promise<number>{
+    let min = Number.MAX_VALUE;
+    for (let k = 0; k < this.selectedPoints.length; k++){
+      if (this.distanceMatrix[i][k] < min && i !== k){
+        min = this.distanceMatrix[i][k];
+      }
+    }
+    return min;
+  }
+
+  async secondMin(i: number): Promise<number>{
+    let first = Number.MAX_VALUE;
+    let second = Number.MAX_VALUE;
+    for (let j = 0; j < this.selectedPoints.length; j++){
+      if (i !== j){
+        if (this.distanceMatrix[i][j] <= first){
+          second = first;
+          first = this.distanceMatrix[i][j];
+        }else if (this.distanceMatrix[i][j] <= second && this.distanceMatrix[i][j] != first){
+          second = this.distanceMatrix[i][j];
+        }
+      }
+    }
+    return second;
+  }
+
+  // Branch and Bound Helper: Recursive asynchronous function to go through all possible combinations of points
+  async permutePointsBnB(leftoverPoints:{x:number, y:number}[], pointSequence:{x:number, y:number}[], currBound: number, currDist: number, previousPoint: {x:number, y:number}, sol:{minDist:number, minPath:{x:number, y:number}[]}): Promise<void>{
+
+    if (this.abort) { // multiple abort checks to catch recursive calls at various depths and abort
+      return;
+    };
+
+    if(leftoverPoints.length === 0){ // BASE CASE: whenever all remaining points are used up OR whenever a permutation is complete
+      // create path to complete loop
+      let newPath = {A:{x:this.selectedPoints[0].x, y:this.selectedPoints[0].y}, B:{x:previousPoint.x,  y:previousPoint.y}};
+
+      await this.sleep(this.runSpeed); // Making use of async-await to create path
+      if (this.data.currPaths.length != 0) {
+        this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-1], 0)
+      }
+      this.createPath(newPath);
+
+      // calculate distance formed by path loop
+      let totalDist = currDist + this.distanceBetweenPoints(previousPoint, this.selectedPoints[0]);
+      // set current distance
+      this.currentPathDistance = Math.round((totalDist + Number.EPSILON) * 100) / 100;
+
+      // if distance is shorter than current minimum, then update minPath and minDist
+      if(totalDist <= sol.minDist){
+        let minPath = [this.selectedPoints[0]].concat(pointSequence)
+        sol.minDist = totalDist;
+        sol.minPath = minPath;
+        this.minPathDistance = Math.round((sol.minDist + Number.EPSILON) * 100) / 100;
+      }
+
+      await this.sleep(this.runSpeed); // Making use of async-await to remove path
+      this.removePath(newPath);
+
+      return;
+    }
+    for(let i = 0; i < leftoverPoints.length; i++){ // RECURSIVE CASE: for remaining unused points, go through all permutations of this subset (through recursion)
+      // keep one point fixed and permute the rest
+      let currPoint:{x:number, y:number} = leftoverPoints[i];
+      let copy = currBound;
+
+      currDist += this.distanceBetweenPoints(previousPoint, currPoint);
+
+      // different computation of currBound for
+      // level 2 from the other levels
+      if (pointSequence.length === 1){
+        currBound -= ((await this.firstMin(this.selectedPoints.indexOf(previousPoint)) + await this.firstMin(this.selectedPoints.indexOf(currPoint)))/2);
+      }else {
+        currBound -= ((await this.secondMin(this.selectedPoints.indexOf(previousPoint)) + await this.firstMin(this.selectedPoints.indexOf(currPoint)))/2);
+      }
+
+      await this.sleep(this.runSpeed); // Making use of async-await to create path
+      let newPath = {A:{x:previousPoint.x, y:previousPoint.y}, B:{x:currPoint.x,  y:currPoint.y}};
+      if (this.data.currPaths.length != 0) {
+        this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-1], 0)
+      }
+      this.createPath(newPath);
+
+      // remove the fixed point from leftover points
+      let newLeftoverPoints = leftoverPoints.slice(0,i).concat(leftoverPoints.slice(i+1));
+      // add the fixed point to the current permutation
+      // HOWEVER because how javascript works with arrays, we don't want to modify the original array by reference
+      // SO we make a copy of the array and the point is removed
+      pointSequence.push(currPoint);
+      let newPointSequence = pointSequence.slice(0);
+      pointSequence.splice(pointSequence.length-1,1);
+
+      // recurse with remaning unused points and current permutation
+      // currBound + currDist is the actual lower bound for the node that we have arrived on
+      // If current lower bound < final_res, we need to explore the node further
+      if (currBound + currDist < sol.minDist){
+        await this.permutePointsBnB(newLeftoverPoints, newPointSequence, currBound, currDist, currPoint, sol);
+      }
+
+      if (this.abort) { // multiple abort checks to catch recursive calls at various depths and abort
+        return;
+      };
+
+      await this.sleep(this.runSpeed); // Making use of async-await to remove path
+      this.removePath(newPath);
+
+      // Else we have to prune the node by resetting
+      // all changes to currDist and currBound
+      currDist -= this.distanceBetweenPoints(previousPoint, currPoint);
+      currBound = copy;
+    }
+  }
+
+
 
   //--------------------------------------------------------------------------------------------------------------------
   // Heuristic algorithms
@@ -838,6 +987,177 @@ export class TopbarComponent implements OnInit, DoCheck {
   // Convex Hull
   async convexHull():Promise<void> {
     console.log("Starting Convex Hull!")
+    //First create convex hull - start from the bottom-most point (largest y value) on grid to be the first point
+    let currentPoint = {x:0, y:-1};
+    let firstIndex:number;
+    let visited:boolean[] = [false];
+    for (let i = 0; i < this.selectedPoints.length; i++) {
+      visited.push(false);
+    }
+
+    // Calculate distances matrix
+    this.calculateDistanceMatrix()
+    console.log(this.distanceMatrix);
+
+    for(let i = 0; i < this.selectedPoints.length; i++){
+      if(this.selectedPoints[i].y > currentPoint.y){ //finding bottom-most point
+        currentPoint = this.selectedPoints[i];
+        firstIndex = i;
+      }
+    }
+
+    let previousPoint = {x:currentPoint.x + 1, y:currentPoint.y};
+
+    let bestSolution:{minPath:{x:number, y:number}[], minPathIndexes:number[]} = {minPath:[currentPoint], minPathIndexes:[firstIndex]};
+
+    //Create convex hull by finding next point with angle that is most counter-clockwise from current point and repeating until first point is reached
+    //Self-created algorithm ~~~ could optimise greatly with Graham Scan or Jarvis March with cross product
+    let finishedBounding = false;
+    do{ //repeat until first point is reached
+      let minPointIndex;
+      let minPointAngle = Math.PI;
+      let previousPointAngle = Math.atan2(currentPoint.y-previousPoint.y, currentPoint.x-previousPoint.x); //angle from previous point
+      for(let i = 0; i < this.selectedPoints.length; i++){
+        if (this.abort) {
+          this.removeAllPaths();
+          return;
+        };
+        if(!visited[i]){
+          let newPath = {A:{x:currentPoint.x, y:currentPoint.y}, B:{x:this.selectedPoints[i].x,  y:this.selectedPoints[i].y}};
+
+          await this.sleep(this.runSpeed); // Making use of async-await to create path
+          if (this.data.currPaths.length != 0) {
+            this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-1], 0)
+          }
+          this.createPath(newPath);
+
+          let thisPointAngle = Math.atan2(this.selectedPoints[i].y - currentPoint.y, this.selectedPoints[i].x - currentPoint.x) - previousPointAngle;
+          if(thisPointAngle < 0){ thisPointAngle += 2 * Math.PI;} //normalize to 0 - 2*PI
+          if(thisPointAngle < minPointAngle){ //find most 'counter-clockwise' point
+            minPointIndex = i;
+            minPointAngle = thisPointAngle;
+          }
+          await this.sleep(this.runSpeed); // Making use of async-await to remove path
+          this.removePath(newPath);
+        }
+      }
+      previousPoint = currentPoint;
+      currentPoint = this.selectedPoints[minPointIndex];
+      visited[minPointIndex] = true;
+      if(minPointIndex === bestSolution.minPathIndexes[0]){
+        finishedBounding = true;
+      }else{
+        bestSolution.minPath.push(currentPoint)
+        bestSolution.minPathIndexes.push(minPointIndex)
+      }
+      let newPath = {A:{x:previousPoint.x, y:previousPoint.y}, B:{x:currentPoint.x, y:currentPoint.y}};
+
+      await this.sleep(this.runSpeed); // Making use of async-await to create path
+      if (this.data.currPaths.length != 0) {
+        this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-1], 0)
+      }
+      this.createPath(newPath);
+    }while(!finishedBounding);
+
+    let unusedPointsIndexes:number[] = []; //create array of unused points to insert into convex hull
+    for(let l = 0; l < this.selectedPoints.length; l++){
+      if(!visited[l]){
+        unusedPointsIndexes.push(l);
+      }
+    }
+    //With convex hull complete, now insert points into existing path
+    while(unusedPointsIndexes.length > 0){ //Loop until all points are used up - all work below is done with point indices for easier handling
+      //FIRST PASS: group unused points to existing path segments based on minimising distances to respective path point pairs
+      let insertBetweenIj:{Ij:number, R:number[]}[] = []; //helper array to store groups of points and the associated path
+      for(let r = 0; r < unusedPointsIndexes.length; r++){
+        let minCost = Number.MAX_VALUE;
+        let minI = -1;
+        let rIndex = unusedPointsIndexes[r];
+
+        for(let i = 0; i < bestSolution.minPathIndexes.length; i++){
+          if (this.abort) {
+            this.removeAllPaths();
+            return;
+          };
+          let iIndex = bestSolution.minPathIndexes[i];
+          let jIndex = bestSolution.minPathIndexes[(i === bestSolution.minPathIndexes.length - 1)? 0: i+1];
+          let thisCost = this.distanceMatrix[rIndex][iIndex] + this.distanceMatrix[rIndex][jIndex] - this.distanceMatrix[iIndex][jIndex];
+          if(thisCost < minCost){
+            minCost = thisCost;
+            minI = i;
+          }
+        }
+
+        if(minI !== -1){
+          let validIj = insertBetweenIj.findIndex(item => item.Ij === minI);
+          if(validIj !== -1){
+            insertBetweenIj[validIj].R.push(r);
+          }else{
+            insertBetweenIj.push({Ij:minI,R:[r]});
+          }
+
+        }
+      }
+      let insertionIR:{I:number, R:number, Ri:number}[] = []; //helper array for better insertion and point removal
+      //SECOND PASS: based on groups of points and associated path, choose one point to insert between path segment which minimizes a cost function
+      for(let i = 0; i < insertBetweenIj.length; i++){ //for each path segment with groups of points
+        let minCost = Number.MAX_VALUE;
+        let minR = -1;
+
+        let IJR = insertBetweenIj[i];
+        let IJRI = IJR.Ij;
+        let insertIndex = (IJRI === bestSolution.minPathIndexes.length - 1)? 0: IJRI + 1;
+        let iIndex = bestSolution.minPathIndexes[IJRI];
+        let jIndex = bestSolution.minPathIndexes[(IJRI === bestSolution.minPathIndexes.length - 1)? 0: IJRI+1];
+
+        for(let r = 0; r < IJR.R.length; r++){ //for the group of points
+          if (this.abort) {
+            this.removeAllPaths();
+            return;
+          };
+          let rIndex = unusedPointsIndexes[IJR.R[r]];
+          let thisCost = (this.distanceMatrix[rIndex][iIndex] + this.distanceMatrix[rIndex][jIndex])/this.distanceMatrix[iIndex][jIndex];
+          if(thisCost < minCost){
+            minCost = thisCost;
+            minR = IJR.R[r];
+          }
+        }
+        if(minR !== -1){ //insert point r between points i and j
+          await this.sleep(this.runSpeed); // Making use of async-await to remove path
+          this.removePath({A:{x:this.selectedPoints[iIndex].x,  y:this.selectedPoints[iIndex].y}, B:{x:this.selectedPoints[jIndex].x, y:this.selectedPoints[jIndex].y}});
+
+          insertionIR.push({I:insertIndex, R:unusedPointsIndexes[minR], Ri:minR}); //add point and insertion point to helper array
+
+          //path drawing can first be done as its independent of point removal and insertion
+          let pathIR = {A:{x:this.selectedPoints[iIndex].x, y:this.selectedPoints[iIndex].y}, B:{x:this.selectedPoints[unusedPointsIndexes[minR]].x,  y:this.selectedPoints[unusedPointsIndexes[minR]].y}};
+          let pathRJ = {A:{x:this.selectedPoints[unusedPointsIndexes[minR]].x, y:this.selectedPoints[unusedPointsIndexes[minR]].y}, B:{x:this.selectedPoints[jIndex].x,  y:this.selectedPoints[jIndex].y}};
+
+          this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-1], 0);
+          this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-2], 0);
+          await this.sleep(this.runSpeed); // Making use of async-await to create two paths
+          this.createPath(pathIR);
+          this.createPath(pathRJ);
+        }
+      }
+      // "THIRD PASS" - insert points into path segments and take them away from unused points array
+      insertionIR.sort((a,b) => a.I - b.I); //sort array for backwards insertion
+      for(let i = insertionIR.length - 1; i >= 0; i--){ //insert the points backwards to avoid mis-insertions
+        bestSolution.minPathIndexes.splice(insertionIR[i].I,0,insertionIR[i].R);
+      }
+      insertionIR.sort((a,b) => a.Ri - b.Ri); //sort array for backwards removal
+      for(let i = insertionIR.length - 1; i >= 0; i--){ //remove the points backwards to avoid mis-removals
+        unusedPointsIndexes.splice(insertionIR[i].Ri, 1);
+      }
+    }
+    //calculate final distance
+    let numPathPoints = bestSolution.minPathIndexes.length;
+    let totalDist = this.distanceMatrix[bestSolution.minPathIndexes[0]][bestSolution.minPathIndexes[numPathPoints-1]]
+    for(let i = 0; i < numPathPoints-1; i++){
+      totalDist += this.distanceMatrix[bestSolution.minPathIndexes[i]][bestSolution.minPathIndexes[i+1]];
+    }
+    // set current distance
+    this.currentPathDistance = Math.round((totalDist + Number.EPSILON) * 100) / 100;
+    this.minPathDistance = this.currentPathDistance;
   }
 
   //--------------------------------------------------------------------------------------------------------------------

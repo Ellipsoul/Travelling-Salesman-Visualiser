@@ -48,7 +48,7 @@ export class PathComponent implements OnInit, DoCheck {
 
   setType(inType: number): void{
     this.type = inType;
-    console.log(this, "Changed", inType);
+    // console.log(this, "Changed", inType);
   }
 
   setPath(inPath: {
