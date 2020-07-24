@@ -105,7 +105,8 @@ export class TopbarComponent implements OnInit, DoCheck {
 
   // Runs whenever a change is detected in ANY component in the app (could be mouse changes or any data changes)
   ngDoCheck(): void {
-    if(!this.arraysEqual(this.prevSelectedPoints, this.selectedPoints)) {  // If there is a change in selected points
+    // If there is a change in selected points
+    if (!this.arraysEqual(this.prevSelectedPoints, this.selectedPoints)) {
       // Update previous selected points; slice makes copy of array - cannot just update with (=)
       this.prevSelectedPoints = this.selectedPoints.slice(0);
       this.currPointAmount = this.selectedPoints.length;
@@ -129,7 +130,7 @@ export class TopbarComponent implements OnInit, DoCheck {
   }
 
   // Simple factorial
-  factorial(currPointAmount:number): number {
+  factorial(currPointAmount:number):number {
     return (currPointAmount != 1) ? currPointAmount * this.factorial(currPointAmount - 1) : 1;
   }
 
@@ -144,9 +145,9 @@ export class TopbarComponent implements OnInit, DoCheck {
   randomize(no: number): void{
     this.clearAll();        // Removing all points
     this.removeAllPaths();  // Removing all paths
-    for(let num = 0; num < no; num++){
+    for (let num = 0; num < no; num++) {
       var added = false;
-      while(!added){
+      while (!added) {
         // Updates the selectedpoints 'message' with the new random point. More info: gridcomm.service.ts
         added = this.data.addToSelPointsMessage(
           { x: this.getRandomNumberBetweenZ(this.noCols),
@@ -163,13 +164,13 @@ export class TopbarComponent implements OnInit, DoCheck {
   }
 
   // Helper function to generate random number
-  getRandomNumberBetweenZ(max: number): number{
+  getRandomNumberBetweenZ(max:number):number {
     return Math.floor(Math.random()*(max));
   }
 
   // Creates path specified by A and B coordinates
-  createPath(inPath:{A:{x: number, y:number}, B: {x: number, y:number}}): void {
-    this.data.addToPaths(inPath);              // Create the path
+  createPath(inPath:{A:{x: number, y:number}, B:{x: number, y:number}}): void {
+    this.data.addToPaths(inPath);  // Create the path
   }
 
   // Removes path specified by A and B coordinates
@@ -195,12 +196,12 @@ export class TopbarComponent implements OnInit, DoCheck {
   }
 
   // Randomise point order
-  randomiseSelectedPoints(): void {
+  randomiseSelectedPoints():void {
     this.selectedPoints.sort(() => Math.random() - 0.5)
   }
 
   // Start timer
-  startTimer(): void {
+  startTimer():void {
     // Check if an algorithm is actually selected
     if (this.selectedAlgorithm === undefined) {
       this.noAlgorithmSelected();
@@ -216,7 +217,6 @@ export class TopbarComponent implements OnInit, DoCheck {
       // Handles starting the timer
       this.startText = "Running";
       this.startButtonDisabled = true;
-      this.startButtonColor = "accent";
       const startTime = Date.now() - this.counter;
       this.timeRef = setInterval(() => {
         this.counter = Date.now() - startTime;
@@ -234,7 +234,7 @@ export class TopbarComponent implements OnInit, DoCheck {
     console.log(this.runSpeed);  // Logarithmic mapping of runSpeed
   }
 
-  //--------------------------------------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------------------------------------
   // Algorithms
 
   // Redirect to all the different algorithms depending on the selected one
@@ -299,7 +299,7 @@ export class TopbarComponent implements OnInit, DoCheck {
 
     await this.sleep(1);
     this.data.setAllExistingPathsType(1);
-    // =================================================================================================================
+    //================================================================================================================
 
     clearInterval(this.timeRef)                // Pause the timer when done
     this.timerRunning = false;                 // Stop "timerRunning"
@@ -334,10 +334,10 @@ export class TopbarComponent implements OnInit, DoCheck {
       return;
     };
 
-    let bestPath = bestSolution.minPath;  // Array of coordinates that makes best path
+    let bestPath = bestSolution.minPath;      // Array of coordinates that makes best path
     let pathLength = bestPath.length;
 
-    for(let b = 0; b < pathLength-1; b++){  // Draw out best path for for final printing
+    for (let b = 0; b < pathLength-1; b++) {  // Draw out best path for for final printing
       this.createPath({A:{x:bestPath[b].x, y:bestPath[b].y}, B:{x:bestPath[b+1].x,  y:bestPath[b+1].y}});
     }
     this.createPath({A:{x:bestPath[0].x, y:bestPath[0].y}, B:{x:bestPath[pathLength-1].x,  y:bestPath[pathLength-1].y}});
@@ -347,7 +347,10 @@ export class TopbarComponent implements OnInit, DoCheck {
   }
 
   // depthFirstSearch Helper: Recursive asynchronous function to go through all possible combinations of points
-  async permutePoints(leftoverPoints:{x:number, y:number}[], pointSequence:{x:number, y:number}[], previousPoint: {x:number, y:number}, sol:{minDist:number, minPath:{x:number, y:number}[]}): Promise<void>{
+  async permutePoints(leftoverPoints:{x:number, y:number}[],
+                      pointSequence:{x:number, y:number}[],
+                      previousPoint: {x:number, y:number},
+                      sol:{minDist:number, minPath:{x:number, y:number}[]}):Promise<void> {
 
     if (this.abort) {  // Multiple abort checks to catch recursive calls at various depths and abort
       return;
@@ -366,7 +369,7 @@ export class TopbarComponent implements OnInit, DoCheck {
 
       // Calculate distance formed by path loop
       let totalDist = this.distanceBetweenPoints(this.selectedPoints[0],pointSequence[0]);
-      for(let p = 0; p < pointSequence.length-1; p++){
+      for (let p = 0; p < pointSequence.length-1; p++) {
         totalDist += this.distanceBetweenPoints(pointSequence[p],pointSequence[p+1]);
       }
       totalDist += this.distanceBetweenPoints(previousPoint, this.selectedPoints[0]);
@@ -374,7 +377,7 @@ export class TopbarComponent implements OnInit, DoCheck {
       this.currentPathDistance = Math.round((totalDist + Number.EPSILON) * 100) / 100;
 
       // If distance is shorter than current minimum, then update minPath and minDist
-      if(totalDist <= sol.minDist){
+      if (totalDist <= sol.minDist) {
         let minPath = [this.selectedPoints[0]].concat(pointSequence)
         sol.minDist = totalDist;
         sol.minPath = minPath;
@@ -387,7 +390,7 @@ export class TopbarComponent implements OnInit, DoCheck {
       return;
     }
     // RECURSIVE CASE: For remaining unused points, go through all permutations of this subset (through recursion)
-    for (let i = 0; i < leftoverPoints.length; i++) {
+    for (let i=0; i<leftoverPoints.length; i++) {
       // Keep one point fixed and permute the rest
       let currPoint:{x:number, y:number} = leftoverPoints[i];
 
@@ -497,7 +500,7 @@ export class TopbarComponent implements OnInit, DoCheck {
     let bestPath = bestSolution.minPath;    // Array of coordinates that makes best path
     let pathLength = bestPath.length;
 
-    for(let b = 0; b < pathLength-1; b++){  // Draw out best path for for final printing
+    for (let b=0; b < pathLength-1; b++) {  // Draw out best path for for final printing
       this.createPath({A:{x:bestPath[b].x, y:bestPath[b].y}, B:{x:bestPath[b+1].x,  y:bestPath[b+1].y}});
     }
     this.createPath({A:{x:bestPath[0].x, y:bestPath[0].y}, B:{x:bestPath[pathLength-1].x,  y:bestPath[pathLength-1].y}});
@@ -506,20 +509,20 @@ export class TopbarComponent implements OnInit, DoCheck {
     this.minPathDistance = this.currentPathDistance;
   }
 
-  async firstMin(i: number): Promise<number>{
+  async firstMin(i: number):Promise<number> {
     let min = Number.MAX_VALUE;
-    for (let k = 0; k < this.selectedPoints.length; k++){
-      if (this.distanceMatrix[i][k] < min && i !== k){
+    for (let k = 0; k < this.selectedPoints.length; k++) {
+      if (this.distanceMatrix[i][k] < min && i !== k) {
         min = this.distanceMatrix[i][k];
       }
     }
     return min;
   }
 
-  async secondMin(i: number): Promise<number>{
+  async secondMin(i: number):Promise<number> {
     let first = Number.MAX_VALUE;
     let second = Number.MAX_VALUE;
-    for (let j = 0; j < this.selectedPoints.length; j++){
+    for (let j = 0; j<this.selectedPoints.length; j++) {
       if (i !== j){
         if (this.distanceMatrix[i][j] <= first){
           second = first;
@@ -540,7 +543,7 @@ export class TopbarComponent implements OnInit, DoCheck {
     };
 
     // BASE CASE: whenever all remaining points are used up OR whenever a permutation is complete
-    if(leftoverPoints.length === 0){
+    if (leftoverPoints.length === 0) {
       // Create path to complete loop
       let newPath = {A:{x:this.selectedPoints[0].x, y:this.selectedPoints[0].y}, B:{x:previousPoint.x,  y:previousPoint.y}};
 
@@ -557,7 +560,7 @@ export class TopbarComponent implements OnInit, DoCheck {
       this.currentPathDistance = Math.round((totalDist + Number.EPSILON) * 100) / 100;
 
       // If distance is shorter than current minimum, then update minPath and minDist
-      if(totalDist <= sol.minDist){
+      if (totalDist <= sol.minDist) {
         let minPath = [this.selectedPoints[0]].concat(pointSequence)
         sol.minDist = totalDist;
         sol.minPath = minPath;
@@ -578,9 +581,9 @@ export class TopbarComponent implements OnInit, DoCheck {
       currDist += this.distanceBetweenPoints(previousPoint, currPoint);
 
       // Different computation of currBound for level 2 from the other levels
-      if (pointSequence.length === 1){
+      if (pointSequence.length === 1) {
         currBound -= ((await this.firstMin(this.selectedPoints.indexOf(previousPoint)) + await this.firstMin(this.selectedPoints.indexOf(currPoint)))/2);
-      }else {
+      } else {
         currBound -= ((await this.secondMin(this.selectedPoints.indexOf(previousPoint)) + await this.firstMin(this.selectedPoints.indexOf(currPoint)))/2);
       }
 
@@ -592,18 +595,18 @@ export class TopbarComponent implements OnInit, DoCheck {
       this.createPath(newPath);
 
       // Remove the fixed point from leftover points
-      let newLeftoverPoints = leftoverPoints.slice(0,i).concat(leftoverPoints.slice(i+1));
+      let newLeftoverPoints = leftoverPoints.slice(0, i).concat(leftoverPoints.slice(i+1));
       // Add the fixed point to the current permutation
       // HOWEVER because how javascript works with arrays, we don't want to modify the original array by reference
       // SO we make a copy of the array and the point is removed
       pointSequence.push(currPoint);
       let newPointSequence = pointSequence.slice(0);
-      pointSequence.splice(pointSequence.length-1,1);
+      pointSequence.splice(pointSequence.length-1, 1);
 
       // Recurse with remaning unused points and current permutation
       // currBound + currDist is the actual lower bound for the node that we have arrived on
       // If current lower bound < final_res, we need to explore the node further
-      if (currBound + currDist < sol.minDist){
+      if (currBound + currDist < sol.minDist) {
         await this.permutePointsBnB(newLeftoverPoints, newPointSequence, currBound, currDist, currPoint, sol);
       }
 
@@ -620,13 +623,11 @@ export class TopbarComponent implements OnInit, DoCheck {
     }
   }
 
-
-
-  //--------------------------------------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------------------------------------
   // Heuristic Algorithms
 
   // Nearest Neighbour
-  async nearestNeighbour():Promise<void>{
+  async nearestNeighbour():Promise<void> {
     console.log("Starting Nearest Neighbour!")
     // Initialise array of visited points (first point will be considered visited)
     let pointVisited:boolean[] = [];
@@ -1008,8 +1009,8 @@ export class TopbarComponent implements OnInit, DoCheck {
     this.calculateDistanceMatrix()
     console.log(this.distanceMatrix);
 
-    for(let i = 0; i < this.selectedPoints.length; i++){
-      if(this.selectedPoints[i].y > currentPoint.y){  // Finding bottom-most point
+    for (let i = 0; i < this.selectedPoints.length; i++) {
+      if (this.selectedPoints[i].y > currentPoint.y) {  // Finding bottom-most point
         currentPoint = this.selectedPoints[i];
         firstIndex = i;
       }
@@ -1022,8 +1023,8 @@ export class TopbarComponent implements OnInit, DoCheck {
     // Create convex hull by finding next point with angle that is most counter-clockwise from current point and repeating until first point is reached
     // Self-created algorithm ~~~ could optimise greatly with Graham Scan or Jarvis March with cross product
     let finishedBounding = false;
-    do{  // Repeat until first point is reached
-      let minPointIndex;
+    do {  // Repeat until first point is reached
+      let minPointIndex:number;
       let minPointAngle = Math.PI;
       // Angle from previous point
       let previousPointAngle = Math.atan2(currentPoint.y-previousPoint.y, currentPoint.x-previousPoint.x);
@@ -1054,9 +1055,9 @@ export class TopbarComponent implements OnInit, DoCheck {
       previousPoint = currentPoint;
       currentPoint = this.selectedPoints[minPointIndex];
       visited[minPointIndex] = true;
-      if(minPointIndex === bestSolution.minPathIndexes[0]){
+      if (minPointIndex === bestSolution.minPathIndexes[0]) {
         finishedBounding = true;
-      }else{
+      } else {
         bestSolution.minPath.push(currentPoint)
         bestSolution.minPathIndexes.push(minPointIndex)
       }
@@ -1067,17 +1068,17 @@ export class TopbarComponent implements OnInit, DoCheck {
         this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-1], 0)
       }
       this.createPath(newPath);
-    }while(!finishedBounding);
+    } while (!finishedBounding);
 
     let unusedPointsIndexes:number[] = [];  // Create array of unused points to insert into convex hull
-    for(let l = 0; l < this.selectedPoints.length; l++){
-      if(!visited[l]){
+    for (let l=0; l < this.selectedPoints.length; l++) {
+      if (!visited[l]) {
         unusedPointsIndexes.push(l);
       }
     }
     // With convex hull complete, now insert points into existing path
     // Loop until all points are used up - all work below is done with point indices for easier handling
-    while(unusedPointsIndexes.length > 0){
+    while (unusedPointsIndexes.length > 0) {
       // FIRST PASS: group unused points to existing path segments based on minimising distances to respective path point pairs
       // Helper array to store groups of points and the associated path
       let insertBetweenIj:{Ij:number, R:number[]}[] = [];
@@ -1128,12 +1129,12 @@ export class TopbarComponent implements OnInit, DoCheck {
           };
           let rIndex = unusedPointsIndexes[IJR.R[r]];
           let thisCost = (this.distanceMatrix[rIndex][iIndex] + this.distanceMatrix[rIndex][jIndex])/this.distanceMatrix[iIndex][jIndex];
-          if(thisCost < minCost){
+          if (thisCost < minCost) {
             minCost = thisCost;
             minR = IJR.R[r];
           }
         }
-        if(minR !== -1){  // Insert point r between points i and j
+        if (minR !== -1) {  // Insert point r between points i and j
           await this.sleep(this.runSpeed);  // Making use of async-await to remove path
           this.removePath({A:{x:this.selectedPoints[iIndex].x,  y:this.selectedPoints[iIndex].y}, B:{x:this.selectedPoints[jIndex].x, y:this.selectedPoints[jIndex].y}});
 
@@ -1153,11 +1154,11 @@ export class TopbarComponent implements OnInit, DoCheck {
       }
       // "THIRD PASS" - insert points into path segments and take them away from unused points array
       insertionIR.sort((a,b) => a.I - b.I);  // Sort array for backwards insertion
-      for(let i = insertionIR.length - 1; i >= 0; i--){  // Insert the points backwards to avoid mis-insertions
+      for (let i = insertionIR.length - 1; i >= 0; i--) {  // Insert the points backwards to avoid mis-insertions
         bestSolution.minPathIndexes.splice(insertionIR[i].I,0,insertionIR[i].R);
       }
       insertionIR.sort((a,b) => a.Ri - b.Ri);  // Sort array for backwards removal
-      for(let i = insertionIR.length - 1; i >= 0; i--){  // Remove the points backwards to avoid mis-removals
+      for (let i = insertionIR.length - 1; i >= 0; i--) {  // Remove the points backwards to avoid mis-removals
         unusedPointsIndexes.splice(insertionIR[i].Ri, 1);
       }
     }
@@ -1171,6 +1172,7 @@ export class TopbarComponent implements OnInit, DoCheck {
     this.currentPathDistance = Math.round((totalDist + Number.EPSILON) * 100) / 100;
     this.minPathDistance = this.currentPathDistance;
   }
+
   //------------------------------------------------------------------------------------------------------------------
   // General algorithm helpers
 

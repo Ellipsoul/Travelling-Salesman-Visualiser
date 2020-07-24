@@ -14,7 +14,7 @@
     <!-- Dropdown menu for algorithms (with groups) -->
     <mat-form-field appearance="fill" id="algorithm-dropdown">
       <mat-label> Algorithm Selector </mat-label>
-      <!-- Bind the algorithmControl formControl-->
+      <!-- Bind the algorithmControl formControl -->
       <mat-select [formControl]="algorithmControl" [(value)]="selectedAlgorithm">
         <mat-option> -- No Selection -- </mat-option>
         <!-- For loop iteration through each group and option within groups -->
@@ -32,7 +32,7 @@
     <h4 id="node-control-description"> <span> Initialise Vertices </span> </h4>
     <!-- Slider tracking number of nodes -->
     <span class="node-slider-and-display">
-      <h4 id="number-of-nodes"> {{randomPointAmount}} </h4>
+      <h4 id="number-of-nodes"> {{ randomPointAmount }} </h4>
       <mat-slider
         min="3"
         max="100"
