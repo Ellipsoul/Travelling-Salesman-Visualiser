@@ -81,7 +81,7 @@
           <b>Branch and Bound</b>
           <ul>
             <li class="algorithm-explanations"> Traverses in the same manner as <i>depth first search</i> but with a small optimisation:</li>
-            <li class="algorithm-explanations"> If the current distance of a sub-path already exceeds the previous minimum of a full cycle, the remaining branches in this subtree are skipped as they cannot contain a full cycle with a shorter distance than the previous minimum distance cycle.</li>
+            <li class="algorithm-explanations"> If the current distance of a sub-path already exceeds some lower bound, the remaining branches in this subtree are skipped as they cannot contain a full cycle with a shorter distance than the previous minimum distance cycle.</li>
           </ul>
         </li>
         <li>
