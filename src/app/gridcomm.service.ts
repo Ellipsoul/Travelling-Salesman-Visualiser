@@ -28,7 +28,8 @@ export class GridcommService {
   //========================================================
   dispPaths: {A:{x: number; y: number}; B: {x: number; y: number}} = null;
 
-  private dispPathsMessage = new BehaviorSubject<{A:{x: number; y:number}; B: {x: number; y:number}}>(this.dispPaths); //create the 'message' to be used in the communication service
+  // Create the 'message' to be used in the communication service
+  private dispPathsMessage = new BehaviorSubject<{A:{x: number; y:number}; B: {x: number; y:number}}>(this.dispPaths);
 
   currentDispPathsMessage = this.dispPathsMessage.asObservable(); //set the 'message' to be observable for use in other components
   //========================================================
@@ -51,7 +52,7 @@ export class GridcommService {
 
   individualPathType: {A:{x: number, y: number}, B: {x: number, y: number}, Type: number} = {A:null,B:null,Type:0};
 
-  //create the 'message' to be used in the communication service
+  // Create the 'message' to be used in the communication service
   private indivPathTypeMessage = new BehaviorSubject<{A:{x: number, y: number}, B: {x: number, y: number}, Type: number}>(this.individualPathType);
 
   // Set the 'message' to be observable for use in other components
@@ -62,13 +63,13 @@ export class GridcommService {
   // Function to completely modify the points 'message' - useful for emptying the array
   changeSelPointMessage(newselpoints: {x: number; y:number}[]): void {
     this.selPoints = newselpoints;
-    this.selPointsMessage.next(this.selPoints); // Sets the points 'message' to its new value
+    this.selPointsMessage.next(this.selPoints);  // Sets the points 'message' to its new value
   }
 
   // Function to append to the points 'message' - useful for adding objects to the array
   addToSelPointsMessage(inpoint: {x: number; y:number}): boolean{
     var successful = false;
-    if(this.selPoints.findIndex(i => i.x === inpoint.x && i.y === inpoint.y) === -1){
+    if (this.selPoints.findIndex(i => i.x === inpoint.x && i.y === inpoint.y) === -1) {
       this.selPoints.push(inpoint);  // Only add if the object doesn't exist
       successful = true;
     }
@@ -88,8 +89,8 @@ export class GridcommService {
   }
 
   addToPaths(inPath: {A:{x: number, y:number}, B: {x: number, y:number}}): void {
-    var idxPath = this.currPaths.findIndex(i => i.A.x === inPath.A.x && i.A.y === inPath.A.y && i.B.x === inPath.B.x && i.B.y === inPath.B.y);  // Find the path
-    if(idxPath === -1){     // If the path was not found then add it to the currPaths array and set new message
+    var idxPath = this.currPaths.findIndex(i => i.A.x === inPath.A.x && i.A.y === inPath.A.y && i.B.x === inPath.B.x && i.B.y === inPath.B.y);    // Find the path
+    if (idxPath === -1) {     // If the path was not found then add it to the currPaths array and set new message
       this.currPaths.push(inPath);
       this.dispPathsMessage.next(inPath);
     }
@@ -114,12 +115,12 @@ export class GridcommService {
   }
 
   setIndividualPathType(inpath: {A: {x:number, y:number}, B: {x:number, y:number}}, type: number):void {
-    this.individualPathType = {A: inpath.A, B: inpath.B, Type: type};
-    this.indivPathTypeMessage.next({A: inpath.A, B: inpath.B, Type: type});
+    this.individualPathType = {A:inpath.A, B:inpath.B, Type:type};
+    this.indivPathTypeMessage.next({A:inpath.A, B:inpath.B, Type:type});
   }
 
   // Helper function to remove object from array based on coordinate equality
-  removeFromArray(array: any[], value: any): any[]{
+  removeFromArray(array: any[], value: any):any[] {
     var index = array.findIndex(i => i.x === value.x && i.y === value.y);
     if (index !== -1) {
         array.splice(index, 1);  // Remove one object at the found index

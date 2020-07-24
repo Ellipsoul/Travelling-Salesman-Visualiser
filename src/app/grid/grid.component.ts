@@ -34,10 +34,12 @@ export class GridComponent implements OnInit, AfterContentInit, DoCheck {
 
     // Asynchronous update (addition and removal) of path components in pathContainer
     this.data.currentRemovePathsIndexMessage.subscribe(pathIndexToRemove => this.removePath(pathIndexToRemove));
-    this.data.currentDispPathsMessage.subscribe(pathToAdd => {if(pathToAdd != null){this.generatePath(pathToAdd)}});
+    this.data.currentDispPathsMessage.subscribe(pathToAdd => { if (pathToAdd != null) {
+      this.generatePath(pathToAdd);
+    }});
   }
 
-  ngAfterContentInit(): void {  // After content is initialized (runs after ngOnInit)
+  ngAfterContentInit():void {  // After content is initialized (runs after ngOnInit)
     this.pathContainer = this.pathHost.viewContainerRef;
     this.clearPaths();
   }
@@ -45,12 +47,12 @@ export class GridComponent implements OnInit, AfterContentInit, DoCheck {
   ngDoCheck(): void {
   }
 
-  makeGrid(rows: number, cols: number): void{  // Create grid with rows and columns
+  makeGrid(rows: number, cols: number):void {  // Create grid with rows and columns
     // Reference to container (replaces <ng-template app-pointrowhost><ng-template>)
     const viewContainerRef = this.pointHost.viewContainerRef;
-    viewContainerRef.clear(); //clear it for good practice
+    viewContainerRef.clear();  // Clear it for good practice
 
-    for(let i = 0; i < rows; i++){
+    for (let i = 0; i < rows; i++) {
       // ComponentFactory resolves a new PointrowComponent; the container creates it within itself
       const newRow = viewContainerRef.createComponent(this.resolver.resolveComponentFactory(PointrowComponent));
 
@@ -59,8 +61,8 @@ export class GridComponent implements OnInit, AfterContentInit, DoCheck {
     }
   }
 
-  generatePath(inPath: {A:{x: number, y:number}, B: {x: number, y:number}}): void{
-    if(this.pathContainer !== null){
+  generatePath(inPath: {A:{x: number, y:number}, B:{x: number, y:number}}):void {
+    if (this.pathContainer !== null) {
       const newPath = this.pathContainer.createComponent(this.resolver.resolveComponentFactory(PathComponent));
       (<PathComponent>newPath.instance).setPath(inPath);
     }

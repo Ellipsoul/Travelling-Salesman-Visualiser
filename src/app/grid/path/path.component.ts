@@ -6,6 +6,7 @@ import { GridcommService } from '../../gridcomm.service';
   templateUrl: './path.component.html',
   styleUrls: ['./path.component.css'],
 })
+
 export class PathComponent implements OnInit, DoCheck {
   pointA: { x: number; y: number };
   pointB: { x: number; y: number };
@@ -17,30 +18,37 @@ export class PathComponent implements OnInit, DoCheck {
   type: number = 2;  // Setting colour: 0 - light grey; 1 - solid black; 2 - yellow
   pointSpacing: number = 34;
 
-  pathWidth: number = 50; // Div width
-  pathHeight: number = 50; // Div height
-  pathLeft: number = 30 + 12.5; // Div offset from left
-  pathTop: number = 12.5; // Div offset from top
-  rotation: number = 0; // Div rotation from top left
+  pathWidth: number = 50;         // Div width
+  pathHeight: number = 50;        // Div height
+  pathLeft: number = 30 + 12.5;   // Div offset from left
+  pathTop: number = 12.5;         // Div offset from top
+  rotation: number = 0;           // Div rotation from top left
 
 
   constructor(private data: GridcommService) {}
 
   ngOnInit(): void {
+    // Changing a specific path type
     this.data.changeIndPathTypeMessage.subscribe(message => {
-      if(message.A !== null && message.B !== null){
-          if(message.A.x === this.pointA.x && message.A.y === this.pointA.y && message.B.x === this.pointB.x && message.B.y === this.pointB.y){
+      // If the message contains a path
+      if (message.A !== null && message.B !== null) {
+          // If the path is the target path from the message
+          if (message.A.x === this.pointA.x && message.A.y === this.pointA.y && message.B.x === this.pointB.x && message.B.y === this.pointB.y) {
+            // Set the path type
             this.setType(message.Type);
           }
         }
     });
-    this.data.changeAllPathTypeMessage.subscribe(message => {this.allTypeChange = message.Type; this.allTypeChangetick = message.Tick});
+    // Changing all path types
+    this.data.changeAllPathTypeMessage.subscribe(message => {
+      this.allTypeChange = message.Type;
+      this.allTypeChangetick = message.Tick;
+    });
     this.prevAllTypeChangetick = this.allTypeChangetick;
-
   }
 
   ngDoCheck(): void {
-    if(this.prevAllTypeChangetick !== this.allTypeChangetick){
+    if (this.prevAllTypeChangetick !== this.allTypeChangetick) {
       this.type = this.allTypeChange;
       this.prevAllTypeChangetick = this.allTypeChangetick;
     }
@@ -48,7 +56,6 @@ export class PathComponent implements OnInit, DoCheck {
 
   setType(inType: number): void{
     this.type = inType;
-    // console.log(this, "Changed", inType);
   }
 
   setPath(inPath: {
