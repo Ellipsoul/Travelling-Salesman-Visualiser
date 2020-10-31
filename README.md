@@ -2,6 +2,8 @@
 
 Welcome to the Travelling Salesman Problem Visualiser! I built this app with my friend [Justin Liu](https://github.com/juicetinliu) purely out of curiosity for computer science and software engineering. We hope you have fun with our creation!
 
+The app is deployed [here](https://ellipsoul.github.io/Travelling-Salesman-Visualiser/)
+
 ## What is the Travelling Salesman Problem?
 
 The travelling salesman problem is a very simple problem to explain, but an *extremely* difficult problem to solve efficiently. In computer science, this problem is classified as an *NP-Hard* problem, meaning that it cannot be solved in polynomial time or better, and a potentially optimal route cannot be verified as optimal in polynomial time or better.
